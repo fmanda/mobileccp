@@ -9,7 +9,6 @@
 			);
 		}
 
-
 		public static function getPrimaryKey(){
 			return "SalID";
 		}

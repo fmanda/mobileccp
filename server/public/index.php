@@ -71,6 +71,7 @@ $app->get('/check', function (Request $request, Response $response, $args) {
 require '../src/routes/newccp.php';
 require '../src/routes/salesman.php';
 require '../src/routes/customer.php';
+require '../src/routes/inventory.php';
 
 
 // $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function($req, $res) {
