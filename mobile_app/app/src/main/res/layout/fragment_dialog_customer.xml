@@ -1,0 +1,67 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <!-- App Bar Layout -->
+    <LinearLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imgBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_sheet" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-5dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="New Order / Visit -> Pilih Customer"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            style="Theme.MyApplication.SearchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:iconifiedByDefault="false"
+            android:queryHint="Search..."
+            app:searchIcon="@drawable/ic_search_24" />
+    </LinearLayout>
+
+
+
+    <!-- Horizontal RecyclerView for Kelurahan -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvKelurahan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/appbar"
+        android:orientation="horizontal"
+        android:padding="8dp" />
+
+    <!-- Vertical RecyclerView for Customers -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvListCustomer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rvKelurahan"
+        android:layout_weight="1"
+        android:orientation="vertical" />
+
+
+</RelativeLayout>

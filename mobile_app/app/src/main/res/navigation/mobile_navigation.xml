@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.ts.mobileccp.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_sales"
+        android:name="com.ts.mobileccp.ui.sales.SalesFragment"
+        android:label="Sales"
+        tools:layout="@layout/fragment_sales" >
+        <action
+            android:id="@+id/action_nav_sales_to_nav_browse_sales"
+            app:popUpTo="@id/nav_sales"
+            app:popUpToInclusive="true"
+            app:destination="@id/nav_browse_sales" />
+        <action
+            android:id="@+id/action_nav_sales_to_nav_home"
+            app:destination="@id/nav_home" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_setting"
+        android:name="com.ts.mobileccp.ui.setting.SettingFragment"
+        android:label="Setting"
+        tools:layout="@layout/fragment_setting" />
+    <fragment
+        android:id="@+id/nav_customer"
+        android:name="com.ts.mobileccp.ui.customer.CustomerFragment"
+        android:label="Customer"
+        tools:layout="@layout/fragment_customer" >
+        <action
+            android:id="@+id/action_nav_customer_to_nav_customer_update"
+            app:destination="@id/nav_customer_update"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_customer_update"
+        android:name="com.ts.mobileccp.ui.customer.CustomerUpdateFragment"
+        android:label="Update Customer"
+        tools:layout="@layout/fragment_customer_update" />
+    <fragment
+        android:id="@+id/nav_browse_sales"
+        android:name="com.ts.mobileccp.ui.sales.BrowseSalesFragment"
+        android:label="BrowseSalesFragment"
+        tools:layout="@layout/fragment_customer" >
+        <action
+            android:id="@+id/action_nav_browse_sales_to_nav_sales"
+            app:destination="@id/nav_sales" />
+    </fragment>
+</navigation>
