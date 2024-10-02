@@ -13,11 +13,11 @@
 		public static function is_primary_int(){ return false; }
 
 		public static function getFields(){
-			return array("id"); //uuid string
+			return array("");
 		}
 
 		public static function getPrimaryKey(){
-			return "id";
+			return "";
 		}
 
 		public static function getTableName(){
@@ -28,22 +28,22 @@
 		}
 
 		public static function retrieve($id){  //uuid string
-			$sql = 'select * from '.static::getTableName().' where '. static::getPrimaryKey() .' = "'.$id.'"';
+			$sql = "select * from ".static::getTableName()." where ". static::getPrimaryKey() ." = ".$id;
 			$obj = DB::openQuery($sql);
 			if (isset($obj[0])) return $obj[0];
 		}
 
 
 		public static function retrieveList($filter=''){
-			$sql = 'select * from '.static::getTableName().' where 1=1 ';
+			$sql = "select * from ".static::getTableName()." where 1=1 ";
 			if ($filter<>''){
-				$sql = $sql .' and '. $filter;
+				$sql = $sql ." and ". $filter;
 			}
 			$obj = DB::openQuery($sql);
 			return $obj;
 		}
 
-		public static function generateSQLInsert($obj, $db, $ignore = false){
+		public static function generateSQLInsert($obj, $db){
 			$classname = get_called_class();
 			try{
 				if ($obj == null){
@@ -55,6 +55,8 @@
 				foreach ($fields as $field) {
 	            
 					if (!isset($obj->{$field})) continue;
+
+					if  (strtolower($field) == strtolower(static::getPrimaryKey())) continue;
 
 					if ($sql<>""){
 						$sql = $sql . ",";
@@ -67,11 +69,7 @@
 					$strvalue = $strvalue. $db->quote($obj->{$field} );
 				}
 				
-				if ($ignore) {
-					$sql = "insert ignore into ". static::getTableName() . "(" . $sql .")";		
-				}else{
-					$sql = "insert into ". static::getTableName() . "(" . $sql .")";
-				}
+				$sql = "insert into ". static::getTableName() . "(" . $sql .")";
 				$sql = $sql. "values(" . $strvalue . ");";
 		
 				return $sql;
@@ -84,8 +82,10 @@
 			$strvalue = "";
 			$fields = static::getFields();
 			$classname = get_called_class();
+			$key = static::getPrimaryKey();
+
 			foreach ($fields as $field) {
-				if ($field == "id") continue;
+				if (strtolower($field) == strtolower($key)) continue;
 				if (!isset($obj->{$field})) continue;
 				// if (!isset($obj->{$field}))
 				// 	throw new Exception("undeclared property $field on object $classname", 1);
@@ -98,59 +98,11 @@
 				$strvalue = $strvalue. $field ." = ". $db->quote($obj->{$field});
 			}
 			$sql = "update ". static::getTableName() . " set " . $strvalue;
-			$sql = $sql. " where id = " . $db->quote($obj->id) . ";";
+			$sql = $sql. " where ". $key . " = " . $db->quote($obj->{$key}) . ";";
 			return $sql;
 		}
 
-		public static function generateSQLUpsert($obj, $db){
-			$classname = get_called_class();
-			try{
-				if ($obj == null){
-					throw new Exception("[BaseModel] Object is null \n");
-				}
-				$sql = "";
-				$sqlupdate = "";
-				$strvalue = "";
-				$fields = static::getFields();
-				foreach ($fields as $field) {
-	            
-					if (!isset($obj->{$field})) continue;
-
-					if ($sql<>""){
-						$sql = $sql . ",";
-						$strvalue = $strvalue . ",";	
-					}
-
-					if ($sqlupdate <> ""){
-						$sqlupdate = $sqlupdate . ",";
-					}
-				    $sql = $sql. $field;
-
-					if ($field != static::getPrimaryKey()){
-						$sqlupdate = $sqlupdate . $field . " = values(" . $field . ")";
-					}
 		
-					$strvalue = $strvalue. $db->quote($obj->{$field} );
-				}
-				
-				if ($ignore) {
-					$sql = "insert into ". static::getTableName() . "(" . $sql .")";		
-				}else{
-					$sql = "insert into ". static::getTableName() . "(" . $sql .")";
-				}
-				$sql = $sql. "values(" . $strvalue . ") ";
-
-				if ($sqlupdate <> ""){
-					$sql = $sql . " ON DUPLICATE KEY UPDATE " . $sqlupdate;
-				}
-		
-				$sql = $sql . ";";
-
-				return $sql;
-			}catch(Exception $e){
-				throw $e ;
-			}
-		}
 
 		public static function generateSQLDelete($filter){
 			return "delete from " . static::getTableName() . " where " . $filter .";";
@@ -158,31 +110,43 @@
 
 		
 		public static function generateSQL($obj, $db){
-			if (static::always_insert()){ //defined ID/or different primary 
-				// return static::generateSQLInsert($obj, $db, true);
-				return static::generateSQLUpsert($obj, $db);
-			}else{
-				if (static::isNewTransaction($obj)) {
-
-					if (!static::is_primary_int()) {
-						$obj->id = DB::GUID();
-					} 
-					
+			// if (static::always_insert()){ //defined ID/or different primary 
+			// 	return static::generateSQLUpsert($obj, $db);
+			// }else{
+				if (static::isNewTransaction($obj)) {					
 					return static::generateSQLInsert($obj, $db);
 				}else{
 					return static::generateSQLUpdate($obj, $db);
 				}
-			}
+			// }
 		}
 
 
-		//temp set all to insert ignore
-		public static function saveObjToDB($obj, $db){
-			try {
-				$sql = static::generateSQL($obj, $db);
+		// //temp set all to insert ignore - mysql
+		// public static function saveObjToDB($obj, $db){
+		// 	try {
+		// 		$sql = static::generateSQL($obj, $db);
 
-				// echo $sql;
+		// 		// echo $sql;
+		// 		$int = $db->prepare($sql)->execute();
+		// 	} catch (Exception $e) {
+		// 		echo $sql;
+		// 		// $db->rollback(); //handle rollback diluar
+		// 		throw $e;
+		// 	}
+		// }
+
+		public static function saveObjToDB($obj, $db){
+			// $sql = static::generateSQL($obj);
+			try {
+				$key = static::getPrimaryKey();
+				$sql = static::generateSQL($obj, $db);
 				$int = $db->prepare($sql)->execute();
+				if (static::isNewTransaction($obj)){
+					if ($key != ""){
+						$obj->{$key} = $db->lastInsertId();
+					}
+				}
 			} catch (Exception $e) {
 				echo $sql;
 				// $db->rollback(); //handle rollback diluar
@@ -192,14 +156,65 @@
 
 		
 		public static function isNewTransaction($obj){
-			if (isset($obj->id)){
-				$do_insert = ($obj->id == "") || ($obj->id == "0");
+			$key = static::getPrimaryKey();
+			if (isset($obj->{$key})) {
+				$do_insert = ($obj->{$key} == "") || ($obj->{$key} == "0");
 			}else{
 				$do_insert = true;
 			}
 			return $do_insert;
 		}
 
+
+		// public static function generateSQLUpsert($obj, $db){
+		// 	$classname = get_called_class();
+		// 	try{
+		// 		if ($obj == null){
+		// 			throw new Exception("[BaseModel] Object is null \n");
+		// 		}
+		// 		$sql = "";
+		// 		$sqlupdate = "";
+		// 		$strvalue = "";
+		// 		$fields = static::getFields();
+		// 		foreach ($fields as $field) {
+	            
+		// 			if (!isset($obj->{$field})) continue;
+
+		// 			if ($sql<>""){
+		// 				$sql = $sql . ",";
+		// 				$strvalue = $strvalue . ",";	
+		// 			}
+
+		// 			if ($sqlupdate <> ""){
+		// 				$sqlupdate = $sqlupdate . ",";
+		// 			}
+		// 		    $sql = $sql. $field;
+
+		// 			if (strtolower($field) != strtolower(static::getPrimaryKey())){
+		// 				$sqlupdate = $sqlupdate . $field . " = values(" . $field . ")";
+		// 			}
+		
+		// 			$strvalue = $strvalue. $db->quote($obj->{$field} );
+		// 		}
+				
+		// 		if ($ignore) {
+		// 			$sql = "insert into ". static::getTableName() . "(" . $sql .")";		
+		// 		}else{
+		// 			$sql = "insert into ". static::getTableName() . "(" . $sql .")";
+		// 		}
+		// 		$sql = $sql. "values(" . $strvalue . ") ";
+
+		// 		if ($sqlupdate <> ""){
+		// 			$sql = $sql . " ON DUPLICATE KEY UPDATE " . $sqlupdate;
+		// 		}
+		
+		// 		$sql = $sql . ";";
+
+		// 		return $sql;
+		// 	}catch(Exception $e){
+		// 		throw $e ;
+		// 	}
+		// }
 
 		// public static function setIDByUID($obj){
 		// 	$obj->id = 0; //default insert, sampai ditemukan UID di DB
@@ -240,21 +255,7 @@
 		// 	}
 		// }
 
-		// public static function saveObjToDB($obj, $db){
-		// 	// $sql = static::generateSQL($obj);
-		// 	try {
-		// 		$sql = static::generateSQL($obj, $db);
-		// 		$int = $db->prepare($sql)->execute();
-		// 		if (static::isNewTransaction($obj)){
-		// 			$obj->id = $db->lastInsertId();
-		// 		}
-		// 	} catch (Exception $e) {
-		// 		echo $sql;
-		// 		// $db->rollback(); //handle rollback diluar
-		// 		throw $e;
-		// 	}
-		// }
-
+		
 
 		// public static function getIDFromUID($uid){
 		// 	$sql = "select id from ".static::getTableName()." where uid= '" .$uid."'";

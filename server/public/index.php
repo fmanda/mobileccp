@@ -28,8 +28,6 @@ $app->setBasePath('/public');
 // ]));
 
 
-
-//
 // $app->add(new Tuupola\Middleware\JwtAuthentication([
 //     "regexp" => "/(.*)/", //default format Bearer <token>
 //     "secret" => $config["secret"],
@@ -65,17 +63,14 @@ $app->add(function ($request, $handler) {
 
 
 $app->get('/check', function (Request $request, Response $response, $args) {
-    $response->getBody()->write("Server Ready !!");
+    $response->getBody()->write("Server Ready !!");    
     return $response;
 });
 
-require '../src/routes/customer.php';
-require '../src/routes/product.php';
-require '../src/routes/users.php';
-require '../src/routes/salesorder.php';
-require '../src/routes/dashboard.php';
+
+require '../src/routes/newccp.php';
 require '../src/routes/salesman.php';
-require '../src/routes/visit.php';
+require '../src/routes/customer.php';
 
 
 // $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function($req, $res) {

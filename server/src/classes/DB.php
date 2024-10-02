@@ -8,21 +8,7 @@
 			$dbuser = $config['user'];
 			// $port = $config['port'];
 			$dbpassword = $config['password'];
-
-			$connect_str = "mysql:host=$dbhost;dbname=$dbname";
-
-			// $conStr = sprintf("mysql:host=%s;dbname=%s;user=%s;password=%s;charset=UTF8",
-            //     $dbhost,
-            //     $port,
-            //     $dbname,
-            //     $dbuser,
-            //     $dbpassword);
-
-
-			// $conn = new \PDO($conStr);
-			// $conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-
-
+			$connect_str = "sqlsrv:Server=$dbhost;Database=$dbname";
 			$conn = new PDO($connect_str, $dbuser, $dbpassword);
 			$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			return $conn;
@@ -59,7 +45,7 @@
 			}
 		}
 
-		public static function GUID(){
+		public static function GUID_MYSQL(){
 			return sprintf(
 				'%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
 				mt_rand(0, 0xffff), mt_rand(0, 0xffff), // 32 bits for "time_low"
@@ -68,16 +54,13 @@
 				mt_rand(0, 0x3fff) | 0x8000, // 16 bits for "clk_seq_hi_res", two most significant bits are 10
 				mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff) // 48 bits for "node"
 			);
+		}
 
-	        // mt_srand((double)microtime()*10000);//optional for php 4.2.0 and up.
-	        // $charid = strtoupper(md5(uniqid(rand(), true)));
-	        // $hyphen = chr(45);// "-"
-	        // $uuid = substr($charid, 0, 8).$hyphen
-	        //     .substr($charid, 8, 4).$hyphen
-	        //     .substr($charid,12, 4).$hyphen
-	        //     .substr($charid,16, 4).$hyphen
-	        //     .substr($charid,20,12);
-	        // return $uuid;
+
+		public static function GUID(){
+			$sql = "select newid() as id";
+			$data = DB::openQuery($sql);
+			return $data[0]->id;
 		}
 
 		public static function paginateSQL($sql, $limit = 10, $page = 1) {
