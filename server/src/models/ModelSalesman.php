@@ -14,22 +14,14 @@
 		}
 
 		public static function retrieve($id){
-			$sql = "select a.EmpId as SalID, a.EmpName as Salname, b.AreaNo, b.AreaName
-					from IntacsDataUpgrade.dbo.Employee a
-					inner join IntacsDataUpgrade.dbo.Area b on a.EmpId = b.SalId
-					where a.PSales =  1
-					and a.NotActive = 0
-					and a.EmpID = '" . $id . "'";			
+			$sql = "select * from v_mobile_salesman
+					where SalID = '" . $id . "'";			
 			$obj = DB::openQuery($sql);			
 			if (isset($obj[0])) return $obj[0];		
 		}
 
 		public static function retrieveList($filter=''){
-			$sql = "select a.EmpId as SalID, a.EmpName as Salname, b.AreaNo, b.AreaName
-					from IntacsDataUpgrade.dbo.Employee a
-					inner join IntacsDataUpgrade.dbo.Area b on a.EmpId = b.SalId
-					where a.PSales =  1
-					and a.NotActive = 0";			
+			$sql = "select * from v_mobile_salesman";			
 			$objs = DB::openQuery($sql);			
 			return $objs;
 		}

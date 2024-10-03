@@ -15,23 +15,23 @@ class ListKelurahanAdapter(private var mList: List<String>, private var selected
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.adapter_listkelurahan_layout, parent, false)
+            .inflate(R.layout.adapter_listjenjang_layout, parent, false)
 
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.txtKelurahan.text = mList[position]
+        holder.txtJenjang.text = mList[position]
 
         if (position == selected) {
 //            holder.txtMerk.setBackgroundColor( R.drawable.bottom_background_2 )
-            holder.txtKelurahan.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.bottom_background)
+            holder.txtJenjang.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.bottom_background)
         } else {
 //            holder.txtMerk.setBackgroundColor( R.drawable.bottom_background_grey )
-            holder.txtKelurahan.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.bottom_background_grey)
+            holder.txtJenjang.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.bottom_background_grey)
         }
 
-        holder.lnKelurahan.setOnClickListener(){
+        holder.lnJenjang.setOnClickListener(){
             listener.onSelected(position, mList[position])
         }
     }
@@ -42,8 +42,8 @@ class ListKelurahanAdapter(private var mList: List<String>, private var selected
 
 
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-        val txtKelurahan: TextView = itemView.findViewById(R.id.txtKelurahan)
-        val lnKelurahan: LinearLayout = itemView.findViewById(R.id.lnKelurahan)
+        val txtJenjang: TextView = itemView.findViewById(R.id.txtJenjang)
+        val lnJenjang: LinearLayout = itemView.findViewById(R.id.lnJenjang)
     }
 
     @SuppressLint("NotifyDataSetChanged")

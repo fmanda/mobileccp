@@ -15,23 +15,23 @@ class ListMerkAdapter(private var mList: List<String>, private var selectedMerk:
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.adapter_listmerk_layout, parent, false)
+            .inflate(R.layout.adapter_listclass8_layout, parent, false)
 
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.txtMerk.text = mList[position]
+        holder.txtCategory.text = mList[position]
 
         if (position == selectedMerk) {
 //            holder.txtMerk.setBackgroundColor( R.drawable.bottom_background_2 )
-            holder.txtMerk.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.bottom_background)
+            holder.txtCategory.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.bottom_background)
         } else {
 //            holder.txtMerk.setBackgroundColor( R.drawable.bottom_background_grey )
-            holder.txtMerk.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.bottom_background_grey)
+            holder.txtCategory.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.bottom_background_grey)
         }
 
-        holder.lnMerk.setOnClickListener(){
+        holder.lnCategory.setOnClickListener(){
             listener.onSelectedMerk(position, mList[position])
         }
     }
@@ -42,8 +42,8 @@ class ListMerkAdapter(private var mList: List<String>, private var selectedMerk:
 
 
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-        val txtMerk: TextView = itemView.findViewById(R.id.txtMerk)
-        val lnMerk: LinearLayout = itemView.findViewById(R.id.lnMerk)
+        val txtCategory: TextView = itemView.findViewById(R.id.txtCategory)
+        val lnCategory: LinearLayout = itemView.findViewById(R.id.lnCategory)
     }
 
     @SuppressLint("NotifyDataSetChanged")
