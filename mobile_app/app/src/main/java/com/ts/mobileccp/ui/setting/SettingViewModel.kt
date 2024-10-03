@@ -13,7 +13,7 @@ import com.ts.mobileccp.db.AppDatabase
 import com.ts.mobileccp.db.entity.CustomerDao
 import com.ts.mobileccp.db.entity.LoginInfo
 import com.ts.mobileccp.db.entity.LoginInfoDao
-import com.ts.mobileccp.db.entity.ProductDao
+import com.ts.mobileccp.db.entity.InventoryDao
 import com.ts.mobileccp.db.entity.SalesOrderDao
 import com.ts.mobileccp.global.AppVariable
 import com.ts.mobileccp.rest.ApiRepository
@@ -32,7 +32,7 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
     val data: LiveData<List<CustomerResponse>?> get() = _data
 
     private val loginInfoDao: LoginInfoDao = AppDatabase.getInstance(application).loginInfoDao()
-    private val productDao: ProductDao = AppDatabase.getInstance(application).productDao()
+    private val inventoryDao: InventoryDao = AppDatabase.getInstance(application).productDao()
     private val customerDao: CustomerDao = AppDatabase.getInstance(application).customerDao()
     private val salesOrderDao: SalesOrderDao = AppDatabase.getInstance(application).salesOrderDao()
 
@@ -46,12 +46,13 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
             "",
             "",
             "",
-            ""
+            "",
+            null
         )
         viewModelScope.launch {
             try {
                 loginInfoDao.clearLoginInfo();
-                productDao.clearProduct();
+                inventoryDao.clearProduct();
                 customerDao.clearCustomer();
                 salesOrderDao.clearSalesOrder();
                 navigateToLoginScreen()

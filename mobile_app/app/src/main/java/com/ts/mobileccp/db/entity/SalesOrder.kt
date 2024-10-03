@@ -20,9 +20,9 @@ data class SalesOrder(
     @PrimaryKey val id: UUID,
     val orderno: String,
     val orderdate: String,
-    val customer_id: UUID?,
-    val salesman_id: UUID?,
-    val project_code: String,
+    val shipid: Int,
+    val salid: String,
+    val areano: String,
     val dpp: Double,
     val ppn: Double,
     val amt: Double,
@@ -36,9 +36,9 @@ data class Visit(
     @PrimaryKey val id: UUID,
     val visitno: String,
     val visitdate: String,
-    val customer_id: UUID?,
-    val salesman_id: UUID?,
-    val project_code: String,
+    val shipid: Int,
+    val salid: String,
+    val areano: String,
     val latitude: Double?,
     val longitude: Double?,
     val uploaded: Int = 0
@@ -59,10 +59,9 @@ data class Visit(
 data class SalesOrderItem(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val salesorder_id: UUID,
-    val sku: String,
-    val uom: String,
+    val partno: String,
     val qty: Int,
-    val unitprice: Double,
+    val price: Double,
     val discount: Double,
     val dpp: Double,
     val ppn: Double,
@@ -80,19 +79,17 @@ data class TmpSalesOrder(
 }
 
 data class TmpSalesOrderItem(
-    var sku: String,
-    var nama: String,
-    var uom: String,
+    var partno: String,
+    var invname: String,
     var qty: Int,
-    var unitprice: Double,
+    var price: Double,
     var discount: Double,
     var dpp: Double,
     var ppn: Double,
-    var amt: Double,
-    var expanded: Boolean
+    var amt: Double
 ){
     fun calcDPP(): Double{
-        return this.qty * this.unitprice
+        return this.qty * this.price
     }
     fun calcPPN(): Double{
         return this.calcDPP()*0.11
@@ -120,19 +117,19 @@ interface SalesOrderDao {
     suspend fun getById(id: UUID): SalesOrder?
 
 
-    @Query("SELECT a.sku, b.nama, a.uom, a.qty, a.unitprice, a.discount, a.dpp, a.ppn, a.amt, 'false' as expanded " +
-            " FROM salesorderitem a inner join product b on a.sku = b.sku WHERE salesorder_id = :id")
+    @Query("SELECT a.salesorder_id, a.partno, b.invname,  a.qty, a.price, a.discount, a.dpp, a.ppn, a.amt, 'false' as expanded " +
+            " FROM salesorderitem a inner join inventory b on a.partno = b.partno WHERE salesorder_id = :id")
     suspend fun getByTmpItemsId(id: UUID): List<TmpSalesOrderItem>?
 
     @Query(
         "select * from (\n" +
-                "    SELECT a.id, a.orderno, a.orderdate, b.nama as customer, b.alamat, a.amt, a.longitude, a.latitude, a.uploaded, 'false' as isexpanded \n" +
+                "    SELECT a.id, a.orderno, a.orderdate, b.shipname as customer, b.shipaddress, a.amt, a.longitude, a.latitude, a.uploaded, 'false' as isexpanded \n" +
                 "    FROM salesorder a \n" +
-                "    inner join customer b on a.customer_id=b.id\n" +
+                "    inner join customer b on a.shipid=b.shipid\n" +
                 "    union all\n" +
-                "    SELECT a.id, a.visitno, a.visitdate, b.nama as customer, b.alamat, 0, a.longitude, a.latitude, a.uploaded, 'false' as isexpanded \n" +
+                "    SELECT a.id, a.visitno, a.visitdate, b.shipname as customer, b.shipaddress, 0, a.longitude, a.latitude, a.uploaded, 'false' as isexpanded \n" +
                 "    FROM visit a \n" +
-                "    inner join customer b on a.customer_id=b.id\n" +
+                "    inner join customer b on a.shipid=b.shipid\n" +
                 " )order by orderdate desc limit 10"
     )
     fun getLatestActivity(): LiveData<List<LastActivityQuery>>
@@ -157,17 +154,17 @@ interface SalesOrderDao {
     fun getMonthlySales(): LiveData<SalesOrderSumCount?>
 
     @Query(
-        "SELECT a.id, a.orderno, a.orderdate, b.nama as customer, b.alamat, a.amt, a.longitude, a.latitude, a.uploaded, 'false' as isexpanded " +
+        "SELECT a.id, a.orderno, a.orderdate, b.shipname as customer, b.shipaddress, a.amt, a.longitude, a.latitude, a.uploaded, 'false' as isexpanded " +
                 "FROM salesorder a " +
-                "inner join customer b on a.customer_id=b.id order by a.orderdate desc limit 300"
+                "inner join customer b on a.shipid=b.shipid order by a.orderdate desc limit 300"
     )
     fun getLast300Sales(): LiveData<List<LastActivityQuery>>
 
     @Query(
-        "SELECT a.id, a.orderno, a.orderdate, b.nama as customer, b.alamat, a.amt, a.longitude, a.latitude,  a.uploaded, 'false' as isexpanded " +
+        "SELECT a.id, a.orderno, a.orderdate, b.shipname as customer, b.shipaddress, a.amt, a.longitude, a.latitude,  a.uploaded, 'false' as isexpanded " +
                 "FROM salesorder a " +
-                "inner join customer b on a.customer_id=b.id " +
-                "WHERE b.nama LIKE :query " +
+                "inner join customer b on a.shipid=b.shipid " +
+                "WHERE b.shipname LIKE :query " +
                 "order by a.orderdate desc limit 300"
     )
     fun searchLast300Sales(query: String): LiveData<List<LastActivityQuery>>
@@ -238,9 +235,9 @@ data class JSONSalesOrder(
     val id: String,
     val orderno: String,
     val orderdate: String,
-    val customer_id: String,
-    val salesman_id: String,
-    val project_code: String,
+    val shipid: Int,
+    val salid: String,
+    val areano: String,
     val dpp: Double,
     val ppn: Double,
     val amt: Double,
@@ -253,10 +250,9 @@ data class JSONSalesOrder(
 @Serializable
 data class JSONSalesOrderItem(
     val salesorder_id: String,
-    val sku: String,
-    val uom: String,
+    val partno: String,
     val qty: Int,
-    val unitprice: Double,
+    val price: Double,
     val discount: Double,
     val dpp: Double,
     val ppn: Double,
@@ -268,9 +264,9 @@ data class JSONVisit(
     val id: String,
     val visitno: String,
     val visitdate: String,
-    val customer_id: String,
-    val salesman_id: String,
-    val project_code: String,
+    val shipid: Int,
+    val salid: String,
+    val areano: String,
     val latitude: Double?,
     val longitude: Double?
 )

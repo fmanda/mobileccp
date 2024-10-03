@@ -39,13 +39,14 @@ class ListCustomerAdapter(
 
         val formatter: NumberFormat = DecimalFormat("#,###")
 
-        holder.txtCustomer.text = ItemsViewModel.nama
-        holder.txtAddress.text = ItemsViewModel.alamat
+        holder.txtCustomer.text = ItemsViewModel.shipname
+        holder.txtAddress.text = ItemsViewModel.shipaddress
+        holder.txtPartnerName.text = ItemsViewModel.partnername
 
-        val kelKecamatan = ItemsViewModel.kelurahan + ", " + ItemsViewModel.kecamatan;
-        holder.txtKelurahan.text = kelKecamatan
+        val jenjang = ItemsViewModel.jenjang + ", NPSN : " + ItemsViewModel.npsn;
+        holder.txtJenjang.text = jenjang
 
-        val initial = ItemsViewModel.nama.first().toString()
+        val initial = ItemsViewModel.shipname.first().toString()
         val drawable = GradientDrawable()
         drawable.shape = GradientDrawable.OVAL
         drawable.setColor(Color.parseColor("#A9A9A9")) // Fixed color from colors.xml
@@ -64,7 +65,7 @@ class ListCustomerAdapter(
         }else {
             holder.callButton.setOnClickListener {
                 val intent = Intent(Intent.ACTION_DIAL).apply {
-                    data = Uri.parse("tel:${ItemsViewModel.phone}")
+                    data = Uri.parse("tel:${ItemsViewModel.shiphp}")
                 }
                 holder.itemView.context.startActivity(intent)
             }
@@ -78,7 +79,8 @@ class ListCustomerAdapter(
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txtCustomer: TextView = itemView.findViewById(R.id.txtCustomer)
         val txtAddress: TextView = itemView.findViewById(R.id.txtAddress)
-        val txtKelurahan: TextView = itemView.findViewById(R.id.txtKelurahan)
+        val txtPartnerName: TextView = itemView.findViewById(R.id.txtPartnerName)
+        val txtJenjang: TextView = itemView.findViewById(R.id.txtJenjang)
         val iconImageView: ImageView = itemView.findViewById(R.id.iconImageView)
         val iconTextView: TextView = itemView.findViewById(R.id.iconTextView)
         val callButton: ImageButton = itemView.findViewById(R.id.callButton)

@@ -1,14 +1,15 @@
-create view v_mobile_salesman as
-select a.EmpId as SalID, a.EmpName as Salname, b.AreaNo, b.AreaName
+alter view v_mobile_salesman as
+select a.EmpId as salid, a.EmpName as salname, b.areano, b.areaname, a.entity
 from IntacsDataUpgrade.dbo.Employee a
 inner join IntacsDataUpgrade.dbo.Area b on a.EmpId = b.SalId
 where a.PSales =  1
 and a.NotActive = 0
 
-create view v_mobile_customer as
-select a.ShipId, a.[Ship Name], a.[Ship Address], a.[Ship City], a.[Ship Phone], a.[Ship HP],
-b.PartnerId, b.PartnerName,
-a.PriceLevel, a.IsActive, c.AreaNo, c.AreaName, b.NPSN, e.CClass2Name as Jenjang
+
+alter view v_mobile_customer as
+select a.shipid, a.[Ship Name] as shipname, a.[Ship Address] as shipaddress, a.[Ship City] as shipcity, 
+a.[Ship Phone] as shipphone, a.[Ship HP] as shiphp, b.partnerid, b.partnername,
+a.pricelevel, a.isactive, c.areano, c.areaname, b.npsn, e.CClass2Name as jenjang
 from IntacsDataUpgrade.dbo.CustomerDelivery a
 inner join IntacsDataUpgrade.dbo.[Partner] b on a.CustomerId = b.PartnerId
 inner join IntacsDataUpgrade.dbo.Area c on b.areano = c.AreaNo
@@ -16,15 +17,14 @@ left join IntacsDataUpgrade.dbo.PartnerClass d on d.PartnerId = b.PartnerId
 left join IntacsDataUpgrade.dbo.CClass2 e on e.CClass2 = d.cclass2
 
 
-
-create function fn_mobile_pricelevel(
+alter function fn_mobile_pricelevel(
 	@areano varchar(30)
 )returns @mytable table(
-	InvID int,
-	Partno varchar(30),
-	PriceLevel int,
-	PriceLevelName varchar(200),
-	Price Float
+	invid int,
+	partno varchar(30),
+	pricelevel int,
+	pricelevelname varchar(200),
+	price Float
 )
 as
 begin
@@ -48,15 +48,15 @@ end
 
 
 
-create function fn_mobile_inventory(
+alter function fn_mobile_inventory(
 	@areano varchar(30)
 )returns @mytable table(
-	InvID int,
-	Partno varchar(30),
-	InvName varchar(200),
-	Description varchar(max),
-	InvGrp varchar(100),
-	PClass8Name varchar(100)
+	invid int,
+	partno varchar(30),
+	invname varchar(200),
+	description varchar(max),
+	invgrp varchar(100),
+	pclass8name varchar(100)
 )
 as
 begin
@@ -80,15 +80,15 @@ begin
 end
 
 
-create function fn_mobile_inventory_bypartno(
+alter function fn_mobile_inventory_bypartno(
 	@partno varchar(30)
 )returns @mytable table(
-	InvID int,
-	Partno varchar(30),
-	InvName varchar(200),
-	Description varchar(max),
-	InvGrp varchar(100),
-	PClass8Name varchar(100)
+	invid int,
+	partno varchar(30),
+	invname varchar(200),
+	description varchar(max),
+	invgrp varchar(100),
+	pclass8name varchar(100)
 )
 as
 begin

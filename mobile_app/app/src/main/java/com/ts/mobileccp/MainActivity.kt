@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleNavigationDestination(destination: NavDestination) {
         when (destination.id) {
-            R.id.nav_sales -> {
+            R.id.nav_sales, R.id.nav_sync -> {
                 binding.fab.visibility = View.INVISIBLE
                 binding.navView.visibility = View.INVISIBLE
                 val layoutParams = binding.lnFragment.layoutParams as CoordinatorLayout.LayoutParams

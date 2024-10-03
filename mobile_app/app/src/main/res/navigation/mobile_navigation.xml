@@ -10,6 +10,9 @@
         android:name="com.ts.mobileccp.ui.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_nav_home_to_nav_sync"
+            app:destination="@id/nav_sync" />
     </fragment>
 
     <fragment
@@ -58,4 +61,9 @@
             android:id="@+id/action_nav_browse_sales_to_nav_sales"
             app:destination="@id/nav_sales" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_sync"
+        android:name="com.ts.mobileccp.ui.sync.SyncFragment"
+        android:label="SyncFragment"
+        tools:layout="@layout/fragment_sync"/>
 </navigation>

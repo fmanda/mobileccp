@@ -14,12 +14,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ts.mobileccp.R
 import com.ts.mobileccp.adapter.ListMerkAdapter
-import com.ts.mobileccp.adapter.ProductPickAdapter
+import com.ts.mobileccp.adapter.InventoryPickAdapter
 import com.ts.mobileccp.adapter.ProductPickListener
 import com.ts.mobileccp.adapter.SelectMerkListener
 import com.ts.mobileccp.databinding.FragmentSalesBinding
 import com.ts.mobileccp.db.entity.Customer
-import com.ts.mobileccp.db.entity.ProductLookup
+import com.ts.mobileccp.db.entity.InventoryLookup
 import com.ts.mobileccp.db.entity.TmpSalesOrder
 import com.ts.mobileccp.db.entity.TmpSalesOrderItem
 import com.ts.mobileccp.ui.customer.DialogCustomerFragment
@@ -41,7 +41,7 @@ class SalesFragment : Fragment(), ProductPickListener,
     private var soItemList: MutableList<TmpSalesOrderItem> = mutableListOf()
     private var salesOrder = TmpSalesOrder()
 
-    val adapter = ProductPickAdapter(emptyList(), soItemList, false,this)
+    val adapter = InventoryPickAdapter(emptyList(), soItemList, this)
 
     private val merkAdapter = ListMerkAdapter(emptyList(), 0, this)
     private var filterQuery: String = ""
@@ -85,13 +85,13 @@ class SalesFragment : Fragment(), ProductPickListener,
 
 
         loadMerk();
-        searchIt();
+        searchIt(getPriceLevel());
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
                     filterQuery = it
-                    searchIt(filterQuery, filterMerk)
+                    searchIt(getPriceLevel(), filterQuery, filterMerk)
 
                 }
                 return false
@@ -100,7 +100,7 @@ class SalesFragment : Fragment(), ProductPickListener,
             override fun onQueryTextChange(newText: String?): Boolean {
                 newText?.let {
                     filterQuery = it
-                    searchIt(filterQuery, filterMerk)
+                    searchIt(getPriceLevel(), filterQuery, filterMerk)
                 }
                 return false
             }
@@ -137,13 +137,6 @@ class SalesFragment : Fragment(), ProductPickListener,
             })
         }
 
-        binding.swTraditional.isChecked = isTradUOM
-
-        binding.swTraditional.setOnCheckedChangeListener { _, isChecked ->
-            this.isTradUOM = isChecked
-            this.adapter.setTraditionalUOM(isChecked)
-        }
-
         return root
     }
 
@@ -154,7 +147,7 @@ class SalesFragment : Fragment(), ProductPickListener,
         format.maximumFractionDigits = 0
         format.minimumFractionDigits = 0
         soItemList.forEach { item ->
-            dpp += (item.qty * item.unitprice)
+            dpp += (item.qty * item.price)
         }
 
         val ppn = 0.11 * dpp
@@ -169,7 +162,7 @@ class SalesFragment : Fragment(), ProductPickListener,
         binding.txtTotal.text = totalTxt
     }
 
-    override fun onUpdateQty(prod: ProductLookup, position: Int, qtyIndex: Int, increment:Int) {
+    override fun onUpdateQty(prod: InventoryLookup, position: Int, qtyIndex: Int, increment:Int) {
 
         val soItem = getOrAdd(prod, qtyIndex) ?: return
 
@@ -181,43 +174,34 @@ class SalesFragment : Fragment(), ProductPickListener,
         adapter.notifyItemChanged(position)
     }
 
-    override fun onExpand(prod: ProductLookup, position: Int) {
-        prod.expanded = !prod.expanded
-        adapter.notifyItemChanged(position)
-    }
+    private fun getOrAdd(prod: InventoryLookup, uomIdx:Int):TmpSalesOrderItem?{
 
-    private fun getOrAdd(prod: ProductLookup, uomIdx:Int):TmpSalesOrderItem?{
-        val uom: String = prod.getUOM(uomIdx, isTradUOM) ?: ""
-        val price: Double? = prod.getUOMPrice(uomIdx, isTradUOM)
-
-        if (uom == "") return null
+        val price: Double? = prod.price
 
         for(tmp in soItemList){
-            if (tmp.sku.equals(prod.sku) && tmp.uom.equals(uom)){
+            if (tmp.partno.equals(prod.partno)){
                 return tmp
             }
         }
 
 
         val tmp = TmpSalesOrderItem(
-            prod.sku,
-            prod.nama,
-            uom,
+            prod.partno,
+            prod.invname,
             0,
             price ?: 0.0,
             0.0,
             0.0,
             0.0,
-            0.0,
-            true
+            0.0
         )
 
         soItemList.add(tmp)
         return tmp
     }
 
-    private fun searchIt(query: String="", merk: String ="") {
-        salesViewModel.lookupProducts(query, merk).observe(viewLifecycleOwner, Observer { items ->
+    private fun searchIt(pricelevel: Int, query: String="", merk: String ="") {
+        salesViewModel.lookupProducts(pricelevel, query, merk).observe(viewLifecycleOwner, Observer { items ->
             adapter.updateData(items)
         })
     }
@@ -263,11 +247,13 @@ class SalesFragment : Fragment(), ProductPickListener,
 
     fun setCustomer(){
 //        salesOrder.customer = cust
-        binding.txtCustName.text = salesOrder.customer?.nama
-        binding.txtAddress1.text = salesOrder.customer?.alamat
+        binding.txtCustName.text = salesOrder.customer?.shipname
+        binding.txtAddress1.text = salesOrder.customer?.shipaddress
 
-        val address2 = salesOrder.customer?.kecamatan + " - " + salesOrder.customer?.kelurahan
-        binding.txtAddress2.text = address2
+    }
+
+    fun getPriceLevel():Int{
+        return salesOrder.customer?.pricelevel?:0
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -289,7 +275,7 @@ class SalesFragment : Fragment(), ProductPickListener,
 
         if (position == 0) filterMerk = "" else filterMerk = merk
 
-        searchIt(filterQuery, filterMerk)
+        searchIt(getPriceLevel(),filterQuery, filterMerk)
 
     }
 

@@ -23,11 +23,12 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="25dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/txtSalID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-condensed-medium"
@@ -37,16 +38,17 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/txtSalesName"
+                android:id="@+id/txtSalName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-condensed-medium"
                 android:text="Salesman Name"
                 android:textAlignment="textStart"
                 android:textColor="@color/white"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
 
             <TextView
+                android:id="@+id/txtDabin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Dabin xxx"
@@ -55,6 +57,7 @@
                 android:textSize="12sp" />
 
             <TextView
+                android:id="@+id/txtEntity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Entity - 1000 - Solo"
@@ -395,7 +398,7 @@
                 android:visibility="gone">
 
                 <LinearLayout
-                    android:id="@+id/lnSync"
+                    android:id="@+id/lnSyncOld"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
@@ -475,6 +478,7 @@
             android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/lnSync"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -499,6 +503,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/lnCustomer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -518,10 +523,12 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="5dp"
                     android:text="Customer"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/lnInventory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -541,10 +548,12 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="5dp"
                     android:text="Inventory"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/lnCCP"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -564,7 +573,8 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="5dp"
                     android:text="CCP"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -577,6 +587,7 @@
             android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/lnVisit"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -601,6 +612,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/lnSales"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -620,10 +632,12 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="5dp"
                     android:text="Sales"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/lnAR"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -643,10 +657,12 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="5dp"
                     android:text="AR"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/lnReport"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -666,7 +682,8 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="5dp"
                     android:text="Report"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
 

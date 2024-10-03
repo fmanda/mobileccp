@@ -16,14 +16,13 @@ class SplashViewModel(application: Application) : AndroidViewModel(application) 
         val loginInfo = loginInfoDao.getLoginInfo()
 
         if (loginInfo != null){
-            if (loginInfo.salesman_id.toString().isNotEmpty()){
+            if (loginInfo.salid.toString().isNotEmpty()){
                 AppVariable.loginInfo = loginInfo
             }
             return true
         }
         return false
     }
-
 
 }
 

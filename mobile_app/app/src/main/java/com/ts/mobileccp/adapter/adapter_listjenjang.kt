@@ -11,7 +11,7 @@ import com.ts.mobileccp.R
 
 
 
-class ListKelurahanAdapter(private var mList: List<String>, private var selected: Int, private var listener: SelectKelurahanListener) : RecyclerView.Adapter<ListKelurahanAdapter.ViewHolder>() {
+class ListJenjangAdapter(private var mList: List<String>, private var selected: Int, private var listener: SelectKelurahanListener) : RecyclerView.Adapter<ListJenjangAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ts.mobileccp.R
 import com.ts.mobileccp.adapter.CustomerSelectListener
 import com.ts.mobileccp.adapter.ListCustomerAdapter
-import com.ts.mobileccp.adapter.ListKelurahanAdapter
+import com.ts.mobileccp.adapter.ListJenjangAdapter
 import com.ts.mobileccp.adapter.SelectKelurahanListener
 //import com.fma.mobility.adapter.ListCustomerAdapter
 import com.ts.mobileccp.databinding.FragmentCustomerBinding
@@ -31,8 +31,8 @@ class CustomerFragment : Fragment(), CustomerSelectListener, SelectKelurahanList
     val adapter = ListCustomerAdapter(emptyList(), this)
 
     private var filterQuery: String = ""
-    private var filterKelurahan: String = ""
-    val adapterKelurahan = ListKelurahanAdapter(emptyList(), 0, this)
+    private var filterJenjang: String = ""
+    val adapterJenjang = ListJenjangAdapter(emptyList(), 0, this)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,7 +46,7 @@ class CustomerFragment : Fragment(), CustomerSelectListener, SelectKelurahanList
         binding.rvListCustomer.layoutManager = LinearLayoutManager(requireContext())
         binding.rvListCustomer.adapter = adapter
 
-        binding.rvKelurahan.adapter = adapterKelurahan
+        binding.rvKelurahan.adapter = adapterJenjang
         binding.rvKelurahan.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
 
@@ -54,7 +54,7 @@ class CustomerFragment : Fragment(), CustomerSelectListener, SelectKelurahanList
 //        customerViewModel.listcustomer.observe(viewLifecycleOwner, Observer { data ->
 //            data?.let { adapter.updateData(it) }
 //        })
-        loadKelurahan()
+        loadJenjang()
         searchIt();
 
         binding.btnAdd.setOnClickListener{
@@ -66,7 +66,7 @@ class CustomerFragment : Fragment(), CustomerSelectListener, SelectKelurahanList
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
                     filterQuery = it
-                    searchIt(filterQuery, filterKelurahan)
+                    searchIt(filterQuery, filterJenjang)
                 }
                 return false
             }
@@ -74,7 +74,7 @@ class CustomerFragment : Fragment(), CustomerSelectListener, SelectKelurahanList
             override fun onQueryTextChange(newText: String?): Boolean {
                 newText?.let {
                     filterQuery = it
-                    searchIt(filterQuery, filterKelurahan)
+                    searchIt(filterQuery, filterJenjang)
                 }
                 return false
             }
@@ -93,9 +93,9 @@ class CustomerFragment : Fragment(), CustomerSelectListener, SelectKelurahanList
         })
     }
 
-    private fun loadKelurahan() {
-        customerViewModel.loadKelurahan().observe(viewLifecycleOwner) { items ->
-            adapterKelurahan.updateData(items)
+    private fun loadJenjang() {
+        customerViewModel.loadJenjang().observe(viewLifecycleOwner) { items ->
+            adapterJenjang.updateData(items)
         }
     }
 
@@ -104,11 +104,11 @@ class CustomerFragment : Fragment(), CustomerSelectListener, SelectKelurahanList
     }
 
     override fun onSelected(position: Int, kelurahan: String) {
-        adapterKelurahan.setSelectKelurahan(position)
+        adapterJenjang.setSelectKelurahan(position)
 
-        if (position == 0) filterKelurahan = "" else filterKelurahan = kelurahan
+        if (position == 0) filterJenjang = "" else filterJenjang = kelurahan
 
-        searchIt(filterQuery, filterKelurahan)
+        searchIt(filterQuery, filterJenjang)
     }
 
 }

@@ -13,26 +13,36 @@ data class Inventory(
     @PrimaryKey val invid: Int,
     val partno: String,
     val invname: String?,
-    val description: String,
+    val description: String?,
     val invgrp: String?,
     val pclass8name: String?
 )
 
+@Entity(tableName = "pricelevel", primaryKeys = ["invid", "pricelevel"])
+data class PriceLevel(
+    val invid: Int,
+    val partno: String?,
+    val pricelevel: Int,
+    val pricelevelname: String?,
+    val price: Double
+)
+
+
 data class InventoryLookup(
     val invid: Int,
     val partno: String,
-    val invname: String?,
+    val invname: String,
     val description: String,
     val invgrp: String?,
     val pclass8name: String?,
-    val pricelevel: Int,
+    val pricelevel: Int?,
     val pricelevelname: String?,
     val price: Double,
     var expanded: Boolean
 ){
 
-    fun getUOMDesc(formatter: NumberFormat):String{
-        return  "/Rp " + formatter.format(this.price)
+    fun getPrice(formatter: NumberFormat):String{
+        return  "Rp " + formatter.format(this.price)
     }
 
 }
@@ -55,6 +65,9 @@ interface InventoryDao {
     @Upsert
     suspend fun insertList(inventory: List<Inventory>)
 
+    @Upsert
+    suspend fun insertPricelevels(pricelevels: List<PriceLevel>)
+
     @Query("SELECT COUNT(*) FROM inventory")
     suspend fun getRowCount(): Int
 
@@ -62,9 +75,12 @@ interface InventoryDao {
 //    fun searchProducts(query: String): LiveData<List<Product>>
 
     @Query(
-        "SELECT *, false as expanded FROM inventory WHERE (description LIKE :query  or partno LIKE :query) and pclass8name LIKE :pclass8name COLLATE NOCASE"
+        "SELECT a.*, b.pricelevel, b.pricelevelname, b.price, false as expanded " +
+        " FROM inventory a " +
+        " inner join pricelevel b on a.invid = b.invid and b.pricelevel = :pricelevel" +
+        " WHERE (a.description LIKE :query) and pclass8name LIKE :pclass8name COLLATE NOCASE"
     )
-    fun lookupProducts(query: String, pclass8name: String): LiveData<List<InventoryLookup>>
+    fun lookupProducts(pricelevel:Int, query: String, pclass8name: String): LiveData<List<InventoryLookup>>
 
 
     @Query("DELETE FROM inventory")

@@ -5,14 +5,14 @@ import android.widget.Toast
 import com.ts.mobileccp.db.AppDatabase
 import com.ts.mobileccp.db.entity.Customer
 import com.ts.mobileccp.db.entity.CustomerDao
-import com.ts.mobileccp.db.entity.JSONCustomer
 import com.ts.mobileccp.db.entity.JSONSalesOrder
 import com.ts.mobileccp.db.entity.JSONSalesOrderItem
 import com.ts.mobileccp.db.entity.JSONVisit
 import com.ts.mobileccp.db.entity.LoginInfo
 import com.ts.mobileccp.db.entity.LoginInfoDao
-import com.ts.mobileccp.db.entity.Product
-import com.ts.mobileccp.db.entity.ProductDao
+import com.ts.mobileccp.db.entity.Inventory
+import com.ts.mobileccp.db.entity.InventoryDao
+import com.ts.mobileccp.db.entity.PriceLevel
 import com.ts.mobileccp.db.entity.SalesOrderDao
 import com.ts.mobileccp.db.entity.SalesOrderWithItems
 import com.ts.mobileccp.db.entity.Visit
@@ -32,7 +32,7 @@ class ApiRepository(ctx: Context) {
     private val context = ctx
 
     private val customerDao: CustomerDao = AppDatabase.getInstance(context).customerDao()
-    private val productDao: ProductDao = AppDatabase.getInstance(context).productDao()
+    private val inventoryDao: InventoryDao = AppDatabase.getInstance(context).productDao()
     private val salesOrder: SalesOrderDao = AppDatabase.getInstance(context).salesOrderDao()
     private val loginInfoDao: LoginInfoDao = AppDatabase.getInstance(context).loginInfoDao()
 
@@ -52,7 +52,7 @@ class ApiRepository(ctx: Context) {
     suspend fun fetchCustomer(): List<CustomerResponse>? {
         return withContext(Dispatchers.IO) {
             try {
-                val response = apiService.getCustomer(AppVariable.loginInfo.project_code)
+                val response = apiService.getCustomer(AppVariable.loginInfo.areano)
                 response
             } catch (e: Exception) {
                 // Handle exceptions
@@ -61,10 +61,22 @@ class ApiRepository(ctx: Context) {
         }
     }
 
-    suspend fun fetchProducts(): List<ProductResponse>? {
+    suspend fun fetchProducts(): List<InventoryResponse>? {
         return withContext(Dispatchers.IO) {
             try {
-                val response = apiService.getProduct(AppVariable.loginInfo.project_code)
+                val response = apiService.getInventory(AppVariable.loginInfo.areano)
+                response
+            } catch (e: Exception) {
+                // Handle exceptions
+                null
+            }
+        }
+    }
+
+    suspend fun fetchPriceLevel(): List<PriceLevelResponse>? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.getPriceLevel(AppVariable.loginInfo.areano)
                 response
             } catch (e: Exception) {
                 // Handle exceptions
@@ -74,35 +86,45 @@ class ApiRepository(ctx: Context) {
     }
 
 
-    suspend fun saveProductFromRest() {
+    suspend fun saveInventoryFromRest() {
         try {
             val result = this.fetchProducts()
-            val products = result?.map { apiResponse ->
-                Product(
-                    apiResponse.sku,
-                    apiResponse.principal,
-                    apiResponse.merk,
-                    apiResponse.nama,
-                    apiResponse.uom_1,
-                    apiResponse.uom_2,
-                    apiResponse.uom_3,
-                    apiResponse.trad_uom_1,
-                    apiResponse.trad_uom_2,
-                    apiResponse.trad_uom_3,
-                    apiResponse.konv_1,
-                    apiResponse.konv_2,
-                    apiResponse.konv_3,
-                    apiResponse.sellprice_1,
-                    apiResponse.sellprice_2,
-                    apiResponse.sellprice_3,
-                    apiResponse.trad_sellprice_1,
-                    apiResponse.trad_sellprice_2,
-                    apiResponse.trad_sellprice_3,
+            val inventories = result?.map { apiResponse ->
+                Inventory(
+                    apiResponse.invid,
+                    apiResponse.partno,
+                    apiResponse.invname,
+                    apiResponse.description,
+                    apiResponse.invgrp,
+                    apiResponse.pclass8name
                 )
             }
+            if (inventories != null) {
+                inventoryDao.insertList(inventories)
+//                callback?.onSuccess("")
+//                Toast.makeText(context, "Products Updated from Server", Toast.LENGTH_SHORT).show()
+            }
 
-            if (products != null) {
-                productDao.insertList(products)
+        } catch (e: Exception) {
+//            callback?.onError(e.message ?: "An error occurred")
+            Toast.makeText(context, e.message ?: "An error occurred", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    suspend fun savePriceLevelFromRest() {
+        try {
+            val result = this.fetchPriceLevel()
+            val pricelevels = result?.map { apiResponse ->
+                PriceLevel(
+                    apiResponse.invid,
+                    apiResponse.partno,
+                    apiResponse.pricelevel,
+                    apiResponse.pricelevelname,
+                    apiResponse.price
+                )
+            }
+            if (pricelevels != null) {
+                inventoryDao.insertPricelevels(pricelevels)
 //                callback?.onSuccess("")
 //                Toast.makeText(context, "Products Updated from Server", Toast.LENGTH_SHORT).show()
             }
@@ -119,14 +141,19 @@ class ApiRepository(ctx: Context) {
 
             val customers = result?.map { apiResponse ->
                 Customer(
-                    UUID.fromString(apiResponse.id),
-                    apiResponse.nama,
-                    apiResponse.nik,
-                    apiResponse.phone,
-                    apiResponse.alamat,
-                    apiResponse.kecamatan,
-                    apiResponse.kelurahan,
-                    1
+                    apiResponse.shipid,
+                    apiResponse.shipname,
+                    apiResponse.shipaddress,
+                    apiResponse.shipcity,
+                    apiResponse.shipphone,
+                    apiResponse.shiphp,
+                    apiResponse.partnerid,
+                    apiResponse.partnername,
+                    apiResponse.pricelevel,
+                    apiResponse.areano,
+                    apiResponse.areaname,
+                    apiResponse.npsn,
+                    apiResponse.jenjang
                 )
             }
 
@@ -147,9 +174,9 @@ class ApiRepository(ctx: Context) {
             id = soWithItems.order.id.toString(),
             orderno = soWithItems.order.orderno,
             orderdate = soWithItems.order.orderdate,
-            customer_id = soWithItems.order.customer_id.toString(),
-            salesman_id = soWithItems.order.salesman_id.toString(),
-            project_code = soWithItems.order.project_code,
+            shipid = soWithItems.order.shipid,
+            salid = soWithItems.order.salid,
+            areano = soWithItems.order.areano,
             dpp = soWithItems.order.dpp,
             ppn = soWithItems.order.ppn,
             amt = soWithItems.order.amt,
@@ -158,10 +185,9 @@ class ApiRepository(ctx: Context) {
             items = soWithItems.items.map { item ->
                 JSONSalesOrderItem(
                     salesorder_id = item.salesorder_id.toString(),
-                    sku = item.sku,
-                    uom = item.uom,
+                    partno = item.partno,
                     qty = item.qty,
-                    unitprice = item.unitprice,
+                    price = item.price,
                     discount = item.discount,
                     dpp = item.dpp,
                     ppn = item.ppn,
@@ -176,33 +202,13 @@ class ApiRepository(ctx: Context) {
             id = visit.id.toString(),
             visitno = visit.visitno,
             visitdate = visit.visitdate,
-            customer_id = visit.customer_id.toString(),
-            salesman_id = visit.salesman_id.toString(),
-            project_code = visit.project_code,
+            shipid = visit.shipid,
+            salid = visit.salid,
+            areano = visit.areano,
             latitude = visit.latitude,
             longitude = visit.longitude,
         )
     }
-
-    private fun mapToJSONCustomer(customer: Customer): JSONCustomer {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        val dt = dateFormat.format(Date())
-
-        return JSONCustomer(
-            id = customer.id.toString(),
-            project_code = AppVariable.loginInfo.project_code,
-            nama = customer.nama,
-            nik = customer.nik,
-            phone = customer.phone,
-            alamat = customer.alamat,
-            kecamatan = customer.kecamatan,
-            kelurahan = customer.kelurahan,
-            last_updated = dt,
-            is_new = 1
-        )
-    }
-
-
 
     suspend fun fetchAndPostOrders() {
         val ordersWithItems = withContext(Dispatchers.IO) {
@@ -253,7 +259,6 @@ class ApiRepository(ctx: Context) {
 
 
     suspend fun fetchAndPostOrdersByID(filterID:UUID) {
-
         val ordersWithItems = withContext(Dispatchers.IO) {
             salesOrder.getSalesOrderForUploadFilterID(filterID)
         }
@@ -300,29 +305,6 @@ class ApiRepository(ctx: Context) {
         }
     }
 
-    suspend fun fetchAndPostCustomer() {
-        val dbcustomer = withContext(Dispatchers.IO) {
-            customerDao.getCustomersForUpload()
-        }
-        val customers = dbcustomer.map { custitem ->
-            mapToJSONCustomer(custitem)
-        }
-//        val jsonCust = Json.encodeToString(customers)
-//        println("Serialized JSON: $jsonCust")
-
-        try {
-            val response = apiService.postCustomers(customers)
-            if (response.isSuccessful) {
-                salesOrder.updateStatusUploadSO()
-            } else {
-                Toast.makeText(context, "Failed to post Customers: ${response.errorBody()?.string()}",
-                    Toast.LENGTH_SHORT).show()
-            }
-        } catch (e: Exception) {
-            Toast.makeText(context, "Error posting Customers",
-                Toast.LENGTH_SHORT).show()
-        }
-    }
 
     suspend fun loginSalesman(username:String, password:String): Boolean {
         var login = false
@@ -335,16 +317,17 @@ class ApiRepository(ctx: Context) {
 
 
                 if (resLogin != null) {
-                    if (resLogin.id.isNotEmpty()) {
+                    if (resLogin.salid.isNotEmpty()) {
 
                         val loginInfo = LoginInfo(
                             0,
-                            resLogin.username,
-                            resLogin.password,
-                            UUID.fromString(resLogin.id),
-                            resLogin.nama,
-                            resLogin.kode,
-                            resLogin.project_code,
+                            resLogin.salid,  //temporary username
+                            resLogin.salid,  //temporary pass
+                            resLogin.salid,
+                            resLogin.salname,
+                            resLogin.areano,
+                            resLogin.areaname,
+                            resLogin.entity,
                             resLogin.token,
                             null
                         )
@@ -353,7 +336,7 @@ class ApiRepository(ctx: Context) {
                         AppVariable.loginInfo = loginInfo
                         loginInfoDao.upsert(loginInfo)
 
-                        Toast.makeText(context, "Welcome : ${loginInfo.salesman}",
+                        Toast.makeText(context, "Welcome : ${loginInfo.salname}",
                             Toast.LENGTH_SHORT).show()
 
                         login = true

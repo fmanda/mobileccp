@@ -24,7 +24,7 @@ $app->get('/inventoryarea/{areano}', function ($request, $response) {
 });
 
 
-$app->get('/priceleveldetailarea/{areano}', function ($request, $response) {
+$app->get('/pricelevelarea/{areano}', function ($request, $response) {
 	try{
 		$areano = $request->getAttribute('areano');
 		$data = ModelPriceLevelDetail::retrieveByArea($areano);

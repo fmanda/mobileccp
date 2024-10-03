@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/highlight"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".ui.login.LoginActivity">
@@ -12,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
-        android:src="@drawable/k33_logo" />
+        android:src="@drawable/ts_logo" />
 
     <TextView
         android:layout_width="match_parent"
@@ -22,7 +23,7 @@
         android:layout_weight="0"
         android:fontFamily="sans-serif"
         android:gravity="center"
-        android:text="Loading , Mobility App"
+        android:text="Loading , Mobility CCP"
         android:textColor="@color/teal_700"
         android:textSize="20sp"
         android:textStyle="bold" />

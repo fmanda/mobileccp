@@ -193,12 +193,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
-            android:labelFor="@id/txtKelurahan"
+            android:labelFor="@id/txtJenjang"
             android:text="Kelurahan"
             android:textSize="12sp" />
 
         <EditText
-            android:id="@+id/txtKelurahan"
+            android:id="@+id/txtJenjang"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"

@@ -128,11 +128,8 @@ class DialogSalesFragment(
 
     fun initData(){
         if (salesOrder.customer != null){
-            binding.txtCustName.text = salesOrder.customer?.nama
-            binding.txtAddress1.text = salesOrder.customer?.alamat
-
-            val address2 = salesOrder.customer?.kecamatan + " - " + salesOrder.customer?.kelurahan
-            binding.txtAddress2.text = address2
+            binding.txtCustName.text = salesOrder.customer?.shipname
+            binding.txtAddress1.text = salesOrder.customer?.shipaddress
         }
 
         if (isVisit){
@@ -161,7 +158,7 @@ class DialogSalesFragment(
         format.maximumFractionDigits = 0
         format.minimumFractionDigits = 0
         soItemList.forEach { item ->
-            dpp += (item.qty * item.unitprice)
+            dpp += (item.qty * item.price)
         }
 
         ppn = 0.11 * dpp
@@ -216,7 +213,7 @@ class DialogSalesFragment(
         val dtFormatOrder = SimpleDateFormat("yyMMdd.HHmmss", Locale.getDefault())
         val loginInfo = AppVariable.loginInfo
 
-        val orderNO : String = loginInfo.project_code + "." + loginInfo.kode + "." + dtFormatOrder.format(Date());
+        val orderNO : String = loginInfo.entity + "." + loginInfo.salid + "." + dtFormatOrder.format(Date());
 
         val id = salesOrder.id ?: UUID.randomUUID()
 
@@ -224,9 +221,9 @@ class DialogSalesFragment(
             id,
             orderNO,
             dateFormat.format(Date()),
-            this.salesOrder.customer?.id,
-            loginInfo.salesman_id,
-            loginInfo.project_code,
+            this.salesOrder.customer?.shipid?:0,
+            loginInfo.salid?:"",
+            loginInfo.areano,
             dpp,
             ppn,
             total,
@@ -237,10 +234,9 @@ class DialogSalesFragment(
         objSOItems = soItemList.map { obj -> SalesOrderItem(
             salesorder_id = objSO.id,
             id = 0,
-            sku = obj.sku,
-            uom = obj.uom,
+            partno = obj.partno,
             qty = obj.qty,
-            unitprice = obj.unitprice,
+            price = obj.price,
             discount = 0.0,
             dpp = obj.calcDPP(),
             ppn = obj.calcPPN(),
@@ -253,16 +249,16 @@ class DialogSalesFragment(
         val dtFormatOrder = SimpleDateFormat("yyMMdd.HHmmss", Locale.getDefault())
         val loginInfo = AppVariable.loginInfo
 
-        val visitNo : String = loginInfo.project_code + "." + loginInfo.kode + "." + dtFormatOrder.format(Date());
+        val visitNo : String = loginInfo.entity + "." + loginInfo.salid + "." + dtFormatOrder.format(Date());
 
 
         return Visit(
             UUID.randomUUID(),
             visitNo,
             dateFormat.format(Date()),
-            this.salesOrder.customer?.id,
-            loginInfo.salesman_id,
-            loginInfo.project_code,
+            this.salesOrder.customer?.shipid?:0,
+            loginInfo.salid?:"",
+            loginInfo.areano,
             latitude,
             longitude
         )

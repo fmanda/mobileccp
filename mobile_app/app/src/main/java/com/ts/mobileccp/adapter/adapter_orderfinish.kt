@@ -33,9 +33,9 @@ class OrderFinishAdapter(
         format.maximumFractionDigits = 0
         format.minimumFractionDigits = 0
 
-        holder.txtProduct.text = item.nama
+        holder.txtProduct.text = item.invname
 
-        val uomPrice = item.uom + " /Rp" + format.format(item.unitprice)
+        val uomPrice = " eks/Rp" + format.format(item.price)
         holder.txtUOM.text = uomPrice
         holder.txtEdQty.setText(item.qty.toString())
 

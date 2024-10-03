@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ts.mobileccp.R
 import com.ts.mobileccp.adapter.ListSalesOrderAdapter
 import com.ts.mobileccp.adapter.ListSalesOrderListener
 import com.ts.mobileccp.databinding.FragmentHomeBinding
@@ -81,7 +83,7 @@ class HomeFragment : Fragment(), ListSalesOrderListener {
         }
 
         binding.lnSync.setOnClickListener{
-            syncData()
+            findNavController().navigate(R.id.action_nav_home_to_nav_sync)
         }
 
         homeViewModel.lastUpdate.observe(viewLifecycleOwner) { data ->
@@ -90,11 +92,13 @@ class HomeFragment : Fragment(), ListSalesOrderListener {
             }
         }
 
-        val welcome = "Hi, " + AppVariable.loginInfo.salesman
-        binding.txtSalesName.text = welcome
+        binding.txtSalID.text = AppVariable.loginInfo.salid
+        binding.txtSalName.text = AppVariable.loginInfo.salname
+        binding.txtDabin.text = AppVariable.loginInfo.areano.trim() + " - " + AppVariable.loginInfo.areaname
+        binding.txtEntity.text = "Entity : " + AppVariable.loginInfo.entity?.trim()
 
-        val desc = AppVariable.loginInfo.kode.toString() + " | Kode Cabang " + AppVariable.loginInfo.project_code
-//        binding.txtIDSales.text = desc
+
+
 
         val root: View = binding.root
         return root

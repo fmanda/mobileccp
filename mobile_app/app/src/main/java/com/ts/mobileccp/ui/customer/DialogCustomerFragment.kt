@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ts.mobileccp.adapter.CustomerSelectListener
 import com.ts.mobileccp.adapter.ListCustomerAdapter
-import com.ts.mobileccp.adapter.ListKelurahanAdapter
+import com.ts.mobileccp.adapter.ListJenjangAdapter
 import com.ts.mobileccp.adapter.SelectKelurahanListener
 import com.ts.mobileccp.databinding.FragmentDialogCustomerBinding
 import com.ts.mobileccp.db.entity.Customer
@@ -27,7 +27,7 @@ class DialogCustomerFragment : BottomSheetDialogFragment(), CustomerSelectListen
     private val binding get() = _binding!!
     private lateinit var customerViewModel: CustomerViewModel;
     val adapter = ListCustomerAdapter(emptyList(), this, true)
-    val adapterKelurahan = ListKelurahanAdapter(emptyList(), 0, this)
+    val adapterJenjang = ListJenjangAdapter(emptyList(), 0, this)
 
     private var filterQuery: String = ""
     private var filterKelurahan: String = ""
@@ -49,7 +49,7 @@ class DialogCustomerFragment : BottomSheetDialogFragment(), CustomerSelectListen
 
         _binding = FragmentDialogCustomerBinding.inflate(inflater, container, false)
 
-        binding.rvKelurahan.adapter = adapterKelurahan
+        binding.rvKelurahan.adapter = adapterJenjang
         binding.rvKelurahan.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rvKelurahan.setNestedScrollingEnabled(false);
 
@@ -57,7 +57,7 @@ class DialogCustomerFragment : BottomSheetDialogFragment(), CustomerSelectListen
         binding.rvListCustomer.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 //        binding.rvListCustomer.setNestedScrollingEnabled(false);
 
-        loadKelurahan()
+        loadJenjang()
         searchIt()
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -87,9 +87,9 @@ class DialogCustomerFragment : BottomSheetDialogFragment(), CustomerSelectListen
         })
     }
 
-    private fun loadKelurahan() {
-        customerViewModel.loadKelurahan().observe(viewLifecycleOwner) { items ->
-            adapterKelurahan.updateData(items)
+    private fun loadJenjang() {
+        customerViewModel.loadJenjang().observe(viewLifecycleOwner) { items ->
+            adapterJenjang.updateData(items)
         }
     }
 
@@ -127,7 +127,7 @@ class DialogCustomerFragment : BottomSheetDialogFragment(), CustomerSelectListen
     }
 
     override fun onSelected(position: Int, kelurahan: String) {
-        adapterKelurahan.setSelectKelurahan(position)
+        adapterJenjang.setSelectKelurahan(position)
 
         if (position == 0) filterKelurahan = "" else filterKelurahan = kelurahan
 

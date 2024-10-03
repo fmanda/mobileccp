@@ -13,7 +13,7 @@
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_weight="0"
-        android:src="@drawable/k33_logo_big" />
+        android:src="@drawable/ts_logo" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -23,7 +23,7 @@
         android:layout_weight="0"
         android:fontFamily="sans-serif-condensed-medium"
         android:gravity="center"
-        android:text="  L O G I N    M 0 B I L I T Y  "
+        android:text="  L O G I N    M 0 B I L E   C C P"
         android:textColor="@color/teal_700"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -36,7 +36,7 @@
         android:layout_marginEnd="30dp"
         android:layout_weight="0"
         android:gravity="start"
-        android:text="User Name"
+        android:text="NIK Salesman"
         android:textStyle="bold" />
 
     <EditText
@@ -50,6 +50,7 @@
         android:layout_weight="0"
         android:background="@drawable/input_background_login"
         android:paddingStart="20dp"
+        android:text="0220222570"
         android:textColor="@color/accent"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -75,6 +76,7 @@
         android:background="@drawable/input_background_login"
         android:inputType="textPassword"
         android:paddingStart="20dp"
+        android:text="123"
         android:textColor="@color/accent"
         android:textSize="20sp"
         android:textStyle="bold" />

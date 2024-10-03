@@ -7,11 +7,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import com.ts.mobileccp.MainActivity
+import com.ts.mobileccp.databinding.ActivitySplashBinding
 import com.ts.mobileccp.db.AppDatabase
 import com.ts.mobileccp.db.entity.LoginInfoDao
 import com.ts.mobileccp.global.AppVariable
 import com.ts.mobileccp.ui.login.LoginActivity
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -28,10 +30,11 @@ class SplashActivity : ComponentActivity() {
 //        val factory = SplashViewModelFactory(this.application)
 //        splashViewModel = ViewModelProvider(this, factory).get(SplashViewModel::class.java)
 //
-//        binding = ActivitySplashBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
+        var binding = ActivitySplashBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         lifecycleScope.launch {
+            delay(500)
             val isLogin = checkLogin()
             if (checkLogin()){
                 startActivity(Intent(this@SplashActivity, MainActivity::class.java))
@@ -44,17 +47,17 @@ class SplashActivity : ComponentActivity() {
 
     private suspend fun checkLogin() : Boolean{
         return withContext(Dispatchers.IO) {
-            val isLogin = true
-//            val loginInfoDao: LoginInfoDao = AppDatabase.getInstance(this@SplashActivity).loginInfoDao()
-//            val loginInfo = loginInfoDao.getLoginInfo()
-//
-//            var isLogin = false
-//            if (loginInfo != null){
-//                if (loginInfo.salesman_id.toString().isNotEmpty()){
-//                    AppVariable.loginInfo = loginInfo
-//                }
-//                isLogin = true
-//            }
+
+            val loginInfoDao: LoginInfoDao = AppDatabase.getInstance(this@SplashActivity).loginInfoDao()
+            val loginInfo = loginInfoDao.getLoginInfo()
+
+            var isLogin = false
+            if (loginInfo != null){
+                if (loginInfo.salid.toString().isNotEmpty()){
+                    AppVariable.loginInfo = loginInfo
+                }
+                isLogin = true
+            }
             isLogin
         }
 

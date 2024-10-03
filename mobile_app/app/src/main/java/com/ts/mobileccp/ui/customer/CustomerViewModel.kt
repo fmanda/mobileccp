@@ -36,8 +36,8 @@ class CustomerViewModel(application: Application) : AndroidViewModel(application
         customerDao.insert(example)
     }
 
-    fun loadKelurahan(): LiveData<List<String>> {
-        return customerDao.getListKelurahan()
+    fun loadJenjang(): LiveData<List<String>> {
+        return customerDao.getListJenjang()
     }
 }
 

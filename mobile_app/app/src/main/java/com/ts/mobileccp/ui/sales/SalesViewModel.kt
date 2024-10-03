@@ -10,9 +10,9 @@ import androidx.lifecycle.viewModelScope
 import com.ts.mobileccp.db.AppDatabase
 import com.ts.mobileccp.db.entity.CustomerDao
 import com.ts.mobileccp.db.entity.LastActivityQuery
-import com.ts.mobileccp.db.entity.Product
-import com.ts.mobileccp.db.entity.ProductDao
-import com.ts.mobileccp.db.entity.ProductLookup
+import com.ts.mobileccp.db.entity.Inventory
+import com.ts.mobileccp.db.entity.InventoryDao
+import com.ts.mobileccp.db.entity.InventoryLookup
 import com.ts.mobileccp.db.entity.SalesOrder
 import com.ts.mobileccp.db.entity.SalesOrderDao
 import com.ts.mobileccp.db.entity.SalesOrderItem
@@ -27,7 +27,7 @@ import java.util.UUID
 
 class SalesViewModel(application: Application) : AndroidViewModel(application) {
     private val _app : Application = application
-    private val productDao: ProductDao = AppDatabase.getInstance(application).productDao()
+    private val inventoryDao: InventoryDao = AppDatabase.getInstance(application).productDao()
     val salesOrderDao: SalesOrderDao = AppDatabase.getInstance(application).salesOrderDao()
     val customerDao: CustomerDao = AppDatabase.getInstance(application).customerDao()
 
@@ -37,14 +37,14 @@ class SalesViewModel(application: Application) : AndroidViewModel(application) {
     val editedSO = MutableLiveData<TmpSalesOrder>().apply {  value = TmpSalesOrder() }
     val editedSOItems = MutableLiveData<List<TmpSalesOrderItem>>().apply {  value = emptyList() }
 
-    val products: LiveData<List<Product>> = productDao.getListProduct()
+    val products: LiveData<List<Inventory>> = inventoryDao.getListInventory()
 
-    fun lookupProducts(query: String, merk: String): LiveData<List<ProductLookup>> {
-        return productDao.lookupProducts("%$query%", "%$merk%")
+    fun lookupProducts(pricelevel: Int, query: String, category: String): LiveData<List<InventoryLookup>> {
+        return inventoryDao.lookupProducts(pricelevel,"%$query%", "%$category%")
     }
 
     fun loadMerk(): LiveData<List<String>> {
-        return productDao.getListMerk()
+        return inventoryDao.getListMerk()
     }
 
     fun saveOrder(salesOrder: SalesOrder, soItems: List<SalesOrderItem>):Boolean{
@@ -86,7 +86,7 @@ class SalesViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) {
 
             val dbSO = salesOrderDao.getById(filterID)
-            val dbcust = dbSO?.customer_id?.let { customerDao.getById(it) }
+            val dbcust = dbSO?.shipid?.let { customerDao.getById(it) }
             val dbSOItems = salesOrderDao.getByTmpItemsId(filterID)
 
             // Post the updates to LiveData from background thread

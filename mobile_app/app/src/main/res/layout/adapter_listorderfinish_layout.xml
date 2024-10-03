@@ -80,14 +80,14 @@
 
                     <EditText
                         android:id="@+id/txtEdQty"
-                        android:layout_width="30dp"
+                        android:layout_width="50dp"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:background="@null"
                         android:ems="10"
                         android:enabled="false"
                         android:inputType="number"
-                        android:text="000"
+                        android:text="00000"
                         android:textAlignment="center"
                         android:textColor="@color/accent"
                         android:textSize="16sp"

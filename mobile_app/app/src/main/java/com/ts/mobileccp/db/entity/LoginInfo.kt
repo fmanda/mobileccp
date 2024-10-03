@@ -13,11 +13,12 @@ data class LoginInfo(
     @PrimaryKey var id: Int = 0, //always 0
     var username: String,
     var password: String,
-    var salesman_id: UUID?,
-    var salesman: String,
-    var kode: String,
-    var project_code: String,
-    var token: String,
+    var salid: String?,
+    var salname: String?,
+    var areano: String,
+    var areaname: String?,
+    var entity: String?,
+    var token: String?,
     var last_update: String?
 )
 

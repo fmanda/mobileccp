@@ -5,7 +5,7 @@
 
 		public static function getFields(){
 			return array(
-				"SalID","SalName","AreaNo","AreaName"
+				"SalID","SalName","AreaNo","AreaName","Entity"
 			);
 		}
 
@@ -24,5 +24,13 @@
 			$sql = "select * from v_mobile_salesman";			
 			$objs = DB::openQuery($sql);			
 			return $objs;
+		}
+
+
+		public static function retrieveLogin($username, $password){
+			$obj = DB::openQuery("select * from v_mobile_salesman"
+				." where salid = '" . $username . "'"
+			);
+			if (isset($obj[0])) return $obj[0];
 		}
 	}

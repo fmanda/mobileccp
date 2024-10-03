@@ -38,33 +38,6 @@ class CustomerUpdateFragment : Fragment() {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
-        //init for debug
-//        binding.txtNama.setText("Febrian M")
-//        binding.txtNIK.setText("000-000-000-000")
-//        binding.txtPhone.setText("0888-8888-8888")
-//        binding.txtAlamat.setText("Jl Mendungan No 16B")
-//        binding.txtKecamatan.setText("Kartasura")
-//        binding.txtKelurahan.setText("Pabelan")
-
-
-        binding.btnSave.setOnClickListener{
-            try {
-                val cust = Customer(
-                    UUID.randomUUID(),
-                    binding.txtNama.text.toString(),
-                    binding.txtNIK.text.toString(),
-                    binding.txtPhone.text.toString(),
-                    binding.txtAlamat.text.toString(),
-                    binding.txtKecamatan.text.toString(),
-                    binding.txtKelurahan.text.toString(),
-                    0
-                )
-                custViewModel.upsert(cust);
-                requireActivity().onBackPressedDispatcher.onBackPressed()
-            } catch(e : Exception){
-                throw e
-            }
-        }
 
         val root: View = binding.root
         return root

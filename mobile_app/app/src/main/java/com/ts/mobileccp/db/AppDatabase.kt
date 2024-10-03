@@ -8,13 +8,12 @@ import com.ts.mobileccp.db.entity.Customer
 import com.ts.mobileccp.db.entity.CustomerDao
 import com.ts.mobileccp.db.entity.LoginInfo
 import com.ts.mobileccp.db.entity.LoginInfoDao
-import com.ts.mobileccp.db.entity.Product
-import com.ts.mobileccp.db.entity.ProductDao
+import com.ts.mobileccp.db.entity.Inventory
+import com.ts.mobileccp.db.entity.InventoryDao
+import com.ts.mobileccp.db.entity.PriceLevel
 import com.ts.mobileccp.db.entity.SalesOrder
 import com.ts.mobileccp.db.entity.SalesOrderDao
 import com.ts.mobileccp.db.entity.SalesOrderItem
-import com.ts.mobileccp.db.entity.User
-import com.ts.mobileccp.db.entity.UserDao
 import com.ts.mobileccp.db.entity.Visit
 
 //import androidx.room.TypeConverters
@@ -22,8 +21,8 @@ import com.ts.mobileccp.db.entity.Visit
 @Database(
     entities = [
         Customer::class,
-        User::class,
-        Product::class,
+        Inventory::class,
+        PriceLevel::class,
         SalesOrder::class,
         SalesOrderItem::class,
         LoginInfo::class,
@@ -32,8 +31,7 @@ import com.ts.mobileccp.db.entity.Visit
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun customerDao(): CustomerDao
-    abstract fun userDao(): UserDao
-    abstract fun productDao(): ProductDao
+    abstract fun productDao(): InventoryDao
     abstract fun salesOrderDao(): SalesOrderDao
     abstract fun loginInfoDao(): LoginInfoDao
 
