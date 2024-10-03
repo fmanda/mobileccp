@@ -19,7 +19,8 @@ data class LoginInfo(
     var areaname: String?,
     var entity: String?,
     var token: String?,
-    var last_update: String?
+    var last_download: String?,
+    var last_upload: String?
 )
 
 

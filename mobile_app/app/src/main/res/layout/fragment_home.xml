@@ -35,13 +35,13 @@
                 android:text="000000"
                 android:textAlignment="viewStart"
                 android:textColor="@color/neutral"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/txtSalName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-condensed-medium"
+                android:fontFamily="sans-serif-medium"
                 android:text="Salesman Name"
                 android:textAlignment="textStart"
                 android:textColor="@color/white"
@@ -398,7 +398,7 @@
                 android:visibility="gone">
 
                 <LinearLayout
-                    android:id="@+id/lnSyncOld"
+                    android:id="@+id/lnDownload"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
@@ -485,10 +485,11 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:background="@drawable/menu_background"
+                    android:elevation="2dp"
                     android:padding="8dp"
                     app:srcCompat="@drawable/ic_cloud_48" />
 
@@ -510,10 +511,11 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:background="@drawable/menu_background"
+                    android:elevation="2dp"
                     android:padding="8dp"
                     app:srcCompat="@drawable/ic_person_48" />
 
@@ -535,10 +537,11 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:background="@drawable/menu_background"
+                    android:elevation="2dp"
                     android:padding="8dp"
                     app:srcCompat="@drawable/ic_inventory_48" />
 
@@ -560,10 +563,11 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:background="@drawable/menu_background"
+                    android:elevation="2dp"
                     android:padding="8dp"
                     app:srcCompat="@drawable/ic_schedule_48" />
 
@@ -594,10 +598,11 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:background="@drawable/menu_background"
+                    android:elevation="2dp"
                     android:padding="8dp"
                     app:srcCompat="@drawable/ic_location_48" />
 
@@ -619,10 +624,11 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:background="@drawable/menu_background"
+                    android:elevation="2dp"
                     android:padding="8dp"
                     app:srcCompat="@drawable/ic_money_48" />
 
@@ -644,10 +650,11 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:background="@drawable/menu_background"
+                    android:elevation="2dp"
                     android:padding="8dp"
                     app:srcCompat="@drawable/ic_wallet_48" />
 
@@ -669,10 +676,11 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:background="@drawable/menu_background"
+                    android:elevation="2dp"
                     android:padding="8dp"
                     app:srcCompat="@drawable/ic_chart_48" />
 
@@ -719,11 +727,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="0"
-                android:fontFamily="sans-serif-condensed-medium"
+                android:fontFamily="sans-serif-medium"
                 android:gravity="center"
                 android:text="Latest Activities"
                 android:textColor="@color/neutral"
-                android:textSize="12sp" />
+                android:textSize="14sp" />
 
         </LinearLayout>
 

@@ -50,7 +50,7 @@ interface CustomerDao {
 
 
     @Query("SELECT COUNT(*) FROM customer")
-    suspend fun getRowCount(): Int
+    fun getRowCount(): LiveData<Int?>
 
     @Query("DELETE FROM customer")
     suspend fun clearCustomer()

@@ -243,6 +243,7 @@ class SalesFragment : Fragment(), ProductPickListener,
     override fun onSelectDialogCustomer(cust: Customer) {
         salesOrder.customer = cust
         setCustomer()
+        searchIt(getPriceLevel());
     }
 
     fun setCustomer(){

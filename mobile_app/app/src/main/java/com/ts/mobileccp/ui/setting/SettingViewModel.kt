@@ -32,7 +32,7 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
     val data: LiveData<List<CustomerResponse>?> get() = _data
 
     private val loginInfoDao: LoginInfoDao = AppDatabase.getInstance(application).loginInfoDao()
-    private val inventoryDao: InventoryDao = AppDatabase.getInstance(application).productDao()
+    private val inventoryDao: InventoryDao = AppDatabase.getInstance(application).inventoryDao()
     private val customerDao: CustomerDao = AppDatabase.getInstance(application).customerDao()
     private val salesOrderDao: SalesOrderDao = AppDatabase.getInstance(application).salesOrderDao()
 
@@ -47,6 +47,7 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
             "",
             "",
             "",
+            null,
             null
         )
         viewModelScope.launch {

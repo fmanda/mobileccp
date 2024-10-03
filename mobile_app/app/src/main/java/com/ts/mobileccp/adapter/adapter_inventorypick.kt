@@ -72,8 +72,6 @@ class InventoryPickAdapter(
         val txtCategory: TextView = itemView.findViewById(R.id.txtCategory)
         val txtPrice: TextView = itemView.findViewById(R.id.txtPrice)
         val txtEdQty: EditText = itemView.findViewById(R.id.txtEdQty)
-        val btnExpand: ImageButton = itemView.findViewById(R.id.btnExpand)
-        val lnEditQty: LinearLayout = itemView.findViewById(R.id.lnEditQty)
         val btnAdd: ImageButton = itemView.findViewById(R.id.btnAdd)
         val btnMin: ImageButton = itemView.findViewById(R.id.btnMin)
         val cardView: CardView = itemView.findViewById(R.id.cardView)

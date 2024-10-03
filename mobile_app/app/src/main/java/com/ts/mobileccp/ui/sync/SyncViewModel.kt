@@ -33,9 +33,13 @@ class SyncViewModel(application: Application) : AndroidViewModel(application) {
     private val _app : Application = application
     private val repository = ApiRepository(application)
     private val loginInfoDao: LoginInfoDao = AppDatabase.getInstance(application).loginInfoDao()
-    private val salesOrderDao: SalesOrderDao = AppDatabase.getInstance(application).salesOrderDao()
+    private val customerDao: CustomerDao = AppDatabase.getInstance(application).customerDao()
+    private val inventoryDao: InventoryDao = AppDatabase.getInstance(application).inventoryDao()
     val isRestProcessing = MutableLiveData<Boolean>().apply { value = false }
-    val lastUpdate = MutableLiveData<String?>().apply { postValue(AppVariable.loginInfo.last_update) }
+    val last_download = MutableLiveData<String?>().apply { postValue(AppVariable.loginInfo.last_download) }
+
+    val customerCount: LiveData<Int?> = customerDao.getRowCount()
+    val inventoryCount: LiveData<Int?> = inventoryDao.getRowCount()
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is home Fragment"
@@ -49,23 +53,24 @@ class SyncViewModel(application: Application) : AndroidViewModel(application) {
 
     fun syncData()= viewModelScope.launch {
         isRestProcessing.postValue(true)
-        doSyncAllData()
+        downloadData()
     }
 
-    private suspend fun doSyncAllData() {
+    private suspend fun downloadData() {
 //        repository.fetchAndPostOrders()
 //        repository.fetchAndPostVisit()
         repository.saveCustomerFromRest()
-//        repository.saveInventoryFromRest()
+        repository.saveInventoryFromRest()
+        repository.savePriceLevelFromRest()
 
         //update last update
         val dateFormat = SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.getDefault())
-        AppVariable.loginInfo.last_update = dateFormat.format(Date())
+        AppVariable.loginInfo.last_download = dateFormat.format(Date())
         loginInfoDao.upsert(AppVariable.loginInfo)
-        lastUpdate.postValue(AppVariable.loginInfo.last_update)
+        last_download.postValue(AppVariable.loginInfo.last_download)
 
         isRestProcessing.postValue(false)
-        Toast.makeText(_app, "Sinkronisasi Data Berhasil", Toast.LENGTH_LONG).show()
+        Toast.makeText(_app, "Downlaod Data Berhasil", Toast.LENGTH_LONG).show()
     }
 
 

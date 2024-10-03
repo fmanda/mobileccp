@@ -10,6 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.ts.mobileccp.MainActivity
 import com.ts.mobileccp.R
 import com.ts.mobileccp.adapter.ListSalesOrderAdapter
 import com.ts.mobileccp.adapter.ListSalesOrderListener
@@ -43,6 +45,9 @@ class HomeFragment : Fragment(), ListSalesOrderListener {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
+//        val bottomNavView: BottomNavigationView = (requireActivity() as MainActivity).binding.navView
+
+
 
         binding.rvActivities.layoutManager = LinearLayoutManager(requireContext())
         binding.rvActivities.adapter = adapter
@@ -55,26 +60,26 @@ class HomeFragment : Fragment(), ListSalesOrderListener {
             data?.let { adapter.updateData(it) }
         })
 
-        homeViewModel.todaySales.observe(viewLifecycleOwner, Observer { data ->
-            data?.let {
-                binding.txtTodaySales.text = format.format(data.sumSO)
-                binding.txtTodayCount.text = format.format(data.countSO) + " Orders"
-            }
-        })
-
-        homeViewModel.weeklySales.observe(viewLifecycleOwner, Observer { data ->
-            data?.let {
-                binding.txtWeeklySales.text = format.format(data.sumSO)
-                binding.txtWeeklyCount.text = format.format(data.countSO) + " Orders"
-            }
-        })
-
-        homeViewModel.monthlySales.observe(viewLifecycleOwner, Observer { data ->
-            data?.let {
-                binding.txtMonthlySales.text = format.format(data.sumSO)
-                binding.txtMonthlyCount.text = format.format(data.countSO) + " Orders"
-            }
-        })
+//        homeViewModel.todaySales.observe(viewLifecycleOwner, Observer { data ->
+//            data?.let {
+//                binding.txtTodaySales.text = format.format(data.sumSO)
+//                binding.txtTodayCount.text = format.format(data.countSO) + " Orders"
+//            }
+//        })
+//
+//        homeViewModel.weeklySales.observe(viewLifecycleOwner, Observer { data ->
+//            data?.let {
+//                binding.txtWeeklySales.text = format.format(data.sumSO)
+//                binding.txtWeeklyCount.text = format.format(data.countSO) + " Orders"
+//            }
+//        })
+//
+//        homeViewModel.monthlySales.observe(viewLifecycleOwner, Observer { data ->
+//            data?.let {
+//                binding.txtMonthlySales.text = format.format(data.sumSO)
+//                binding.txtMonthlyCount.text = format.format(data.countSO) + " Orders"
+//            }
+//        })
 
         homeViewModel.ordersToUpload.observe(viewLifecycleOwner){ data ->
             data?.let {
@@ -83,7 +88,12 @@ class HomeFragment : Fragment(), ListSalesOrderListener {
         }
 
         binding.lnSync.setOnClickListener{
-            findNavController().navigate(R.id.action_nav_home_to_nav_sync)
+            findNavController().navigate(R.id.nav_sync)
+        }
+
+        binding.lnCustomer.setOnClickListener{
+//            bottomNavView.setSelectedItemId(R.id.nav_customer)
+//            findNavController().navigate(R.id.nav_customer)
         }
 
         homeViewModel.lastUpdate.observe(viewLifecycleOwner) { data ->

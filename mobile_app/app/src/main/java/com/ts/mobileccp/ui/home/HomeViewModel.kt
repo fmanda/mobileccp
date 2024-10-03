@@ -25,7 +25,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val loginInfoDao: LoginInfoDao = AppDatabase.getInstance(application).loginInfoDao()
     private val salesOrderDao: SalesOrderDao = AppDatabase.getInstance(application).salesOrderDao()
     val isRestProcessing = MutableLiveData<Boolean>().apply { value = false }
-    val lastUpdate = MutableLiveData<String?>().apply { postValue(AppVariable.loginInfo.last_update) }
+    val lastUpdate = MutableLiveData<String?>().apply { postValue(AppVariable.loginInfo.last_download) }
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is home Fragment"
@@ -57,9 +57,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
         //update last update
         val dateFormat = SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.getDefault())
-        AppVariable.loginInfo.last_update = dateFormat.format(Date())
+        AppVariable.loginInfo.last_download = dateFormat.format(Date())
         loginInfoDao.upsert(AppVariable.loginInfo)
-        lastUpdate.postValue(AppVariable.loginInfo.last_update)
+        lastUpdate.postValue(AppVariable.loginInfo.last_download)
 
 
         isRestProcessing.postValue(false)

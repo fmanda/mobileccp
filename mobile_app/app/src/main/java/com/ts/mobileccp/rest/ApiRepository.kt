@@ -21,9 +21,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import java.util.UUID
 
 class ApiRepository(ctx: Context) {
@@ -32,7 +29,7 @@ class ApiRepository(ctx: Context) {
     private val context = ctx
 
     private val customerDao: CustomerDao = AppDatabase.getInstance(context).customerDao()
-    private val inventoryDao: InventoryDao = AppDatabase.getInstance(context).productDao()
+    private val inventoryDao: InventoryDao = AppDatabase.getInstance(context).inventoryDao()
     private val salesOrder: SalesOrderDao = AppDatabase.getInstance(context).salesOrderDao()
     private val loginInfoDao: LoginInfoDao = AppDatabase.getInstance(context).loginInfoDao()
 
@@ -329,6 +326,7 @@ class ApiRepository(ctx: Context) {
                             resLogin.areaname,
                             resLogin.entity,
                             resLogin.token,
+                            null,
                             null
                         )
 

@@ -27,7 +27,7 @@ import java.util.UUID
 
 class SalesViewModel(application: Application) : AndroidViewModel(application) {
     private val _app : Application = application
-    private val inventoryDao: InventoryDao = AppDatabase.getInstance(application).productDao()
+    private val inventoryDao: InventoryDao = AppDatabase.getInstance(application).inventoryDao()
     val salesOrderDao: SalesOrderDao = AppDatabase.getInstance(application).salesOrderDao()
     val customerDao: CustomerDao = AppDatabase.getInstance(application).customerDao()
 

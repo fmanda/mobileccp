@@ -34,7 +34,7 @@ class SplashActivity : ComponentActivity() {
         setContentView(binding.root)
 
         lifecycleScope.launch {
-            delay(500)
+            delay(50)
             val isLogin = checkLogin()
             if (checkLogin()){
                 startActivity(Intent(this@SplashActivity, MainActivity::class.java))

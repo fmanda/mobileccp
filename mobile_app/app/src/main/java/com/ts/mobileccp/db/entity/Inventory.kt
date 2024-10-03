@@ -69,7 +69,7 @@ interface InventoryDao {
     suspend fun insertPricelevels(pricelevels: List<PriceLevel>)
 
     @Query("SELECT COUNT(*) FROM inventory")
-    suspend fun getRowCount(): Int
+    fun getRowCount(): LiveData<Int?>
 
 //    @Query("SELECT * FROM product WHERE nama LIKE :query  or merk LIKE :query COLLATE NOCASE")
 //    fun searchProducts(query: String): LiveData<List<Product>>

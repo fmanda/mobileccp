@@ -31,7 +31,7 @@ import com.ts.mobileccp.db.entity.Visit
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun customerDao(): CustomerDao
-    abstract fun productDao(): InventoryDao
+    abstract fun inventoryDao(): InventoryDao
     abstract fun salesOrderDao(): SalesOrderDao
     abstract fun loginInfoDao(): LoginInfoDao
 

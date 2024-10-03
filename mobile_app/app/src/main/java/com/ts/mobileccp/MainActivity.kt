@@ -13,7 +13,7 @@ import com.ts.mobileccp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,17 +21,17 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         val bottomNavView: BottomNavigationView = binding.navView
+
         bottomNavView.background = null
         bottomNavView.menu.getItem(2).isEnabled = false
+
+
 
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         bottomNavView.setupWithNavController(navController)
 
         binding.fab.setOnClickListener{
-//            navView.setSelectedItemId(R.id.nav_sales)
-//            navController.navigate(R.id.nav_customer)
             bottomNavView.menu.getItem(2).isEnabled = true
             bottomNavView.setSelectedItemId(R.id.nav_sales)
             bottomNavView.menu.getItem(2).isEnabled = false
@@ -45,21 +45,21 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleNavigationDestination(destination: NavDestination) {
         when (destination.id) {
-            R.id.nav_sales, R.id.nav_sync -> {
-                binding.fab.visibility = View.INVISIBLE
-                binding.navView.visibility = View.INVISIBLE
+            R.id.nav_home, R.id.nav_customer, R.id.nav_browse_sales, R.id.nav_setting -> {
+
                 val layoutParams = binding.lnFragment.layoutParams as CoordinatorLayout.LayoutParams
-                layoutParams.bottomMargin = 0
+                layoutParams.bottomMargin = getActionBarSize()
+                binding.navView.visibility = View.VISIBLE
+                binding.bottomAppBar.visibility = View.VISIBLE
+                binding.fab.visibility = View.VISIBLE
+
             }
             else -> {
-//                if ((binding.navView.visibility) == View.GONE) {
-                    binding.fab.visibility = View.VISIBLE
-                    binding.navView.visibility = View.VISIBLE
-
-                    val layoutParams = binding.lnFragment.layoutParams as CoordinatorLayout.LayoutParams
-                    layoutParams.bottomMargin = getActionBarSize()
-
-//                }
+                binding.fab.visibility = View.GONE
+                binding.bottomAppBar.visibility = View.GONE
+                binding.navView.visibility = View.GONE
+                val layoutParams = binding.lnFragment.layoutParams as CoordinatorLayout.LayoutParams
+                layoutParams.bottomMargin = 0
             }
         }
     }
