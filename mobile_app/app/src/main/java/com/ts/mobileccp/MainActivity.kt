@@ -6,14 +6,18 @@ import android.view.View
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.ts.mobileccp.databinding.ActivityMainBinding
+import com.ts.mobileccp.ui.SharedViewModel
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
+    private lateinit var sharedViewModel: SharedViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         bottomNavView.setupWithNavController(navController)
 
+
         binding.fab.setOnClickListener{
             bottomNavView.menu.getItem(2).isEnabled = true
             bottomNavView.setSelectedItemId(R.id.nav_sales)
@@ -41,25 +46,33 @@ class MainActivity : AppCompatActivity() {
             handleNavigationDestination(destination)
         }
 
+        //for controlling from fragment
+        sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+        sharedViewModel.bottomMenuVisible.observe(this) { isVisible ->
+            setBottomMenuVisible(isVisible ?: true)
+        }
+
+        sharedViewModel.selectedNavItem.observe(this, Observer { itemId ->
+            bottomNavView.setSelectedItemId(itemId)
+        })
+
     }
 
     private fun handleNavigationDestination(destination: NavDestination) {
         when (destination.id) {
             R.id.nav_home, R.id.nav_customer, R.id.nav_browse_sales, R.id.nav_setting -> {
 
-                val layoutParams = binding.lnFragment.layoutParams as CoordinatorLayout.LayoutParams
-                layoutParams.bottomMargin = getActionBarSize()
-                binding.navView.visibility = View.VISIBLE
-                binding.bottomAppBar.visibility = View.VISIBLE
-                binding.fab.visibility = View.VISIBLE
+                if (::sharedViewModel.isInitialized) {
+                    sharedViewModel.bottomMenuVisible.apply { value = true }
 
+                    if (sharedViewModel.selectedNavItem.value != destination.id) {
+                        sharedViewModel.selectedNavItem.apply { value = destination.id }
+                    }
+                }
             }
             else -> {
-                binding.fab.visibility = View.GONE
-                binding.bottomAppBar.visibility = View.GONE
-                binding.navView.visibility = View.GONE
-                val layoutParams = binding.lnFragment.layoutParams as CoordinatorLayout.LayoutParams
-                layoutParams.bottomMargin = 0
+                if (::sharedViewModel.isInitialized)
+                    sharedViewModel.bottomMenuVisible.apply { value = false }
             }
         }
     }
@@ -69,5 +82,15 @@ class MainActivity : AppCompatActivity() {
         val typedValue = TypedValue()
         theme.resolveAttribute(android.R.attr.actionBarSize, typedValue, true)
         return TypedValue.complexToDimensionPixelSize(typedValue.data, resources.displayMetrics)
+    }
+
+    private fun setBottomMenuVisible(isVisible:Boolean){
+        val visiblity  =  if (isVisible) View.VISIBLE else View.GONE
+        binding.fab.visibility = visiblity
+        binding.bottomAppBar.visibility = visiblity
+        binding.navView.visibility = visiblity
+        val layoutParams = binding.lnFragment.layoutParams as CoordinatorLayout.LayoutParams
+
+        layoutParams.bottomMargin = if (isVisible) getActionBarSize() else 0
     }
 }

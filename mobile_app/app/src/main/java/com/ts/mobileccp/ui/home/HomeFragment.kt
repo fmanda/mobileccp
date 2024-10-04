@@ -10,22 +10,23 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.ts.mobileccp.MainActivity
 import com.ts.mobileccp.R
 import com.ts.mobileccp.adapter.ListSalesOrderAdapter
 import com.ts.mobileccp.adapter.ListSalesOrderListener
 import com.ts.mobileccp.databinding.FragmentHomeBinding
 import com.ts.mobileccp.db.entity.LastActivityQuery
 import com.ts.mobileccp.global.AppVariable
+import com.ts.mobileccp.ui.SharedViewModel
 import java.text.NumberFormat
 
 class HomeFragment : Fragment(), ListSalesOrderListener {
 
     private var _binding: FragmentHomeBinding? = null
     private lateinit var homeViewModel: HomeViewModel
+    private lateinit var sharedViewModel: SharedViewModel
 
-//    val adapter = LastActivityAdapter(emptyList())
+
+    //    val adapter = LastActivityAdapter(emptyList())
     val adapter = ListSalesOrderAdapter(emptyList(), this, true)
     private val binding get() = _binding!!
     val format = NumberFormat.getNumberInstance()
@@ -39,6 +40,8 @@ class HomeFragment : Fragment(), ListSalesOrderListener {
     ): View {
         val factory = HomeViewModelFactory(requireActivity().application)
         homeViewModel = ViewModelProvider(this, factory).get(HomeViewModel::class.java)
+        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+
 
         format.maximumFractionDigits = 0
         format.minimumFractionDigits = 0
@@ -92,8 +95,8 @@ class HomeFragment : Fragment(), ListSalesOrderListener {
         }
 
         binding.lnCustomer.setOnClickListener{
-//            bottomNavView.setSelectedItemId(R.id.nav_customer)
-//            findNavController().navigate(R.id.nav_customer)
+            //bottom menu navigation using this
+            sharedViewModel.selectedNavItem.value = R.id.nav_customer
         }
 
         homeViewModel.lastUpdate.observe(viewLifecycleOwner) { data ->
