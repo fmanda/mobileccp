@@ -94,6 +94,10 @@ class HomeFragment : Fragment(), ListSalesOrderListener {
             findNavController().navigate(R.id.nav_sync)
         }
 
+        binding.lnInventory.setOnClickListener{
+            findNavController().navigate(R.id.nav_inventory)
+        }
+
         binding.lnCustomer.setOnClickListener{
             //bottom menu navigation using this
             sharedViewModel.selectedNavItem.value = R.id.nav_customer

@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_nav_home_to_nav_sync"
             app:destination="@id/nav_sync" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_inventory"
+            app:destination="@id/nav_inventory" />
     </fragment>
 
     <fragment
@@ -70,4 +73,9 @@
             android:id="@+id/action_nav_sync_to_nav_home"
             app:destination="@id/nav_home" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_inventory"
+        android:name="com.ts.mobileccp.ui.inventory.InventoryFragment"
+        android:label="fragment_inventory"
+        tools:layout="@layout/fragment_inventory" />
 </navigation>

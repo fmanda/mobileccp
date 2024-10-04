@@ -53,21 +53,3 @@ abstract class AppDatabase : RoomDatabase() {
     }
 }
 
-
-//
-//
-//object DBProvider {
-//    private var instance: AppDatabase? = null
-//
-//    fun getDatabase(context: Context): AppDatabase {
-//        return instance ?: synchronized(this) {
-//            val newInstance = Room.databaseBuilder(
-//                context.applicationContext,
-//                AppDatabase::class.java,
-//                "mobility_db"
-//            ).build()
-//            instance = newInstance
-//            newInstance
-//        }
-//    }
-//}

@@ -57,10 +57,13 @@ interface InventoryDao {
     suspend fun getByPartNo(partno: String): Inventory?
 
     @Query("SELECT * FROM inventory")
-    fun getListInventory(): LiveData<List<Inventory>>  //autosync / reactive / async
+    fun getListInventory(): LiveData<List<Inventory>>
 
     @Query("SELECT * FROM inventory")
-    fun getInventories(): List<Inventory>  //autosync / reactive / async
+    fun getInventories(): List<Inventory>
+
+    @Query("SELECT * FROM pricelevel")
+    fun getPriceLevels(): LiveData<List<PriceLevel>>
 
     @Upsert
     suspend fun insertList(inventory: List<Inventory>)
@@ -88,4 +91,13 @@ interface InventoryDao {
 
     @Query("select ' All Kategori ' union all select distinct pclass8name from inventory ")
     fun getListMerk(): LiveData<List<String>>
+
+    @Query(
+        "SELECT a.* " +
+                " FROM inventory a " +
+                " WHERE (a.description LIKE :query) and pclass8name LIKE :pclass8name COLLATE NOCASE"
+    )
+    fun lookupInventory(query: String, pclass8name: String): LiveData<List<Inventory>>
+
+
 }
