@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ts.mobileccp.db.AppDatabase
+import com.ts.mobileccp.db.entity.CCPMarkDao
 import com.ts.mobileccp.db.entity.CustomerDao
 import com.ts.mobileccp.db.entity.LoginInfo
 import com.ts.mobileccp.db.entity.LoginInfoDao
@@ -35,6 +36,7 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
     private val inventoryDao: InventoryDao = AppDatabase.getInstance(application).inventoryDao()
     private val customerDao: CustomerDao = AppDatabase.getInstance(application).customerDao()
     private val salesOrderDao: SalesOrderDao = AppDatabase.getInstance(application).salesOrderDao()
+    private val ccpMarkDAO: CCPMarkDao = AppDatabase.getInstance(application).ccpMarkDAO()
 
     fun logOut(){
         AppVariable.loginInfo = LoginInfo(
@@ -52,10 +54,13 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
         )
         viewModelScope.launch {
             try {
-                loginInfoDao.clearLoginInfo();
-                inventoryDao.clearProduct();
-                customerDao.clearCustomer();
-                salesOrderDao.clearSalesOrder();
+                loginInfoDao.clearLoginInfo()
+                inventoryDao.clearProduct()
+                customerDao.clearCustomer()
+                salesOrderDao.clearSalesOrder()
+                ccpMarkDAO.clearCCPMark()
+                ccpMarkDAO.clearCCPSCH()
+
                 navigateToLoginScreen()
 
             } catch (_: Exception) {

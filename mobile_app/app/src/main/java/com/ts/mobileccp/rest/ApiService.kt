@@ -1,5 +1,6 @@
 package com.ts.mobileccp.rest
 
+import com.ts.mobileccp.db.entity.CCPSch
 import com.ts.mobileccp.db.entity.JSONSalesOrder
 import com.ts.mobileccp.db.entity.JSONVisit
 import retrofit2.Response
@@ -32,5 +33,11 @@ interface ApiService {
 
     @GET("login_salesman/{username}/{password}")
     suspend fun loginSalesman(@Path("username") username: String, @Path("password") password: String): Response<LoginInfoResponse>
+
+    @GET("ccpmark")
+    suspend fun getCCPMark(): List<CCPMarkResponse>
+
+    @GET("ccpsch")
+    suspend fun getCCPSCH(): List<CCPSCHResponse>
 
 }

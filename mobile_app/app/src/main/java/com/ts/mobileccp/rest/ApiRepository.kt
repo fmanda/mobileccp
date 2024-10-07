@@ -3,6 +3,9 @@ package com.ts.mobileccp.rest
 import android.content.Context
 import android.widget.Toast
 import com.ts.mobileccp.db.AppDatabase
+import com.ts.mobileccp.db.entity.CCPMark
+import com.ts.mobileccp.db.entity.CCPMarkDao
+import com.ts.mobileccp.db.entity.CCPSch
 import com.ts.mobileccp.db.entity.Customer
 import com.ts.mobileccp.db.entity.CustomerDao
 import com.ts.mobileccp.db.entity.JSONSalesOrder
@@ -16,6 +19,7 @@ import com.ts.mobileccp.db.entity.PriceLevel
 import com.ts.mobileccp.db.entity.SalesOrderDao
 import com.ts.mobileccp.db.entity.SalesOrderWithItems
 import com.ts.mobileccp.db.entity.Visit
+import com.ts.mobileccp.db.entity.VisitDao
 import com.ts.mobileccp.global.AppVariable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -31,7 +35,9 @@ class ApiRepository(ctx: Context) {
     private val customerDao: CustomerDao = AppDatabase.getInstance(context).customerDao()
     private val inventoryDao: InventoryDao = AppDatabase.getInstance(context).inventoryDao()
     private val salesOrder: SalesOrderDao = AppDatabase.getInstance(context).salesOrderDao()
+    private val visitDao: VisitDao = AppDatabase.getInstance(context).visitDao()
     private val loginInfoDao: LoginInfoDao = AppDatabase.getInstance(context).loginInfoDao()
+    private val ccpMarkDao: CCPMarkDao = AppDatabase.getInstance(context).ccpMarkDAO()
 
 
     suspend fun fetchCustomerByID(id: String): CustomerResponse? {
@@ -83,6 +89,55 @@ class ApiRepository(ctx: Context) {
     }
 
 
+    suspend fun fetchCCPMark(): List<CCPMarkResponse>?{
+        return withContext(Dispatchers.IO){
+            try {
+                val response = apiService.getCCPMark()
+                response
+            } catch (e: Exception){
+                null
+            }
+        }
+    }
+
+    suspend fun fetchCCPSCH(): List<CCPSCHResponse>?{
+        return withContext(Dispatchers.IO){
+            try{
+                val response = apiService.getCCPSCH()
+                response
+            }catch (e: Exception){
+                null
+            }
+        }
+    }
+
+    suspend fun saveCCHMarkFromRest() {
+        try {
+            val ccpmarksResp = this.fetchCCPMark()
+            val ccpschResp = this.fetchCCPSCH()
+
+            val ccpmark = ccpmarksResp?.map{ obj ->
+                CCPMark(
+                    obj.mark,
+                    obj.markname
+                )
+            }
+
+            val ccpsch = ccpschResp?.map{ obj ->
+                CCPSch(
+                    obj.ccpsch,
+                    obj.ccpschname
+                )
+            }
+
+            if (ccpmark != null) ccpMarkDao.insertListCCPMark(ccpmark)
+            if (ccpsch != null) ccpMarkDao.insertListCCPSCH(ccpsch)
+
+        } catch (e: Exception) {
+            Toast.makeText(context, e.message ?: "An error occurred", Toast.LENGTH_LONG).show()
+        }
+    }
+
     suspend fun saveInventoryFromRest() {
         try {
             val result = this.fetchProducts()
@@ -98,12 +153,9 @@ class ApiRepository(ctx: Context) {
             }
             if (inventories != null) {
                 inventoryDao.insertList(inventories)
-//                callback?.onSuccess("")
-//                Toast.makeText(context, "Products Updated from Server", Toast.LENGTH_SHORT).show()
             }
 
         } catch (e: Exception) {
-//            callback?.onError(e.message ?: "An error occurred")
             Toast.makeText(context, e.message ?: "An error occurred", Toast.LENGTH_LONG).show()
         }
     }
@@ -122,7 +174,6 @@ class ApiRepository(ctx: Context) {
             }
             if (pricelevels != null) {
                 inventoryDao.insertPricelevels(pricelevels)
-//                callback?.onSuccess("")
 //                Toast.makeText(context, "Products Updated from Server", Toast.LENGTH_SHORT).show()
             }
 
@@ -197,13 +248,13 @@ class ApiRepository(ctx: Context) {
     private fun mapToJSONVisit(visit: Visit): JSONVisit {
         return JSONVisit(
             id = visit.id.toString(),
-            visitno = visit.visitno,
-            visitdate = visit.visitdate,
             shipid = visit.shipid,
-            salid = visit.salid,
-            areano = visit.areano,
-            latitude = visit.latitude,
-            longitude = visit.longitude,
+            visitdate = visit.visitdate,
+            mark = visit.mark,
+            ccpsch = visit.ccpsch,
+            ccptype = visit.ccptype,
+            lat = visit.lat,
+            lng = visit.lng,
         )
     }
 
@@ -214,8 +265,8 @@ class ApiRepository(ctx: Context) {
         val orders = ordersWithItems.map { orderWithItems ->
             mapToJSONSalesOrder(orderWithItems)
         }
-        val jsonOrders = Json.encodeToString(orders)
-        println("Serialized JSON: $jsonOrders")
+//        val jsonOrders = Json.encodeToString(orders)
+//        println("Serialized JSON: $jsonOrders")
 
         try {
             val response = apiService.postOrders(orders)
@@ -233,23 +284,24 @@ class ApiRepository(ctx: Context) {
 
     suspend fun fetchAndPostVisit() {
         val dbvisits = withContext(Dispatchers.IO) {
-            salesOrder.getVisitForUpload()
+            visitDao.getVisitForUpload()
         }
-
-        val visits = dbvisits.map { visit ->
-            mapToJSONVisit(visit)
+        val visits = dbvisits.map { obj ->
+            mapToJSONVisit(obj)
         }
+//        val jsonVisit = Json.encodeToString(visits)
+//        println("Serialized JSON: $jsonVisit")
 
         try {
             val response = apiService.postVisits(visits)
             if (response.isSuccessful) {
-                salesOrder.updateStatusUploadVisit()
+                visitDao.updateStatusUploadVisit()
             } else {
-                Toast.makeText(context, "Failed to post orders: ${response.errorBody()?.string()}",
+                Toast.makeText(context, "Failed to post visits: ${response.errorBody()?.string()}",
                     Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
-            Toast.makeText(context, "Error posting orders",
+            Toast.makeText(context, "Error posting visits",
                 Toast.LENGTH_SHORT).show()
         }
     }
@@ -281,7 +333,7 @@ class ApiRepository(ctx: Context) {
 
     suspend fun fetchAndPostVisitByID(filterID:UUID) {
         val dbvisits = withContext(Dispatchers.IO) {
-            salesOrder.getVisitForUploadFilterID(filterID)
+            visitDao.getVisitForUploadFilterID(filterID)
         }
 
         val visits = dbvisits.map { visit ->
@@ -291,7 +343,7 @@ class ApiRepository(ctx: Context) {
         try {
             val response = apiService.postVisits(visits)
             if (response.isSuccessful) {
-                salesOrder.updateStatusUploadVisitByID(filterID)
+                visitDao.updateStatusUploadVisitByID(filterID)
             } else {
                 Toast.makeText(context, "Failed to post orders: ${response.errorBody()?.string()}",
                     Toast.LENGTH_SHORT).show()

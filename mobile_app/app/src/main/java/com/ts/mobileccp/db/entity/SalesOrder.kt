@@ -31,19 +31,6 @@ data class SalesOrder(
     val uploaded: Int = 0
 )
 
-@Entity(tableName = "visit")
-data class Visit(
-    @PrimaryKey val id: UUID,
-    val visitno: String,
-    val visitdate: String,
-    val shipid: Int,
-    val salid: String,
-    val areano: String,
-    val latitude: Double?,
-    val longitude: Double?,
-    val uploaded: Int = 0
-)
-
 @Entity(
     tableName = "salesorderitem",
     foreignKeys = [ForeignKey(
@@ -126,10 +113,10 @@ interface SalesOrderDao {
                 "    SELECT a.id, a.orderno, a.orderdate, b.shipname as customer, b.shipaddress, a.amt, a.longitude, a.latitude, a.uploaded, 'false' as isexpanded \n" +
                 "    FROM salesorder a \n" +
                 "    inner join customer b on a.shipid=b.shipid\n" +
-                "    union all\n" +
-                "    SELECT a.id, a.visitno, a.visitdate, b.shipname as customer, b.shipaddress, 0, a.longitude, a.latitude, a.uploaded, 'false' as isexpanded \n" +
-                "    FROM visit a \n" +
-                "    inner join customer b on a.shipid=b.shipid\n" +
+//                "    union all\n" +
+//                "    SELECT a.id, a.visitno, a.visitdate, b.shipname as customer, b.shipaddress, 0, a.longitude, a.latitude, a.uploaded, 'false' as isexpanded \n" +
+//                "    FROM visit a \n" +
+//                "    inner join customer b on a.shipid=b.shipid\n" +
                 " )order by orderdate desc limit 10"
     )
     fun getLatestActivity(): LiveData<List<LastActivityQuery>>
@@ -175,11 +162,6 @@ interface SalesOrderDao {
     @Query("SELECT * FROM salesorder WHERE id=:id")
     fun getSalesOrderForUploadFilterID(id: UUID): List<SalesOrderWithItems>
 
-    @Query("SELECT * FROM visit WHERE uploaded=0")
-    fun getVisitForUpload(): List<Visit>
-
-    @Query("SELECT * FROM visit WHERE id=:id")
-    fun getVisitForUploadFilterID(id: UUID): List<Visit>
 
     @Query("UPDATE salesorder SET uploaded = 1 WHERE uploaded = 0")
     suspend fun updateStatusUploadSO()
@@ -187,19 +169,13 @@ interface SalesOrderDao {
     @Query("UPDATE salesorder SET uploaded = 1 WHERE id = :id")
     suspend fun updateStatusUploadSOByID(id:UUID)
 
-    @Query("UPDATE visit SET uploaded = 1 WHERE uploaded = 0")
-    suspend fun updateStatusUploadVisit()
-
-    @Query("UPDATE visit SET uploaded = 1 WHERE id = :id")
-    suspend fun updateStatusUploadVisitByID(id:UUID)
-
     @Query("DELETE FROM salesorder")
     suspend fun clearSalesOrder()
 
     @Query("SELECT COUNT(*) FROM salesorder where uploaded = 0")
     fun getCountOrderToUpload(): LiveData<Int?>
-
 }
+
 
 @Parcelize
 data class LastActivityQuery(
@@ -259,14 +235,3 @@ data class JSONSalesOrderItem(
     val amt: Double
 )
 
-@Serializable
-data class JSONVisit(
-    val id: String,
-    val visitno: String,
-    val visitdate: String,
-    val shipid: Int,
-    val salid: String,
-    val areano: String,
-    val latitude: Double?,
-    val longitude: Double?
-)

@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.ts.mobileccp.db.entity.CCPMark
+import com.ts.mobileccp.db.entity.CCPMarkDao
+import com.ts.mobileccp.db.entity.CCPSch
 import com.ts.mobileccp.db.entity.Customer
 import com.ts.mobileccp.db.entity.CustomerDao
 import com.ts.mobileccp.db.entity.LoginInfo
@@ -15,6 +18,7 @@ import com.ts.mobileccp.db.entity.SalesOrder
 import com.ts.mobileccp.db.entity.SalesOrderDao
 import com.ts.mobileccp.db.entity.SalesOrderItem
 import com.ts.mobileccp.db.entity.Visit
+import com.ts.mobileccp.db.entity.VisitDao
 
 //import androidx.room.TypeConverters
 
@@ -26,14 +30,18 @@ import com.ts.mobileccp.db.entity.Visit
         SalesOrder::class,
         SalesOrderItem::class,
         LoginInfo::class,
-        Visit::class
+        Visit::class,
+        CCPMark::class,
+        CCPSch::class
     ], version = 1
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun customerDao(): CustomerDao
     abstract fun inventoryDao(): InventoryDao
+    abstract fun visitDao(): VisitDao
     abstract fun salesOrderDao(): SalesOrderDao
     abstract fun loginInfoDao(): LoginInfoDao
+    abstract fun ccpMarkDAO(): CCPMarkDao
 
     companion object {
         @Volatile

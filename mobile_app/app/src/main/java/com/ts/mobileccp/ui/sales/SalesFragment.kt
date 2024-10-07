@@ -226,12 +226,14 @@ class SalesFragment : Fragment(), ProductPickListener,
 
 
         if (soItemList.size==0){
-            showConfrimationVisit { confirmed ->
-                if (confirmed){
-                    DialogSalesFragment(this.salesOrder, this.soItemList, this )
-                        .show(parentFragmentManager, "DialogCustomerFragment")
-                }
-            }
+            showWarning("Data Item masih kosong")
+            return
+//            showConfrimationVisit { confirmed ->
+//                if (confirmed){
+//                    DialogSalesFragment(this.salesOrder, this.soItemList, this )
+//                        .show(parentFragmentManager, "DialogCustomerFragment")
+//                }
+//            }
         }else{
             DialogSalesFragment(this.salesOrder, this.soItemList, this )
                 .show(parentFragmentManager, "DialogCustomerFragment")
@@ -292,20 +294,20 @@ class SalesFragment : Fragment(), ProductPickListener,
         dialog.show()
     }
 
-    private fun showConfrimationVisit(callback: (Boolean) -> Unit) {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Konfirmasi")
-        builder.setMessage("Tidak Item yg diorder, Apakah mau menyimpan Kunjungan saja?")
-        builder.setPositiveButton("Ya, Hanya Kunjungan") { dialog, _ ->
-            callback(true)  // Return true when user clicks "Yes"
-            dialog.dismiss()
-        }
-        builder.setNegativeButton("Tidak") { dialog, _ ->
-            callback(false) // Return false when user clicks "No"
-            dialog.dismiss()
-        }
-        builder.create().show()
-    }
+//    private fun showConfrimationVisit(callback: (Boolean) -> Unit) {
+//        val builder = AlertDialog.Builder(requireContext())
+//        builder.setTitle("Konfirmasi")
+//        builder.setMessage("Tidak Item yg diorder, Apakah mau menyimpan Kunjungan saja?")
+//        builder.setPositiveButton("Ya, Hanya Kunjungan") { dialog, _ ->
+//            callback(true)  // Return true when user clicks "Yes"
+//            dialog.dismiss()
+//        }
+//        builder.setNegativeButton("Tidak") { dialog, _ ->
+//            callback(false) // Return false when user clicks "No"
+//            dialog.dismiss()
+//        }
+//        builder.create().show()
+//    }
 
     private fun isVisit():Boolean{
         return soItemList.size==0

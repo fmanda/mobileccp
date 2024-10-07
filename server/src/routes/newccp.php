@@ -106,3 +106,54 @@ $app->get('/newccpdownload/{salid}/{dt1}/{dt2}', function ($request, $response) 
 			->withHeader('Content-Type', 'text/html');
 	}
 });
+
+
+
+$app->get('/ccpmark', function ($request, $response) {
+  try{
+    $entity = $request->getAttribute('entity');
+    $dt1 = $request->getAttribute('dt1');
+    $dt2 = $request->getAttribute('dt2');
+    $filtertxt = $request->getAttribute('filtertxt');
+
+
+    $str = "select mark, markname from NewCCPMark where markname not like 'PID%'";            
+    $data = DB::openQuery($str);
+    
+    $json = json_encode($data);
+    $response->getBody()->write($json);
+
+		return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
+	}catch(Exception $e){
+    $msg = $e->getMessage();
+    $response->getBody()->write($msg);
+		return $response->withStatus(500)
+			->withHeader('Content-Type', 'text/html');
+	}
+});
+
+
+
+$app->get('/ccpsch', function ($request, $response) {
+  try{
+    $entity = $request->getAttribute('entity');
+    $dt1 = $request->getAttribute('dt1');
+    $dt2 = $request->getAttribute('dt2');
+    $filtertxt = $request->getAttribute('filtertxt');
+
+
+    $str = "select ccpsch, ccpschname from CCPSch where CCPSchName not like 'PID%'";            
+    $data = DB::openQuery($str);
+    
+    $json = json_encode($data);
+    $response->getBody()->write($json);
+
+		return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
+	}catch(Exception $e){
+    $msg = $e->getMessage();
+    $response->getBody()->write($msg);
+		return $response->withStatus(500)
+			->withHeader('Content-Type', 'text/html');
+	}
+});
+

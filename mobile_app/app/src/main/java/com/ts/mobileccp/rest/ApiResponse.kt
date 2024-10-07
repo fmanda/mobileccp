@@ -1,5 +1,6 @@
 package com.ts.mobileccp.rest
 
+
 data class CustomerResponse(
     val shipid: Int,
     val shipname: String,
@@ -43,4 +44,14 @@ data class LoginInfoResponse(
     val password: String,
     val img: String,
     val token: String
+)
+
+data class CCPMarkResponse(
+    val mark: Int,
+    val markname: String
+)
+
+data class CCPSCHResponse(
+    val ccpsch: Int,
+    val ccpschname: String
 )

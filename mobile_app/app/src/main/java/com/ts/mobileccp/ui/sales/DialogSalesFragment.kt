@@ -177,19 +177,21 @@ class DialogSalesFragment(
 
         //hanya order
         if (!isVisit) {
-            val builder = AlertDialog.Builder(requireContext())
-            builder.setMessage("Are you sure you want to Save?")
-                .setCancelable(false)
-                .setPositiveButton("Yes") { _, _ ->
-                    this.saveToDB()
-                }
-                .setNegativeButton("No") { dialog, _ ->
-                    dialog.dismiss()
-                }
-            val alert = builder.create()
-            alert.show()
+            this.saveToDB()
+//            val builder = AlertDialog.Builder(requireContext())
+//            builder.setMessage("Are you sure you want to Save?")
+//                .setCancelable(false)
+//                .setPositiveButton("Yes") { _, _ ->
+//                    this.saveToDB()
+//                }
+//                .setNegativeButton("No") { dialog, _ ->
+//                    dialog.dismiss()
+//                }
+//            val alert = builder.create()
+//            alert.show()
         }else{
-            this.saveVisitToDB()
+            showWarning("Data Item masih kosong")
+//            this.saveVisitToDB()
         }
     }
 
@@ -200,13 +202,13 @@ class DialogSalesFragment(
         this.dismiss()
     }
 
-    private fun saveVisitToDB(){
-        val objVisit: Visit = buildDataVisit()
-
-        salesViewModel.saveVisit(objVisit)
-        dialogListener.onSaveSuccess()
-        this.dismiss()
-    }
+//    private fun saveVisitToDB(){
+//        val objVisit: Visit = buildDataVisit()
+//
+//        salesViewModel.saveVisit(objVisit)
+//        dialogListener.onSaveSuccess()
+//        this.dismiss()
+//    }
 
     private fun buildData(){
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
@@ -244,26 +246,6 @@ class DialogSalesFragment(
         ) }
     }
 
-    private fun buildDataVisit() : Visit{
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        val dtFormatOrder = SimpleDateFormat("yyMMdd.HHmmss", Locale.getDefault())
-        val loginInfo = AppVariable.loginInfo
-
-        val visitNo : String = loginInfo.entity + "." + loginInfo.salid + "." + dtFormatOrder.format(Date());
-
-
-        return Visit(
-            UUID.randomUUID(),
-            visitNo,
-            dateFormat.format(Date()),
-            this.salesOrder.customer?.shipid?:0,
-            loginInfo.salid?:"",
-            loginInfo.areano,
-            latitude,
-            longitude
-        )
-    }
-
 
     private fun checkLocationPermissions() {
         when {
@@ -290,6 +272,17 @@ class DialogSalesFragment(
         }
     }
 
+    private fun showWarning(msg: String) {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Warning")
+        builder.setMessage(msg)
+        builder.setPositiveButton("OK") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
+    }
 
 
 }

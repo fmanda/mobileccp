@@ -62,6 +62,7 @@ class SyncViewModel(application: Application) : AndroidViewModel(application) {
         repository.saveCustomerFromRest()
         repository.saveInventoryFromRest()
         repository.savePriceLevelFromRest()
+        repository.saveCCHMarkFromRest()
 
         //update last update
         val dateFormat = SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.getDefault())
