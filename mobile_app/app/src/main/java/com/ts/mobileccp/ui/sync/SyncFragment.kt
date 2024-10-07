@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.ts.mobileccp.databinding.FragmentSyncBinding
+import com.ts.mobileccp.ui.SharedViewModel
 
 /**
  * A simple [Fragment] subclass.
@@ -19,34 +20,34 @@ class SyncFragment : Fragment() {
 
 
     private val binding get() = _binding!!
-    private lateinit var syncViewModel: SyncViewModel;
+    private lateinit var sharedViewModel: SharedViewModel
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val factory = SettingViewModelFactory(requireActivity().application)
-        syncViewModel = ViewModelProvider(this, factory).get(SyncViewModel::class.java)
+        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+
         _binding = FragmentSyncBinding.inflate(inflater, container, false)
 
         binding.lnDownload.setOnClickListener(){
             syncData()
         }
 
-        syncViewModel.last_download.observe(viewLifecycleOwner) { data ->
+        sharedViewModel.last_download.observe(viewLifecycleOwner) { data ->
             data?.let {
                 binding.txtLastDownload.text = data.toString()
             }
         }
 
-        syncViewModel.customerCount.observe(viewLifecycleOwner){ data ->
+        sharedViewModel.customerCount.observe(viewLifecycleOwner){ data ->
             data?.let {
                 binding.txtCustRecords.text = "$data Records"
             }
         }
 
-        syncViewModel.inventoryCount.observe(viewLifecycleOwner){ data ->
+        sharedViewModel.inventoryCount.observe(viewLifecycleOwner){ data ->
             data?.let {
                 binding.txtInventoryRecrods.text = "$data Records"
             }
@@ -56,7 +57,7 @@ class SyncFragment : Fragment() {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
-        syncViewModel.isRestProcessing.observe(viewLifecycleOwner) { data ->
+        sharedViewModel.isRestProcessing.observe(viewLifecycleOwner) { data ->
             data?.let { setSyncState(it) }
         }
 
@@ -67,7 +68,7 @@ class SyncFragment : Fragment() {
 
     private fun syncData(){
         setSyncState(true)
-        syncViewModel.syncData()
+        sharedViewModel.syncData()
     }
     fun setSyncState(downloading: Boolean){
         if (downloading){

@@ -54,7 +54,7 @@ class SettingFragment : Fragment() {
     }
 
     private fun doLogout(){
-        settingViewModel.logOut()
+        settingViewModel.logOut(requireContext())
     }
 
 }

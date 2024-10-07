@@ -24,8 +24,8 @@ import kotlinx.coroutines.launch
 
 
 class SettingViewModel(application: Application) : AndroidViewModel(application) {
-    @SuppressLint("StaticFieldLeak")
-    private val context: Context = getApplication<Application>().applicationContext
+
+//    private val context: Context = getApplication<Application>().applicationContext
 
     private val repository = ApiRepository(application)
 
@@ -38,7 +38,7 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
     private val salesOrderDao: SalesOrderDao = AppDatabase.getInstance(application).salesOrderDao()
     private val ccpMarkDAO: CCPMarkDao = AppDatabase.getInstance(application).ccpMarkDAO()
 
-    fun logOut(){
+    fun logOut(context: Context){
         AppVariable.loginInfo = LoginInfo(
             0,
             "",
@@ -61,7 +61,7 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
                 ccpMarkDAO.clearCCPMark()
                 ccpMarkDAO.clearCCPSCH()
 
-                navigateToLoginScreen()
+                navigateToLoginScreen(context)
 
             } catch (_: Exception) {
 
@@ -70,7 +70,7 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
 
     }
 
-    private fun navigateToLoginScreen() {
+    private fun navigateToLoginScreen(context: Context) {
         // Assuming you're using the Navigation Component
         val intent = Intent(context, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

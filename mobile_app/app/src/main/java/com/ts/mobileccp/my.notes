@@ -1,0 +1,13 @@
+//fma notes 2023
+
+ViewModel lifecylce depends on owner passed => ViewModelProvider(owner)
+so when we set owner as fragment, we need aditional factory for other parameter such as application
+
+move long running task on singleton worker, or sharedviewmodel with owner set to MainActivity
+
+singleton => object or class with companion object
+
+kotlin lambda coroutines : .observe(viewLifecycleOwner) { data -> { .. logic ...} }
+
+Dispatcher.IO optimized for IO operation (db, network)
+
