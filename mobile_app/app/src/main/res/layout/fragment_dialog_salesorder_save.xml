@@ -236,7 +236,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:layout_weight="0"
-            android:backgroundTint="@color/altaccent"
+            android:backgroundTint="@color/material_dynamic_neutral50"
             android:drawableLeft="@drawable/ic_close_24"
             android:text="Cancel"
             android:textColor="@color/white" />

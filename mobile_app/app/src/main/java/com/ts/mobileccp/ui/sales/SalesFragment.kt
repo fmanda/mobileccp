@@ -125,16 +125,16 @@ class SalesFragment : Fragment(), ProductPickListener,
                 showCustomerDialog()
             }
         }else{
-            salesViewModel.editedSO.observe(viewLifecycleOwner, Observer { so ->
+            salesViewModel.editedSO.observe(viewLifecycleOwner) { so ->
                 this.salesOrder = so
                 setCustomer()
-            })
+            }
 
-            salesViewModel.editedSOItems.observe(viewLifecycleOwner, Observer { items ->
+            salesViewModel.editedSOItems.observe(viewLifecycleOwner){ items ->
                 soItemList.clear()
                 soItemList.addAll(items)
                 adapter.notifyDataSetChanged()
-            })
+            }
         }
 
         return root

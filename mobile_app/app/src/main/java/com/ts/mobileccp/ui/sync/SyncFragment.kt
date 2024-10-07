@@ -56,9 +56,9 @@ class SyncFragment : Fragment() {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
-        syncViewModel.isRestProcessing.observe(viewLifecycleOwner, Observer { data ->
+        syncViewModel.isRestProcessing.observe(viewLifecycleOwner) { data ->
             data?.let { setSyncState(it) }
-        })
+        }
 
         //set toolbar
         val root: View = binding.root
