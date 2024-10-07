@@ -42,14 +42,12 @@ class HomeFragment : Fragment(), ListSalesOrderListener {
         homeViewModel = ViewModelProvider(this, factory).get(HomeViewModel::class.java)
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
 
-
         format.maximumFractionDigits = 0
         format.minimumFractionDigits = 0
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
 //        val bottomNavView: BottomNavigationView = (requireActivity() as MainActivity).binding.navView
-
 
 
         binding.rvActivities.layoutManager = LinearLayoutManager(requireContext())
@@ -98,6 +96,10 @@ class HomeFragment : Fragment(), ListSalesOrderListener {
             findNavController().navigate(R.id.nav_inventory)
         }
 
+        binding.lnVisit.setOnClickListener{
+            findNavController().navigate(R.id.nav_visit)
+        }
+
         binding.lnCustomer.setOnClickListener{
             //bottom menu navigation using this
             sharedViewModel.selectedNavItem.value = R.id.nav_customer
@@ -113,8 +115,6 @@ class HomeFragment : Fragment(), ListSalesOrderListener {
         binding.txtSalName.text = AppVariable.loginInfo.salname
         binding.txtDabin.text = AppVariable.loginInfo.areano.trim() + " - " + AppVariable.loginInfo.areaname
         binding.txtEntity.text = "Entity : " + AppVariable.loginInfo.entity?.trim()
-
-
 
 
         val root: View = binding.root

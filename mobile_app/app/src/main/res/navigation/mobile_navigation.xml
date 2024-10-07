@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_nav_home_to_nav_inventory"
             app:destination="@id/nav_inventory" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_visit"
+            app:destination="@id/nav_visit" />
     </fragment>
 
     <fragment
@@ -78,4 +81,9 @@
         android:name="com.ts.mobileccp.ui.inventory.InventoryFragment"
         android:label="fragment_inventory"
         tools:layout="@layout/fragment_inventory" />
+    <fragment
+        android:id="@+id/nav_visit"
+        android:name="com.ts.mobileccp.ui.visit.VisitFragment"
+        android:label="fragment_visit"
+        tools:layout="@layout/fragment_visit" />
 </navigation>
