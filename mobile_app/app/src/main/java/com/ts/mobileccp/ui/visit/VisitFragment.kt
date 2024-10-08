@@ -26,11 +26,22 @@ import com.ts.mobileccp.db.entity.Customer
 import com.ts.mobileccp.ui.customer.DialogCustomerFragment
 import android.R as R1
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.ts.mobileccp.R
+import com.ts.mobileccp.db.entity.SalesOrder
+import com.ts.mobileccp.db.entity.SalesOrderItem
+import com.ts.mobileccp.db.entity.Visit
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 import java.util.UUID
 
@@ -46,17 +57,20 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
     private var longitude  : Double?=null
 
     private var selectedCust : Customer? = null
+    private var selectedMark: Int = 0
+    private var selectedSCH: Int = 0
+
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     private lateinit var currentPhotoUri: Uri
     private var uuid : UUID? = null
-    private val CAMERA_REQUEST_CODE = 1001
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val factory = VisitViewModelFactory(requireActivity().application)
 
+        visitViewModel = ViewModelProvider(this, factory).get(VisitViewModel::class.java)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
@@ -66,6 +80,13 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
             }
         }
         checkLocationPermissions()
+
+        val strID =  arguments?.getString("visitID")
+        if (!strID.isNullOrEmpty()){  //edit
+            isEdit = true
+            val visitID =  UUID.fromString(strID)
+            editData(visitID)
+        }
     }
 
     override fun onCreateView(
@@ -73,13 +94,16 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentVisitBinding.inflate(inflater, container, false)
-        val factory = VisitViewModelFactory(requireActivity().application)
-        visitViewModel = ViewModelProvider(this, factory).get(VisitViewModel::class.java)
+
 
         initData()
 
 
         return binding.root
+    }
+
+    private fun editData(aID:UUID){
+        visitViewModel.loadVisit(aID)
     }
 
     private fun initData(){
@@ -98,6 +122,8 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
                 obj.markname
             })
             markAdapter.notifyDataSetChanged()
+
+            updateComboBox()
         }
 
         visitViewModel.listCCPSch.observe(viewLifecycleOwner){ objs ->
@@ -106,6 +132,8 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
                 obj.ccpschname
             })
             schAdapter.notifyDataSetChanged()
+
+            updateComboBox()
         }
 
         binding.backBtn.setOnClickListener{
@@ -120,6 +148,18 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
             if (selectedCust == null) {
                 showCustomerDialog()
             }
+        }else{
+            visitViewModel.visit.observe(viewLifecycleOwner) { obj ->
+                if (obj == null) return@observe
+                setVisit(obj)
+            }
+
+            visitViewModel.customer.observe(viewLifecycleOwner) { cust ->
+                if (cust == null) return@observe
+                this.selectedCust = cust
+                setCustomer()
+            }
+
         }
 
         binding.txtShipName.setOnClickListener(){
@@ -128,6 +168,10 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
 
         binding.imgView.setOnClickListener(){
             openCamera()
+        }
+
+        binding.btnSave.setOnClickListener(){
+            saveData()
         }
     }
 
@@ -138,12 +182,33 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
     }
 
     fun setCustomer(){
-//        salesOrder.customer = cust
         binding.txtShipName.text = selectedCust?.shipname
         binding.txtCustomerName.text = selectedCust?.partnername
         binding.txtShipAddress.text = selectedCust?.shipaddress
         binding.txtPhone.text = selectedCust?.shipphone
 
+    }
+
+    fun setVisit(visit: Visit){
+        uuid = visit.id
+        selectedSCH = visit.ccpsch
+        selectedMark = visit.mark
+
+        updateComboBox()
+//
+//        val idxSCH = visitViewModel.listCCPSch.value?.indexOfFirst { it.ccpsch == visit.ccpsch }
+//        binding.spSCH.setSelection(idxSCH?:0)
+//
+//        val idxMark = visitViewModel.listCCPMark.value?.indexOfFirst { it.mark == visit.mark }
+//        binding.spMark.setSelection(idxMark?:0)
+    }
+
+    fun updateComboBox(){
+        val idxSCH = visitViewModel.listCCPSch.value?.indexOfFirst { it.ccpsch == selectedSCH }
+        binding.spSCH.setSelection(idxSCH?:0)
+
+        val idxMark = visitViewModel.listCCPMark.value?.indexOfFirst { it.mark == selectedMark }
+        binding.spMark.setSelection(idxMark?:0)
     }
 
     override fun onSelectDialogCustomer(cust: Customer) {
@@ -302,17 +367,8 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
         val originalFilePath = getRealPathFromUri(uri) ?: return
         val originalFile = File(originalFilePath)
 
-        // Get the original file name and extension
-//        val fileName = originalFile.nameWithoutExtension
-//        val fileExtension = originalFile.extension
-//        val editedFileName = "${fileName}_edited.$fileExtension"
-//        val outputPath = File(originalFile.parent, editedFileName).absolutePath
-
         FileOutputStream(originalFile).use { outputStream ->
-            // Compress the bitmap and write to the output stream
             val success = bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
-
-            // Check if compression was successful
             if (success) {
                 println("Image compressed successfully and saved at: $originalFilePath")
             } else {
@@ -321,4 +377,36 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
         }
     }
 
+    private fun buildVisitObj():Visit{
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val markidx = binding.spMark.selectedItemPosition?:0
+        val mark = visitViewModel.listCCPMark.value?.get(markidx)?.mark?:0
+
+        val schidx = binding.spSCH.selectedItemPosition?:0
+        val sch = visitViewModel.listCCPSch.value?.get(schidx)?.ccpsch?:0
+
+
+        return Visit(
+            getUUID(),
+            selectedCust?.shipid?:0,
+            dateFormat.format(Date()),
+            mark,
+            sch,
+            0,
+            latitude,
+            longitude,
+            0
+        )
+    }
+
+    private fun saveData(){
+        val visit = buildVisitObj()
+
+        if (visitViewModel.saveVisit(visit)){
+            Toast.makeText(requireContext(), "Data berhasil disimpan", Toast.LENGTH_LONG).show()
+            findNavController().navigate(R.id.action_nav_visit_to_nav_home)
+        }
+
+
+    }
 }

@@ -10,9 +10,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ts.mobileccp.db.AppDatabase
 import com.ts.mobileccp.db.entity.LastActivityQuery
+import com.ts.mobileccp.db.entity.LastVisit
 import com.ts.mobileccp.db.entity.LoginInfoDao
 import com.ts.mobileccp.db.entity.SalesOrderDao
 import com.ts.mobileccp.db.entity.SalesOrderSumCount
+import com.ts.mobileccp.db.entity.VisitDao
 import com.ts.mobileccp.global.AppVariable
 import com.ts.mobileccp.rest.ApiRepository
 import kotlinx.coroutines.launch
@@ -24,6 +26,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val _app : Application = application
     private val loginInfoDao: LoginInfoDao = AppDatabase.getInstance(application).loginInfoDao()
     private val salesOrderDao: SalesOrderDao = AppDatabase.getInstance(application).salesOrderDao()
+    private val visitDao: VisitDao = AppDatabase.getInstance(application).visitDao()
     val isRestProcessing = MutableLiveData<Boolean>().apply { value = false }
     val lastUpdate = MutableLiveData<String?>().apply { postValue(AppVariable.loginInfo.last_download) }
 
@@ -32,7 +35,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     }
     val text: LiveData<String> = _text
 
-    val listLatestActivities: LiveData<List<LastActivityQuery>> = salesOrderDao.getLatestActivity()
+    val listLatestVisit: LiveData<List<LastVisit>> = visitDao.getLatestVisitDashboard()
 
     val todaySales: LiveData<SalesOrderSumCount?> = salesOrderDao.getTodaySales()
     val weeklySales: LiveData<SalesOrderSumCount?> = salesOrderDao.getWeeklySales()

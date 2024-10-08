@@ -1,4 +1,4 @@
-package com.ts.mobileccp.ui.sales
+package com.ts.mobileccp.ui.visit
 
 //import Customer
 import android.os.Bundle
@@ -12,19 +12,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ts.mobileccp.R
-import com.ts.mobileccp.adapter.ListSalesOrderAdapter
 import com.ts.mobileccp.adapter.ListVisitAdapter
-import com.ts.mobileccp.adapter.ListSalesOrderListener
+import com.ts.mobileccp.adapter.ListVisitListener
 import com.ts.mobileccp.databinding.FragmentBrowseSalesorderBinding
-import com.ts.mobileccp.db.entity.LastActivityQuery
+import com.ts.mobileccp.db.entity.LastVisit
 
 
-class BrowseSalesFragment : Fragment(), ListSalesOrderListener {
+class BrowseVisitFragment : Fragment(), ListVisitListener {
     private var _binding: FragmentBrowseSalesorderBinding? = null
 
     private val binding get() = _binding!!
-    private lateinit var salesViewModel: SalesViewModel;
-    val adapter = ListSalesOrderAdapter(emptyList(), this)
+    private lateinit var visitViewModel: VisitViewModel;
+    val adapter = ListVisitAdapter(emptyList(), this)
 
 
     override fun onCreateView(
@@ -32,8 +31,8 @@ class BrowseSalesFragment : Fragment(), ListSalesOrderListener {
         savedInstanceState: Bundle?
     ): View {
 
-        val factory = SalesViewModelFactory(requireActivity().application)
-        salesViewModel = ViewModelProvider(this, factory).get(SalesViewModel::class.java)
+        val factory = VisitViewModelFactory(requireActivity().application)
+        visitViewModel = ViewModelProvider(this, factory).get(VisitViewModel::class.java)
 
 
         _binding = FragmentBrowseSalesorderBinding.inflate(inflater, container, false)
@@ -69,31 +68,31 @@ class BrowseSalesFragment : Fragment(), ListSalesOrderListener {
 
     private fun searchIt(query: String="") {
         if (query.isEmpty()){
-            salesViewModel.listLatestActivities.observe(viewLifecycleOwner, Observer { data ->
+            visitViewModel.listLatestVisits.observe(viewLifecycleOwner, Observer { data ->
                 data?.let { adapter.updateData(it) }
             })
         }else{
-            salesViewModel.searchLatestOrder(query).observe(viewLifecycleOwner, Observer { items ->
+            visitViewModel.searchLatestVisits(query).observe(viewLifecycleOwner, Observer { items ->
                 adapter.updateData(items)
             })
         }
 
     }
 
-    override fun onClick(activity: LastActivityQuery, position: Int) {
-        activity.isexpanded = !activity.isexpanded
+    override fun onClick(visit: LastVisit, position: Int) {
+        visit.isexpanded = !visit.isexpanded
         adapter.notifyItemChanged(position)
     }
 
-    override fun onEdit(activity: LastActivityQuery, position: Int) {
+    override fun onEdit(visit: LastVisit, position: Int) {
         val args = Bundle().apply {
-            putString("salesOrderID", activity.id.toString())
+            putString("visitID", visit.id.toString())
         }
-        findNavController().navigate(R.id.action_nav_browse_sales_to_nav_sales, args)
+        findNavController().navigate(R.id.action_nav_browse_visit_to_nav_visit, args)
     }
 
-    override fun onUpload(activity: LastActivityQuery, position: Int) {
-        salesViewModel.syncData(activity.id)
+    override fun onUpload(visit: LastVisit, position: Int) {
+        visitViewModel.syncData(visit.id)
     }
 
 }

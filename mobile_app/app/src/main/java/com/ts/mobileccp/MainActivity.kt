@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleNavigationDestination(destination: NavDestination) {
         when (destination.id) {
-            R.id.nav_home, R.id.nav_customer, R.id.nav_browse_sales, R.id.nav_setting -> {
+            R.id.nav_home, R.id.nav_browse_visit, R.id.nav_browse_sales, R.id.nav_setting -> {
 
                 if (::sharedViewModel.isInitialized) {
                     sharedViewModel.bottomMenuVisible.apply { value = true }

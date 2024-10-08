@@ -56,12 +56,7 @@ class SalesViewModel(application: Application) : AndroidViewModel(application) {
         return true
     }
 
-    fun saveVisit(visit: Visit):Boolean{
-        viewModelScope.launch(Dispatchers.IO) {
-            salesOrderDao.insertVisit(visit)
-        }
-        return true
-    }
+
 
     val listLatestActivities: LiveData<List<LastActivityQuery>> = salesOrderDao.getLast300Sales()
 

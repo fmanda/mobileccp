@@ -19,6 +19,12 @@
         <action
             android:id="@+id/action_nav_home_to_nav_visit"
             app:destination="@id/nav_visit" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_browse_visit"
+            app:destination="@id/nav_browse_visit" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_browse_visit2"
+            app:destination="@id/nav_browse_visit" />
     </fragment>
 
     <fragment
@@ -85,5 +91,19 @@
         android:id="@+id/nav_visit"
         android:name="com.ts.mobileccp.ui.visit.VisitFragment"
         android:label="fragment_visit"
-        tools:layout="@layout/fragment_visit" />
+        tools:layout="@layout/fragment_visit" >
+        <action
+            android:id="@+id/action_nav_visit_to_nav_home"
+            app:destination="@id/nav_home" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_browse_visit"
+        android:name="com.ts.mobileccp.ui.visit.BrowseVisitFragment"
+        android:label="fragment_visit"
+        tools:layout="@layout/fragment_browse_visit" >
+        <action
+            android:id="@+id/action_nav_browse_visit_to_nav_visit"
+            app:destination="@id/nav_visit" />
+    </fragment>
 </navigation>

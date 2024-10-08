@@ -91,9 +91,6 @@ interface SalesOrderDao {
     @Upsert
     suspend fun upsert(salesOrder: SalesOrder)
 
-    @Insert
-    suspend fun insertVisit(visit: Visit)
-
     @Query("DELETE FROM salesorderitem where salesorder_id = :orderid")
     suspend fun deleteItems(orderid: UUID)
 

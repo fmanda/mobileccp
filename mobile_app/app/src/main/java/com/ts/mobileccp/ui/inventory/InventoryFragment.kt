@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ts.mobileccp.adapter.InventoryAdapter
 import com.ts.mobileccp.adapter.ListMerkAdapter
-import com.ts.mobileccp.adapter.ListSalesOrderAdapter
 import com.ts.mobileccp.adapter.SelectMerkListener
 import com.ts.mobileccp.databinding.FragmentInventoryBinding
 

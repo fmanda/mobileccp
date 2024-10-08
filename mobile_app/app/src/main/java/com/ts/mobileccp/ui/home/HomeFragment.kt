@@ -11,15 +11,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ts.mobileccp.R
-import com.ts.mobileccp.adapter.ListSalesOrderAdapter
-import com.ts.mobileccp.adapter.ListSalesOrderListener
+import com.ts.mobileccp.adapter.ListVisitAdapter
+import com.ts.mobileccp.adapter.ListVisitListener
 import com.ts.mobileccp.databinding.FragmentHomeBinding
-import com.ts.mobileccp.db.entity.LastActivityQuery
+import com.ts.mobileccp.db.entity.LastVisit
 import com.ts.mobileccp.global.AppVariable
 import com.ts.mobileccp.ui.SharedViewModel
 import java.text.NumberFormat
 
-class HomeFragment : Fragment(), ListSalesOrderListener {
+class HomeFragment : Fragment(), ListVisitListener {
 
     private var _binding: FragmentHomeBinding? = null
     private lateinit var homeViewModel: HomeViewModel
@@ -27,7 +27,7 @@ class HomeFragment : Fragment(), ListSalesOrderListener {
 
 
     //    val adapter = LastActivityAdapter(emptyList())
-    val adapter = ListSalesOrderAdapter(emptyList(), this, true)
+    val adapter = ListVisitAdapter(emptyList(), this, true)
     private val binding get() = _binding!!
     val format = NumberFormat.getNumberInstance()
 
@@ -57,7 +57,7 @@ class HomeFragment : Fragment(), ListSalesOrderListener {
             data?.let { setSyncState(it) }
         })
 
-        homeViewModel.listLatestActivities.observe(viewLifecycleOwner, Observer { data ->
+        homeViewModel.listLatestVisit.observe(viewLifecycleOwner, Observer { data ->
             data?.let { adapter.updateData(it) }
         })
 
@@ -102,7 +102,8 @@ class HomeFragment : Fragment(), ListSalesOrderListener {
 
         binding.lnCustomer.setOnClickListener{
             //bottom menu navigation using this
-            sharedViewModel.selectedNavItem.value = R.id.nav_customer
+            findNavController().navigate(R.id.nav_customer)
+//            sharedViewModel.selectedNavItem.value = R.id.nav_customer
         }
 
         homeViewModel.lastUpdate.observe(viewLifecycleOwner) { data ->
@@ -142,15 +143,15 @@ class HomeFragment : Fragment(), ListSalesOrderListener {
         }
     }
 
-    override fun onClick(activity: LastActivityQuery, position: Int) {
+    override fun onClick(visit: LastVisit, position: Int) {
         //
     }
 
-    override fun onEdit(activity: LastActivityQuery, position: Int) {
+    override fun onEdit(visit: LastVisit, position: Int) {
         //
     }
 
-    override fun onUpload(activity: LastActivityQuery, position: Int) {
+    override fun onUpload(visit: LastVisit, position: Int) {
         //
     }
 }

@@ -50,7 +50,6 @@ class SalesFragment : Fragment(), ProductPickListener,
     private var isTradUOM: Boolean = false
     private var isEdit: Boolean = false
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

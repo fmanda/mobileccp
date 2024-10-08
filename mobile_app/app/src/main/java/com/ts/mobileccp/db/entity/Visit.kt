@@ -3,8 +3,11 @@ import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Entity
+import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.Upsert
+import kotlinx.parcelize.Parcelize
 import java.util.UUID
 import kotlinx.serialization.Serializable
 
@@ -12,7 +15,7 @@ import kotlinx.serialization.Serializable
 
 @Entity(tableName = "visit")
 data class Visit(
-    @PrimaryKey val id: String,
+    @PrimaryKey val id: UUID,
     val shipid: Int,
     val visitdate: String,
     val mark: Int,
@@ -38,6 +41,10 @@ data class JSONVisit(
 
 @Dao
 interface VisitDao {
+
+    @Query("SELECT * FROM visit WHERE id = :id")
+    suspend fun getById(id: UUID): Visit?
+
     @Query("SELECT * FROM visit WHERE uploaded=0")
     fun getVisitForUpload(): List<Visit>
 
@@ -56,4 +63,47 @@ interface VisitDao {
     @Query("SELECT COUNT(*) FROM visit where uploaded = 0")
     fun getCountVisitToUpload(): LiveData<Int?>
 
+    @Upsert
+    suspend fun upsertVisit(visit: Visit)
+
+    @Query(
+        "SELECT a.id, a.visitdate, b.shipname as customer, b.shipaddress, a.lat, a.lng, a.uploaded, 'false' as isexpanded \n" +
+        "    FROM visit a \n" +
+        "    inner join customer b on a.shipid=b.shipid \n" +
+        " order by visitdate desc limit 300"
+    )
+    fun getLatestVisit(): LiveData<List<LastVisit>>
+
+    @Query(
+        "SELECT a.id, a.visitdate, b.shipname as customer, b.shipaddress, a.lat, a.lng, a.uploaded, 'false' as isexpanded \n" +
+        "    FROM visit a \n" +
+        "    inner join customer b on a.shipid=b.shipid \n" +
+        " order by visitdate desc limit 300"
+    )
+    fun getLatestVisitDashboard(): LiveData<List<LastVisit>>
+
+    @Query(
+        "SELECT a.id, a.visitdate, b.shipname as customer, b.shipaddress, a.lat, a.lng, a.uploaded, 'false' as isexpanded \n" +
+        "    FROM visit a \n" +
+        "    inner join customer b on a.shipid=b.shipid \n" +
+        "    WHERE b.shipname LIKE :query " +
+        "    or b.partnername LIKE :query " +
+        " order by visitdate desc limit 300"
+    )
+    fun searchLastVisits(query: String): LiveData<List<LastVisit>>
+
+
 }
+
+
+@Parcelize
+data class LastVisit(
+    var id: UUID,
+    var visitdate: String? = null,
+    var shipname: String? = null,
+    var shipaddress: String? =null,
+    var latitude: Double?,
+    var longitude: Double?,
+    var uploaded: Int,
+    var isexpanded: Boolean
+) : Parcelable
