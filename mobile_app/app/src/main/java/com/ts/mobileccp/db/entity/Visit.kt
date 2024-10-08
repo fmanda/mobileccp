@@ -23,7 +23,6 @@ data class Visit(
     val uploaded: Int
 )
 
-
 @Serializable
 data class JSONVisit(
     val id: String,

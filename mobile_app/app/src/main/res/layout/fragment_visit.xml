@@ -62,6 +62,7 @@
                 android:padding="10dp">
 
                 <TextView
+                    android:id="@+id/txtShipName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
@@ -72,12 +73,22 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/txtCustomerName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:text="Customer Name" />
 
                 <TextView
+                    android:id="@+id/txtPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="Phone"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/txtShipAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
@@ -85,6 +96,7 @@
                     android:textSize="14sp" />
 
                 <TextView
+                    android:id="@+id/txtLatLng"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
@@ -137,7 +149,7 @@
                     android:text="Catatan" />
 
                 <EditText
-                    android:id="@+id/editTextTextMultiLine"
+                    android:id="@+id/txtNotes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -166,13 +178,13 @@
                     android:text="Foto" />
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="108dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:background="@color/highlight">
 
                     <ImageView
-                        android:id="@+id/imageView3"
-                        android:layout_width="match_parent"
+                        android:id="@+id/imgView"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_margin="10dp"
