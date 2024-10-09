@@ -41,21 +41,16 @@ class ListVisitAdapter(private var mList: List<LastVisit>, val listener: ListVis
         holder.txtDate.text = formattedDate
         holder.txtCustomer.text = visit.shipname
         holder.txtAddress.text = visit.shipaddress
+        holder.txtSCH.text = visit.ccpsch
 
 
-        val location:String = visit.latitude.toString() + "," + visit.longitude.toString()
+        val location:String = visit.lat.toString() + "," + visit.lng.toString()
         holder.txtLocation.text = location
 
-        if (visit.isexpanded) {
+        if (!isDashBoard) {
             holder.lnOperation.visibility = View.VISIBLE
-            holder.btnExpand.setImageResource(R.drawable.ic_expand_less_dark)
         }else{
             holder.lnOperation.visibility = View.GONE
-            holder.btnExpand.setImageResource(R.drawable.ic_expand_more_dark)
-        }
-
-        holder.lnBody.setOnClickListener(){
-            listener.onClick(visit, position)
         }
 
         holder.btnEdit.setOnClickListener(){
@@ -70,18 +65,20 @@ class ListVisitAdapter(private var mList: List<LastVisit>, val listener: ListVis
         if (visit.uploaded == 1){
             holder.txtUpload.text = "Uploaded"
             holder.txtUpload.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.teal_700))
+            holder.btnUpload.visibility = View.GONE
             holder.btnUpload.text = "Re-Upload"
         }else{
             holder.txtUpload.text = "Belum Upload"
             holder.txtUpload.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.secondary))
+            holder.btnUpload.visibility = View.VISIBLE
             holder.btnUpload.text = "Upload"
         }
 
-        if (isDashBoard){
-            holder.btnExpand.visibility = View.GONE
-        }else{
-            holder.btnExpand.visibility = View.VISIBLE
-        }
+//        if (isDashBoard){
+//            holder.btnExpand.visibility = View.GONE
+//        }else{
+//            holder.btnExpand.visibility = View.VISIBLE
+//        }
 
     }
 
@@ -102,7 +99,7 @@ class ListVisitAdapter(private var mList: List<LastVisit>, val listener: ListVis
 
         val btnUpload : Button = itemView.findViewById(R.id.btnUpload)
         val btnEdit : Button = itemView.findViewById(R.id.btnEdit)
-        val btnExpand: ImageButton = itemView.findViewById(R.id.btnExpand)
+        val txtSCH: TextView = itemView.findViewById(R.id.txtSCH)
 
     }
 
@@ -115,7 +112,6 @@ class ListVisitAdapter(private var mList: List<LastVisit>, val listener: ListVis
 
 
 interface ListVisitListener {
-    fun onClick(visit: LastVisit, position: Int)
     fun onEdit(visit: LastVisit, position: Int)
     fun onUpload(visit: LastVisit, position: Int)
 

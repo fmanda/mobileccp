@@ -67,25 +67,28 @@ interface VisitDao {
     suspend fun upsertVisit(visit: Visit)
 
     @Query(
-        "SELECT a.id, a.visitdate, b.shipname as customer, b.shipaddress, a.lat, a.lng, a.uploaded, 'false' as isexpanded \n" +
+        "SELECT a.id, a.visitdate, b.shipname , b.shipaddress, c.ccpschname as ccpsch, a.lat, a.lng, a.uploaded \n" +
         "    FROM visit a \n" +
         "    inner join customer b on a.shipid=b.shipid \n" +
+        "    left join ccpsch c on a.ccpsch = c.ccpsch \n" +
         " order by visitdate desc limit 300"
     )
     fun getLatestVisit(): LiveData<List<LastVisit>>
 
     @Query(
-        "SELECT a.id, a.visitdate, b.shipname as customer, b.shipaddress, a.lat, a.lng, a.uploaded, 'false' as isexpanded \n" +
+        "SELECT a.id, a.visitdate, b.shipname, b.shipaddress, c.ccpschname as ccpsch, a.lat, a.lng, a.uploaded \n" +
         "    FROM visit a \n" +
         "    inner join customer b on a.shipid=b.shipid \n" +
+        "    left join ccpsch c on a.ccpsch = c.ccpsch \n" +
         " order by visitdate desc limit 300"
     )
     fun getLatestVisitDashboard(): LiveData<List<LastVisit>>
 
     @Query(
-        "SELECT a.id, a.visitdate, b.shipname as customer, b.shipaddress, a.lat, a.lng, a.uploaded, 'false' as isexpanded \n" +
+        "SELECT a.id, a.visitdate, b.shipname , b.shipaddress, c.ccpschname as ccpsch, a.lat, a.lng, a.uploaded \n" +
         "    FROM visit a \n" +
         "    inner join customer b on a.shipid=b.shipid \n" +
+        "    left join ccpsch c on a.ccpsch = c.ccpsch \n" +
         "    WHERE b.shipname LIKE :query " +
         "    or b.partnername LIKE :query " +
         " order by visitdate desc limit 300"
@@ -101,9 +104,58 @@ data class LastVisit(
     var id: UUID,
     var visitdate: String? = null,
     var shipname: String? = null,
-    var shipaddress: String? =null,
-    var latitude: Double?,
-    var longitude: Double?,
-    var uploaded: Int,
-    var isexpanded: Boolean
+    var shipaddress: String? = null,
+    var ccpsch: String? = null,
+    var lat: Double?,
+    var lng: Double?,
+    var uploaded: Int
 ) : Parcelable
+
+
+
+@Serializable
+data class JSONCCP(
+    val id: Int?,
+    val notr: String?,
+    val datetr: String?,
+    val dabin: String?,
+    val description: String?,
+    val entity: String?,
+    val salid: String?,
+    val status: Int?,
+    val operator: String?,
+    val items: List<JSONCCPDet>?
+){
+    constructor(sali: String, datetr: String): this(
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+    )
+}
+
+
+@Serializable
+data class JSONCCPDet(
+    val idno: Int?,
+    val shipid: Int?,
+    val ccpsch: Int?,
+    val remark: String?,
+    val ccptype: Int?,
+    val mark: Int?,
+    val createdate: String?,
+    val soqty: Int?,
+    val doqty: Int?,
+    val retqty: Int?,
+    val coll: Double?,
+    val lat: Double?,
+    val lng: Double?,
+    val datetr: String?,
+    val salid: String?, //additional
+)

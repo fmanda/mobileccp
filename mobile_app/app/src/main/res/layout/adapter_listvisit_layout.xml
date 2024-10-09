@@ -41,10 +41,10 @@
                         android:fontFamily="sans-serif-medium"
                         android:text="Date"
                         android:textAlignment="viewStart"
-                        android:textSize="10sp" />
+                        android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/txtUpload"
+                        android:id="@+id/txtSCH"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -53,10 +53,10 @@
                         android:layout_marginEnd="15dp"
                         android:layout_weight="0"
                         android:fontFamily="sans-serif-medium"
-                        android:text="Belum Uploded"
+                        android:text="SCHName"
                         android:textAlignment="textEnd"
-                        android:textColor="@color/secondary"
-                        android:textSize="10sp" />
+                        android:textColor="@color/primary"
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
@@ -84,7 +84,7 @@
                             android:paddingStart="10dp"
                             android:text="TextView"
                             android:textAlignment="gravity"
-                            android:textSize="14sp" />
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/txtAddress"
@@ -97,7 +97,7 @@
                             android:text="TextView"
                             android:textAlignment="gravity"
                             android:textColor="@color/darker_grey"
-                            android:textSize="10sp" />
+                            android:textSize="12sp" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -122,104 +122,73 @@
                                 android:layout_weight="0"
                                 android:gravity="end"
                                 android:text="location"
-                                android:textSize="10sp" />
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/txtUpload"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginEnd="15dp"
+                                android:layout_weight="0"
+                                android:fontFamily="sans-serif-medium"
+                                android:gravity="right"
+                                android:text="Belum Uploded"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/secondary"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/lnOperation"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="5dp"
+                            android:layout_weight="0"
+                            android:gravity="end"
+                            android:orientation="horizontal"
+                            android:paddingRight="10dp"
+                            android:visibility="visible">
+
+                            <Button
+                                android:id="@+id/btnEdit"
+                                style="@style/Widget.AppCompat.Button.Small"
+                                android:layout_width="wrap_content"
+                                android:layout_height="40dp"
+                                android:layout_marginEnd="5dp"
+                                android:layout_weight="0"
+                                android:autoSizeTextType="none"
+                                android:background="@null"
+                                android:backgroundTint="@color/secondary"
+                                android:drawableLeft="@drawable/ic_create_24"
+                                android:gravity="start|center_horizontal|center_vertical"
+                                android:paddingTop="0dp"
+                                android:paddingBottom="0dp"
+                                android:text="Edit"
+                                android:textSize="12sp"
+                                android:textStyle="normal" />
+
+                            <Button
+                                android:id="@+id/btnUpload"
+                                style="@style/Widget.AppCompat.Button.Small"
+                                android:layout_width="wrap_content"
+                                android:layout_height="40dp"
+                                android:layout_weight="0"
+                                android:autoSizeTextType="none"
+                                android:background="@null"
+                                android:backgroundTint="@color/teal_700"
+                                android:drawableLeft="@drawable/ic_upload_24"
+                                android:paddingTop="0dp"
+                                android:paddingBottom="0dp"
+                                android:text="Upload"
+                                android:textSize="12sp"
+                                android:textStyle="normal" />
 
                         </LinearLayout>
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0"
-                        android:orientation="vertical"
-                        android:paddingRight="15dp">
-
-                        <TextView
-                            android:id="@+id/txtAmount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="right"
-                            android:layout_weight="1"
-                            android:fontFamily="sans-serif-condensed-medium"
-                            android:gravity="center_vertical|end"
-                            android:padding="2dp"
-                            android:text="TextView"
-                            android:textAlignment="gravity"
-                            android:textColor="@color/teal_700"
-                            android:textSize="14sp" />
-
-                        <ImageButton
-                            android:id="@+id/btnExpand"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@null"
-                            android:clickable="false"
-                            app:srcCompat="@drawable/ic_expand_more_dark" />
-
-                    </LinearLayout>
-
                 </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/lnOperation"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="0"
-                android:gravity="end"
-                android:orientation="horizontal"
-                android:paddingRight="10dp"
-                android:visibility="visible">
-
-                <TextView
-                    android:id="@+id/txtOrderNo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="10dp"
-                    android:layout_weight="1"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="OrderNo"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/accent"
-                    android:textSize="10sp" />
-
-                <Button
-                    android:id="@+id/btnEdit"
-                    style="@style/Widget.AppCompat.Button.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_weight="0"
-                    android:autoSizeTextType="none"
-                    android:background="@null"
-                    android:backgroundTint="@color/secondary"
-                    android:drawableLeft="@drawable/ic_create_24"
-                    android:gravity="start|center_horizontal|center_vertical"
-                    android:paddingTop="0dp"
-                    android:paddingBottom="0dp"
-                    android:text="Edit"
-                    android:textSize="12sp"
-                    android:textStyle="normal" />
-
-                <Button
-                    android:id="@+id/btnUpload"
-                    style="@style/Widget.AppCompat.Button.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_weight="0"
-                    android:autoSizeTextType="none"
-                    android:background="@null"
-                    android:backgroundTint="@color/teal_700"
-                    android:drawableLeft="@drawable/ic_upload_24"
-                    android:paddingTop="0dp"
-                    android:paddingBottom="0dp"
-                    android:text="Upload"
-                    android:textSize="12sp"
-                    android:textStyle="normal" />
-
             </LinearLayout>
 
         </LinearLayout>

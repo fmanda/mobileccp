@@ -79,10 +79,6 @@ class BrowseVisitFragment : Fragment(), ListVisitListener {
 
     }
 
-    override fun onClick(visit: LastVisit, position: Int) {
-        visit.isexpanded = !visit.isexpanded
-        adapter.notifyItemChanged(position)
-    }
 
     override fun onEdit(visit: LastVisit, position: Int) {
         val args = Bundle().apply {

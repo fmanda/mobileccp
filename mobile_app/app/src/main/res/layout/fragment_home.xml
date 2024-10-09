@@ -9,8 +9,9 @@
     <View
         android:id="@+id/view_home_banner"
         android:layout_width="match_parent"
-        android:layout_height="220dp"
+        android:layout_height="215dp"
         android:background="@drawable/banner_background" />
+
 
     <LinearLayout
         android:id="@+id/home_banner"
@@ -32,16 +33,18 @@
                 android:id="@+id/txtSalID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:elevation="2dp"
                 android:fontFamily="sans-serif-condensed-medium"
                 android:text="000000"
                 android:textAlignment="viewStart"
-                android:textColor="@color/neutral"
+                android:textColor="@color/white"
                 android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/txtSalName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:elevation="2dp"
                 android:fontFamily="sans-serif-medium"
                 android:text="Salesman Name"
                 android:textAlignment="textStart"
@@ -52,18 +55,20 @@
                 android:id="@+id/txtDabin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:elevation="2dp"
                 android:text="Dabin xxx"
                 android:textAlignment="viewStart"
-                android:textColor="@color/neutral"
+                android:textColor="@color/white"
                 android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/txtEntity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:elevation="2dp"
                 android:text="Entity - 1000 - Solo"
                 android:textAlignment="viewStart"
-                android:textColor="@color/neutral"
+                android:textColor="@color/white"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -86,9 +91,9 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_below="@id/home_banner"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="30dp"
         android:background="@drawable/rounded_bg"
         android:elevation="5dp"
         android:orientation="horizontal"
@@ -160,6 +165,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:background="@color/grey" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -463,7 +469,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/card_sync_info"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:background="@color/white"
         android:orientation="vertical"
         android:paddingStart="20dp"

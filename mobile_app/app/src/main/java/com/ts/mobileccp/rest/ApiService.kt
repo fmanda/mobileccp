@@ -1,6 +1,8 @@
 package com.ts.mobileccp.rest
 
 import com.ts.mobileccp.db.entity.CCPSch
+import com.ts.mobileccp.db.entity.JSONCCP
+import com.ts.mobileccp.db.entity.JSONCCPDet
 import com.ts.mobileccp.db.entity.JSONSalesOrder
 import com.ts.mobileccp.db.entity.JSONVisit
 import retrofit2.Response
@@ -28,8 +30,8 @@ interface ApiService {
     suspend fun postOrders(@Body orders: List<JSONSalesOrder>): Response<Unit>
 
 
-    @POST("batchvisit")
-    suspend fun postVisits(@Body orders: List<JSONVisit>): Response<Unit>
+    @POST("batchnewccp")
+    suspend fun postVisits(@Body orders: List<JSONCCPDet>): Response<Unit>
 
     @GET("login_salesman/{username}/{password}")
     suspend fun loginSalesman(@Path("username") username: String, @Path("password") password: String): Response<LoginInfoResponse>

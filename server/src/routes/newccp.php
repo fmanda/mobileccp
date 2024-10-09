@@ -53,7 +53,7 @@ $app->post('/batchnewccp', function ($request, $response) {
 	$json = $request->getBody();
 	$obj = json_decode($json);
 	try{
-		ModelNewccp::saveToDBBatch($obj);
+		ModelNewCCPDet::saveToDBBatch($obj);
     $json = json_encode($obj);
     $response->getBody()->write($json);
     return $response->withHeader('Content-Type', 'application/json;charset=utf-8');

@@ -103,3 +103,40 @@ begin
 
 	return;
 end
+
+alter procedure sp_mobile_getccp(
+	@salid varchar(30),
+	@ccpdate date	
+)as 
+begin
+	SET NOCOUNT ON 
+	--declare @ccpdate date = '2024-1-1'
+	declare @trxno varchar(10) = (SELECT FORMAT(@ccpdate, 'yyMMdd'))
+	--declare @salid varchar(30) = '0220222572'
+	declare @entity varchar(10) 
+	declare @areano varchar(10)
+	declare @idno int = 0
+
+	select @entity = entity, @areano = areano 
+	from v_mobile_salesman where salid = @salid 
+
+	if  (@areano is null)
+	begin
+		THROW 50001, 'Salesman tidak punya mapping Dabin', 1;		
+	end
+
+	select @idno = idno from newccp 
+	where dabin = @areano and salid = @salid and cast(datetr as date) = cast(@ccpdate as date)
+
+	if (@idno = 0)
+	begin
+		print @areano;
+		declare @notr varchar(30) = rtrim(@areano) + '/' + @trxno
+
+		insert into NewCCP(Notr, DateTr, Dabin, Description, Entity, SalID, Status, Operator)
+		values(@notr, @ccpdate, @areano, 'Auto Insert By System', @entity, @salid, 0, @salid)
+		set @idno = (SELECT SCOPE_IDENTITY())
+	end
+
+	select idno, notr, datetr, dabin, description, entity, salid, status, operator from NEWCCP where idno = @IDNO
+end

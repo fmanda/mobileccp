@@ -9,13 +9,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ts.mobileccp.db.AppDatabase
-import com.ts.mobileccp.db.entity.CCPMark
 import com.ts.mobileccp.db.entity.Customer
 import com.ts.mobileccp.db.entity.CustomerDao
-import com.ts.mobileccp.db.entity.LastActivityQuery
 import com.ts.mobileccp.db.entity.LastVisit
-import com.ts.mobileccp.db.entity.SalesOrderDao
-import com.ts.mobileccp.db.entity.TmpSalesOrder
 import com.ts.mobileccp.db.entity.Visit
 import com.ts.mobileccp.db.entity.VisitDao
 import com.ts.mobileccp.rest.ApiRepository
@@ -47,15 +43,14 @@ class VisitViewModel(application: Application) : AndroidViewModel(application) {
 
     fun syncData(filterID: UUID)= viewModelScope.launch {
         isRestProcessing.postValue(true)
-        doSyncSalesByID(filterID)
+        doSyncVisitByID(filterID)
     }
 
-    private suspend fun doSyncSalesByID(filterID: UUID) {
-//        repository.fetchAndPostOrdersByID(filterID)
-//        repository.fetchAndPostVisitByID(filterID)
-//
-//        isRestProcessing.postValue(false)
-//        Toast.makeText(_app, "Sinkronisasi Data Berhasil", Toast.LENGTH_LONG).show()
+    private suspend fun doSyncVisitByID(filterID: UUID) {
+        repository.fetchAndPostVisitByID(filterID)
+
+        isRestProcessing.postValue(false)
+        Toast.makeText(_app, "Data Visit berhasil di upload", Toast.LENGTH_LONG).show()
     }
 
     val listLatestVisits: LiveData<List<LastVisit>> = visitDao.getLatestVisit()

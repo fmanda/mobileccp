@@ -5,7 +5,7 @@
 
 		public static function getFields(){
 			return array(
-				"IDNo","NoTR","DateTr","Dabin","Description","Entity","SalID","Status","Operator"
+				"idno","notr","datetr","dabin","description","entity","salid","status","operator"
 			);
 		}
 
@@ -45,25 +45,70 @@
 			}
 		}
 
-		public static function saveToDB($obj){
+		//updated 
+		// public static function saveToDB($obj){
+		// 	$tmpitems = $obj->items;
+		// 	$obj = static::getOrCreate($obj->salid, $obj->datetr); //save header here via sp
+		// 	$obj->items = $tmpitems;
+	
+		// 	$db = new DB();
+		// 	$db = $db->connect();
+		// 	$db->beginTransaction();
+		// 	try { 
+		// 		foreach($obj->items as $item){
+		// 			$item->idno = $obj->idno;  
+		// 			//del 
+		// 			$sql = ModelNewCCPDet::generateSQLDelete("idno = ". $db->quote($obj->idno) . " and shipid =" . $db->quote($item->shipid));
+		// 			$db->prepare($sql)->execute();
+		// 			ModelNewCCPDet::saveObjToDB($item, $db);
+		// 		}
+
+		// 		$db->commit();
+		// 		$db = null;
+		// 	} catch (Exception $e) {
+		// 		$db->rollback();
+		// 		throw $e;
+		// 	}
+		// }
+
+		// public static function saveToDBBatch($objs){
+		// 	foreach($objs as $obj){
+		// 		static::saveToDB($obj);
+		// 	}
+		// }
+
+
+		public static function getOrCreate($salid, $date){
+			$sql = "exec sp_mobile_getccp '". $salid . "','" . $date . "' ";
+			$obj = DB::openQuery($sql);
+			if (isset($obj[0])) return $obj[0];
+		}
+
+	}
+
+	class ModelNewCCPDet extends BaseModel{
+		public static function getFields(){
+			return array(
+				"idno", "shipid", "ccpsch", 
+				"remark", "ccptype", "mark", "createdate", 
+				"soqty", "doqty", "retqty", "coll",
+				"lat","lng", "datetr"
+			);
+		}
+
+		public static function saveToDBBatch($objs){						
 			$db = new DB();
 			$db = $db->connect();
 			$db->beginTransaction();
 			try { 
-				// if (!static::isNewTransaction($obj)){
-					// $sql = ModelNewCCPDet::generateSQLDelete('IDNo = '. $db->quote($obj->IDNo));
-					// $db->prepare($sql)->execute();
-				// }				
+				foreach($objs as $obj){
 
-				//next : check if salesman already has CCP, then use existing CCP
-				static::saveObjToDB($obj, $db);
+					$parent = ModelNewCCP::getOrCreate($obj->salid, $obj->datetr); 
 
-				foreach($obj->items as $item){
-					$item->IDNo = $obj->IDNo;  
-					//del 
-					$sql = ModelNewCCPDet::generateSQLDelete("IDNo = ". $db->quote($obj->IDNo) . " and ShipID =" . $db->quote($item->ShipID));
+					$obj->idno = $parent->idno;  			
+					$sql = ModelNewCCPDet::generateSQLDelete("idno = ". $db->quote($obj->idno) . " and shipid =" . $db->quote($obj->shipid));
 					$db->prepare($sql)->execute();
-					ModelNewCCPDet::saveObjToDB($item, $db);
+					ModelNewCCPDet::saveObjToDB($obj, $db);
 				}
 
 				$db->commit();
@@ -72,23 +117,7 @@
 				$db->rollback();
 				throw $e;
 			}
-		}
+		}		
 
-		public static function saveToDBBatch($objs){
-			foreach($objs as $obj){
-				static::saveToDB($obj);
-			}
-		}
 
-	}
-
-	class ModelNewCCPDet extends BaseModel{
-		public static function getFields(){
-			return array(
-				"IDNo", "ShipID", "CCPSCH", 
-				"Remark", "CCPType", "Mark", "CreateDate", 
-				"SOQty", "DOQty", "RetQty", "Coll",
-				"Lat","Lng", "DateTr"
-			);
-		}
 	}

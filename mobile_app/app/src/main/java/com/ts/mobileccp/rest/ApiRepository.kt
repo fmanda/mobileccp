@@ -10,11 +10,12 @@ import com.ts.mobileccp.db.entity.Customer
 import com.ts.mobileccp.db.entity.CustomerDao
 import com.ts.mobileccp.db.entity.JSONSalesOrder
 import com.ts.mobileccp.db.entity.JSONSalesOrderItem
-import com.ts.mobileccp.db.entity.JSONVisit
 import com.ts.mobileccp.db.entity.LoginInfo
 import com.ts.mobileccp.db.entity.LoginInfoDao
 import com.ts.mobileccp.db.entity.Inventory
 import com.ts.mobileccp.db.entity.InventoryDao
+import com.ts.mobileccp.db.entity.JSONCCP
+import com.ts.mobileccp.db.entity.JSONCCPDet
 import com.ts.mobileccp.db.entity.PriceLevel
 import com.ts.mobileccp.db.entity.SalesOrderDao
 import com.ts.mobileccp.db.entity.SalesOrderWithItems
@@ -245,16 +246,23 @@ class ApiRepository(ctx: Context) {
         )
     }
 
-    private fun mapToJSONVisit(visit: Visit): JSONVisit {
-        return JSONVisit(
-            id = visit.id.toString(),
-            shipid = visit.shipid,
-            visitdate = visit.visitdate,
-            mark = visit.mark,
-            ccpsch = visit.ccpsch,
-            ccptype = visit.ccptype,
-            lat = visit.lat,
-            lng = visit.lng,
+    private fun mapToJSONCCPDet(visit: Visit): JSONCCPDet {
+        return JSONCCPDet(
+          0,
+            visit.shipid,
+            visit.ccpsch,
+            "",
+            0,
+            visit.mark,
+            visit.visitdate,
+            0,
+            0,
+            0,
+            0.0,
+            visit.lat,
+            visit.lng,
+            visit.visitdate,
+            AppVariable.loginInfo.salid
         )
     }
 
@@ -287,10 +295,8 @@ class ApiRepository(ctx: Context) {
             visitDao.getVisitForUpload()
         }
         val visits = dbvisits.map { obj ->
-            mapToJSONVisit(obj)
+            mapToJSONCCPDet(obj)
         }
-//        val jsonVisit = Json.encodeToString(visits)
-//        println("Serialized JSON: $jsonVisit")
 
         try {
             val response = apiService.postVisits(visits)
@@ -337,7 +343,7 @@ class ApiRepository(ctx: Context) {
         }
 
         val visits = dbvisits.map { visit ->
-            mapToJSONVisit(visit)
+            mapToJSONCCPDet(visit)
         }
 
         try {

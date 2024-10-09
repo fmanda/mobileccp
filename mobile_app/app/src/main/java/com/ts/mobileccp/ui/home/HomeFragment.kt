@@ -143,9 +143,7 @@ class HomeFragment : Fragment(), ListVisitListener {
         }
     }
 
-    override fun onClick(visit: LastVisit, position: Int) {
-        //
-    }
+
 
     override fun onEdit(visit: LastVisit, position: Int) {
         //
