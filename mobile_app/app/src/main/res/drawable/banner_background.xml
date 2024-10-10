@@ -30,7 +30,7 @@
             android:src="@drawable/banner_overlay"
             android:gravity="fill"
             android:tileMode="disabled"
-            android:alpha="1"
+            android:alpha="0.5"
             />
     </item>
 
