@@ -7,6 +7,7 @@ use \Firebase\JWT\JWT;
 require '../vendor/autoload.php';
 require_once '../src/classes/DB.php';
 require_once '../src/models/ModelSalesman.php';
+require_once '../src/models/ModelEmployee.php';
 
 $app->get('/salesman', function ($request, $response) {
   try{    
@@ -80,15 +81,15 @@ $app->post('/login', function (Request $request, Response $response, array $args
 	$obj = json_decode($json);
 
 	
-	$user = ModelSalesman::retrieveLogin($obj->username, $obj->password);
+	$user = ModelEmployee::retrieveLogin($obj->username, $obj->password);
 	if(!$user) {
 	  $response->getBody()->write('These credentials do not match our records username');
 	  return $response->withStatus(401)
 			  ->withHeader('Content-Type', 'text/html');
 	}
 	$token = array(
-		'id' =>  $user->salid,
-		'username' => $user->salid
+		'id' =>  $user->empid,
+		'username' => $user->empid
 	);
 	$token = JWT::encode($token,  $config["secret"], "HS256");
   

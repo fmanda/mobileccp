@@ -5,6 +5,12 @@ inner join IntacsDataUpgrade.dbo.Area b on a.EmpId = b.SalId
 where a.PSales =  1
 and a.NotActive = 0
 
+alter view v_mobile_employee as
+select empid, empname, entity
+from IntacsDataUpgrade.dbo.Employee a
+where a.PSales = 0
+and NotActive = 0
+
 
 alter view v_mobile_customer as
 select a.shipid, a.[Ship Name] as shipname, a.[Ship Address] as shipaddress, a.[Ship City] as shipcity, 
