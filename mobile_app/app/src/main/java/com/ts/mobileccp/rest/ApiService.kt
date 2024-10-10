@@ -51,4 +51,7 @@ interface ApiService {
     fun uploadFile(
         @Part file: MultipartBody.Part
     ): Call<String>
+
+    @GET("visitplan/{salid}")
+    suspend fun getVisitPlan(@Path("salid") salid: String) : List<VisitPlanResponse>
 }

@@ -55,3 +55,9 @@ data class CCPSCHResponse(
     val ccpsch: Int,
     val ccpschname: String
 )
+
+data class VisitPlanResponse(
+    val idno: Int,
+    val plandate: String,
+    val shipid: Int
+)

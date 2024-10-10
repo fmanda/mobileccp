@@ -19,6 +19,7 @@ import com.ts.mobileccp.db.entity.SalesOrderDao
 import com.ts.mobileccp.db.entity.SalesOrderItem
 import com.ts.mobileccp.db.entity.Visit
 import com.ts.mobileccp.db.entity.VisitDao
+import com.ts.mobileccp.db.entity.VisitPlan
 
 //import androidx.room.TypeConverters
 
@@ -32,7 +33,8 @@ import com.ts.mobileccp.db.entity.VisitDao
         LoginInfo::class,
         Visit::class,
         CCPMark::class,
-        CCPSch::class
+        CCPSch::class,
+        VisitPlan::class
     ], version = 1
 )
 abstract class AppDatabase : RoomDatabase() {

@@ -27,16 +27,11 @@ data class Visit(
     val img_uri: String?
 )
 
-@Serializable
-data class JSONVisit(
-    val id: String,
-    val shipid: Int,
-    val visitdate: String,
-    val mark: Int,
-    val ccpsch: Int,
-    val ccptype: Int,
-    val lat: Double?,
-    val lng: Double?
+@Entity(tableName = "visitplan", primaryKeys = ["idno", "shipid"])
+data class VisitPlan(
+    val idno: Int,
+    val plandate: String,
+    val shipid: Int
 )
 
 
@@ -52,6 +47,13 @@ interface VisitDao {
     @Query("SELECT * FROM visit WHERE id=:id")
     fun getVisitForUploadFilterID(id: UUID): List<Visit>
 
+
+    @Query("SELECT * FROM visitplan order by plandate desc limit 1000")
+    fun getVisitPlan(): List<Visit>
+
+    @Query("SELECT * FROM visitplan where plandate=:plandate")
+    fun getVisitPlanByDate(plandate: String): List<Visit>
+
     @Query("UPDATE visit SET uploaded = 1 WHERE uploaded = 0")
     suspend fun updateStatusUploadVisit()
 
@@ -66,6 +68,9 @@ interface VisitDao {
 
     @Upsert
     suspend fun upsertVisit(visit: Visit)
+
+    @Upsert
+    suspend fun upsertListVisitPlan(visitplans: List<VisitPlan>)
 
     @Query(
         "SELECT a.id, a.visitdate, b.shipname , b.shipaddress, c.ccpschname as ccpsch, a.lat, a.lng, a.uploaded \n" +
@@ -127,7 +132,7 @@ data class JSONCCP(
     val operator: String?,
     val items: List<JSONCCPDet>?
 ){
-    constructor(sali: String, datetr: String): this(
+    constructor(salid: String, datetr: String): this(
         null,
         null,
         null,

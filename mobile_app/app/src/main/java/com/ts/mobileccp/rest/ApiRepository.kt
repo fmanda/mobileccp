@@ -23,6 +23,7 @@ import com.ts.mobileccp.db.entity.SalesOrderDao
 import com.ts.mobileccp.db.entity.SalesOrderWithItems
 import com.ts.mobileccp.db.entity.Visit
 import com.ts.mobileccp.db.entity.VisitDao
+import com.ts.mobileccp.db.entity.VisitPlan
 import com.ts.mobileccp.global.AppVariable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -30,7 +31,6 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Call
 import java.io.File
@@ -90,6 +90,18 @@ class ApiRepository(ctx: Context) {
         return withContext(Dispatchers.IO) {
             try {
                 val response = apiService.getPriceLevel(AppVariable.loginInfo.areano)
+                response
+            } catch (e: Exception) {
+                // Handle exceptions
+                null
+            }
+        }
+    }
+
+    suspend fun fetchVisitPlan(): List<VisitPlanResponse>? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.getVisitPlan(AppVariable.loginInfo.salid?: "")
                 response
             } catch (e: Exception) {
                 // Handle exceptions
@@ -184,15 +196,31 @@ class ApiRepository(ctx: Context) {
             }
             if (pricelevels != null) {
                 inventoryDao.insertPricelevels(pricelevels)
-//                Toast.makeText(context, "Products Updated from Server", Toast.LENGTH_SHORT).show()
             }
 
         } catch (e: Exception) {
-//            callback?.onError(e.message ?: "An error occurred")
             Toast.makeText(context, e.message ?: "An error occurred", Toast.LENGTH_LONG).show()
         }
     }
 
+    suspend fun saveVisitPlanFromRest() {
+        try {
+            val result = this.fetchVisitPlan()
+            val visitplans = result?.map { apiResponse ->
+                VisitPlan(
+                    apiResponse.idno,
+                    apiResponse.plandate,
+                    apiResponse.shipid
+                )
+            }
+            if (visitplans != null) {
+                visitDao.upsertListVisitPlan(visitplans)
+            }
+
+        } catch (e: Exception) {
+            Toast.makeText(context, e.message ?: "An error occurred", Toast.LENGTH_LONG).show()
+        }
+    }
     suspend fun saveCustomerFromRest() {
         try {
             val result = this.fetchCustomer()
@@ -363,11 +391,8 @@ class ApiRepository(ctx: Context) {
     }
 
     private suspend fun uploadFileFromUri(fileUri: Uri) {
-        if (!isUriValid(fileUri)) {
-            return
-        }
-        val fileName = getOriginalFileName(context, fileUri)
-        if (fileName == null)  return
+        if (!isUriValid(fileUri))  return
+        val fileName = getOriginalFileName(context, fileUri) ?: return
 
         val baseName = fileName.substringBeforeLast(".")
         val extension = fileName.substringAfterLast(".", "")
