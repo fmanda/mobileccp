@@ -30,7 +30,7 @@ $app->get('/newccp/{entity}/{dt1}/{dt2}[/{filtertxt}]', function ($request, $res
             from NEWCCP a
             inner join NEWCCPDet b on a.IDNo = b.IDNo
             inner join CustPartnerShip c on b.ShipID = c.ShipId
-            inner join SalesComboView d on a.SalID = d.EmpId
+            left join SalesComboView d on a.SalID = d.EmpId
             left join CCPSch e on b.CCPSCH = e.CCPSch
             left join NewCCPMark f on b.Mark = f.Mark
             left join NewCCPType g on b.CCPType = g.CCPType"

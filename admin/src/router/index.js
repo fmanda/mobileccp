@@ -73,12 +73,12 @@ export const constantRoutes = [
         component: () => import('@/views/master/customer/index'),
         meta: { title: 'Customer', icon: 'user' }
       },
-      {
-        path: 'salesman',
-        name: 'Salesman',
-        component: () => import('@/views/master/salesman'),
-        meta: { title: 'Salesman', icon: 'el-icon-s-custom' }
-      }
+      // {
+      //   path: 'salesman',
+      //   name: 'Salesman',
+      //   component: () => import('@/views/master/salesman'),
+      //   meta: { title: 'Salesman', icon: 'el-icon-s-custom' }
+      // }
     ]
   },
 
@@ -151,7 +151,7 @@ export const constantRoutes = [
         path: 'report2',
         name: 'Sales',
         component: () => import('@/views/salesorder/index'),
-        meta: { title: 'Buku Tamu', icon: 'link' }
+        meta: { title: 'Sales Report', icon: 'link' }
       }
 
       // {

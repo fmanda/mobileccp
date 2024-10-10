@@ -71,3 +71,35 @@ $app->get('/login_salesman/{username}/{password}', function ($request, $response
 });
 
 
+//temporary, nanti buat admin
+
+$app->post('/login', function (Request $request, Response $response, array $args) {
+	$config = parse_ini_file("../src/config.ini");
+  
+	$json = $request->getBody();
+	$obj = json_decode($json);
+
+	
+	$user = ModelSalesman::retrieveLogin($obj->username, $obj->password);
+	if(!$user) {
+	  $response->getBody()->write('These credentials do not match our records username');
+	  return $response->withStatus(401)
+			  ->withHeader('Content-Type', 'text/html');
+	}
+	$token = array(
+		'id' =>  $user->salid,
+		'username' => $user->salid
+	);
+	$token = JWT::encode($token,  $config["secret"], "HS256");
+  
+	$result = new stdClass();
+	$result->token = $token;
+	$result->user = $user;
+	$result = json_encode($result);
+  
+	$response->getBody()->write($result);
+	return $response->withHeader('Content-Type', 'multipart/form-data');
+	// return $this->response->withJson(['status' => 'success','data'=>$user, 'token' => $token]);
+  });
+  
+

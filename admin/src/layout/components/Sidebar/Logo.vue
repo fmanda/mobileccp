@@ -26,7 +26,7 @@ export default {
   },
   data() {
     return {
-      title: 'Mobility',
+      title: 'CCP Admin TS',
       logo: tsLogo
     }
   }
