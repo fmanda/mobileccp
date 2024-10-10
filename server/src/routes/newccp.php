@@ -3,6 +3,8 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\UploadedFileInterface;
 
+
+
 require '../vendor/autoload.php';
 require_once '../src/classes/DB.php';
 require_once '../src/models/ModelNewCCP.php';
@@ -44,8 +46,8 @@ $app->get('/newccp/{entity}/{dt1}/{dt2}[/{filtertxt}]', function ($request, $res
     $msg = $e->getMessage();
     $response->getBody()->write($msg);
 		return $response->withStatus(500)
-			->withHeader('Content-Type', 'text/html');
-	}
+        ->withHeader('Content-Type', 'text/html');
+    }
 });
 
 
@@ -157,3 +159,155 @@ $app->get('/ccpsch', function ($request, $response) {
 	}
 });
 
+
+
+
+$app->get('/visitimage/{id}', function ($request, $response, $args) {
+	try{
+    $id = $request->getAttribute('id');
+    $str = "SELECT encode(img1, 'base64')  as img1 FROM visitimage where visit_id = " . $id ;
+    $obj =  DB::openQuery($str);
+    $img = $obj[0]->img1;
+
+
+    echo '<img crossorigin=""  src="data:image/jpeg;base64,'.$img.'"/>';
+
+    return $response->withHeader("Content-Type", "image/jpeg");
+		// return $response->withHeader('Content-Type', 'image/jpeg');
+    // return $response->withHeader('Content-Type', 'text/html');
+	}catch(Exception $e){
+    $msg = $e->getMessage();
+    $response->getBody()->write($msg);
+		return $response->withStatus(500)
+			->withHeader('Content-Type', 'text/html');
+	}
+});
+
+
+
+$app->get('/visitimageurl/{id}', function ($request, $response, $args) {
+	try{
+    $id = $request->getAttribute('id');
+    $str = "SELECT imgpath1, imgpath2 FROM visitimage where visit_id = " . $id . "  order by imgpath1 desc";
+    $obj =  DB::openQuery($str);
+
+    // if($obj[0] == null) $response->withHeader("Content-Type", "text/html");
+
+    $json = json_encode($obj[0]);
+
+    //PR bikinkan config
+    // $config = parse_ini_file("../src/config.ini");
+  	// $directory =  $config["upload_directory"];
+    // $directory = $directory . DIRECTORY_SEPARATOR; //. $year;
+
+    $response->getBody()->write($json);
+
+    return $response->withHeader("Content-Type", "text/html");
+		// return $response->withHeader('Content-Type', 'image/jpeg');
+    // return $response->withHeader('Content-Type', 'text/html');
+	}catch(Exception $e){
+    $msg = $e->getMessage();
+    $response->getBody()->write($msg);
+		return $response->withStatus(500)
+        ->withHeader('Content-Type', 'text/html');
+  }
+});
+
+$app->post('/uploadimg', function ($request, $response) {
+  $uploadedFiles = $request->getUploadedFiles();
+
+  if (isset($uploadedFiles['file'])) {
+      $uploadedFile = $uploadedFiles['file'];
+      
+      if ($uploadedFile->getError() === UPLOAD_ERR_OK) {
+          // $directory = 'C:\Sharedprojects\mobileccp\server\uploads';
+          //$directory = __DIR__ . '/uploads';  
+          // $filename = moveUploadedFile($directory, $uploadedFile);
+
+          $filename = processFile($uploadedFile);
+
+          $response->getBody()->write($filename);
+          return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
+      }
+  }
+
+  return $response->withStatus(500)
+    ->withHeader('Content-Type', 'text/html');
+  
+});
+
+
+// function moveUploadedFile($directory, $uploadedFile)
+// {
+//     $filename = $uploadedFile->getClientFilename();
+//     $filePath = $directory . DIRECTORY_SEPARATOR . $filename;
+
+
+//     $uploadedFile->moveTo($filePath);
+//     return $filename; 
+// }
+
+
+function processFile($uploadedFile) {
+    // $ext = '.jpg';
+
+    $config = parse_ini_file("../src/config.ini");
+  	$directory =  $config["upload_directory"];
+
+  	$directory = $directory . DIRECTORY_SEPARATOR; //. $year;
+
+  	if (!file_exists($directory)) {
+  		mkdir($directory, 0777, true);
+  	}
+
+    $filename = $uploadedFile->getClientFilename(); //  . $ext;
+
+
+    // $filename = str_replace('tmp', '', $filename);     
+    // $filename = str_replace('..', '.', $filename); 
+    $filename = $directory . DIRECTORY_SEPARATOR . $filename;
+    // if (strpos($filename, 'tmp') === 0) {
+    //   $filename = substr($filename, strlen('tmp'));
+    // }
+
+    $uploadedFile->moveTo($filename);
+    return $filename;
+
+}
+
+
+
+
+$app->get('/checkconfig', function (Request $request, Response $response, $args) {
+  $config = parse_ini_file("../src/config.ini");
+  $directory =  $config["upload_directory"];
+
+  $response->getBody()->write($directory);    
+  return $response;
+});
+
+
+$app->get('/image/{filename}', function (Request $request, Response $response, $args) {
+  $filename = $args['filename'];
+
+  $config = parse_ini_file("../src/config.ini");
+  $directory =  $config["upload_directory"];
+  $directory = $directory . DIRECTORY_SEPARATOR;
+
+  $imagePath = $directory . $filename; // Adjust the path as needed
+
+  // Check if the file exists
+  if (!file_exists($imagePath)) {
+    $response->getBody()->write('Image not found');
+    return $response->withStatus(500)->withHeader('Content-Type', 'text/html');
+  }
+
+  // Set the response headers
+  $response = $response->withHeader('Content-Type', 'image/jpeg');
+
+  // Read the file content
+  $fileContent = file_get_contents($imagePath);
+  $response->getBody()->write($fileContent);
+  
+  return $response;
+});

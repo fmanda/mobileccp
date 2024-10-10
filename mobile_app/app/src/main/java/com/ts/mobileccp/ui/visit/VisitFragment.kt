@@ -12,6 +12,7 @@ import android.graphics.Paint
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +27,7 @@ import com.ts.mobileccp.db.entity.Customer
 import com.ts.mobileccp.ui.customer.DialogCustomerFragment
 import android.R as R1
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -64,6 +66,7 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     private lateinit var currentPhotoUri: Uri
     private var uuid : UUID? = null
+    private var img_uri : String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -193,14 +196,13 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
         uuid = visit.id
         selectedSCH = visit.ccpsch
         selectedMark = visit.mark
+        img_uri = visit.img_uri
+
 
         updateComboBox()
-//
-//        val idxSCH = visitViewModel.listCCPSch.value?.indexOfFirst { it.ccpsch == visit.ccpsch }
-//        binding.spSCH.setSelection(idxSCH?:0)
-//
-//        val idxMark = visitViewModel.listCCPMark.value?.indexOfFirst { it.mark == visit.mark }
-//        binding.spMark.setSelection(idxMark?:0)
+        visit.img_uri?.let{
+            loadPhotosFromUri(visit.img_uri)
+        }
     }
 
     fun updateComboBox(){
@@ -307,7 +309,7 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
         }
     }
 
-    private fun createImageUri(): Uri? {
+    private fun _createImageUri(): Uri? {
         val contentValues = ContentValues().apply {
 //            put(MediaStore.Images.Media.DISPLAY_NAME, "${System.currentTimeMillis()}.jpg")
             put(MediaStore.Images.Media.DISPLAY_NAME, "${getUUID().toString()}.jpg")
@@ -316,6 +318,38 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
         }
 
         return requireContext().contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+    }
+
+    private fun createImageUri(): Uri? {
+        val fileName = "${getUUID().toString()}.jpg"// Change this if needed
+        val projection = arrayOf(MediaStore.Images.Media._ID)
+        val selection = "${MediaStore.Images.Media.DISPLAY_NAME} = ?"
+        val selectionArgs = arrayOf(fileName)
+
+        // Query to check if the image already exists
+        val cursor = requireContext().contentResolver.query(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            projection,
+            selection,
+            selectionArgs,
+            null
+        )
+
+        return if (cursor != null && cursor.moveToFirst()) {
+            // Image exists, retrieve its URI
+            val id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID))
+            Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id.toString())
+        } else {
+            // Image does not exist, create a new URI
+            val contentValues = ContentValues().apply {
+                put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+                put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/WatermarkedPhotos") // Ensure the folder exists
+            }
+            requireContext().contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+        }.also {
+            cursor?.close()
+        }
     }
 
     private fun getRealPathFromUri(uri: Uri): String? {
@@ -329,6 +363,19 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
             }
         }
         return null
+    }
+
+
+    fun loadPhotosFromUri(imguri:String) {
+        val uri = Uri.parse(imguri)
+        try {
+            val bitmap = requireActivity().contentResolver.openInputStream(uri)?.use { inputStream ->
+                BitmapFactory.decodeStream(inputStream)
+            }
+            binding.imgView.setImageBitmap(bitmap)
+        } catch (e: Exception) {
+
+        }
     }
 
     private fun getUUID():UUID{
@@ -371,6 +418,7 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
             val success = bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
             if (success) {
                 println("Image compressed successfully and saved at: $originalFilePath")
+                img_uri = uri.toString()
             } else {
                 println("Failed to compress image.")
             }
@@ -395,7 +443,8 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
             0,
             latitude,
             longitude,
-            0
+            0,
+            img_uri
         )
     }
 

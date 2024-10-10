@@ -1,6 +1,9 @@
 package com.ts.mobileccp.rest
 
 import android.content.Context
+import android.net.Uri
+import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
 import com.ts.mobileccp.db.AppDatabase
 import com.ts.mobileccp.db.entity.CCPMark
@@ -8,14 +11,13 @@ import com.ts.mobileccp.db.entity.CCPMarkDao
 import com.ts.mobileccp.db.entity.CCPSch
 import com.ts.mobileccp.db.entity.Customer
 import com.ts.mobileccp.db.entity.CustomerDao
+import com.ts.mobileccp.db.entity.Inventory
+import com.ts.mobileccp.db.entity.InventoryDao
+import com.ts.mobileccp.db.entity.JSONCCPDet
 import com.ts.mobileccp.db.entity.JSONSalesOrder
 import com.ts.mobileccp.db.entity.JSONSalesOrderItem
 import com.ts.mobileccp.db.entity.LoginInfo
 import com.ts.mobileccp.db.entity.LoginInfoDao
-import com.ts.mobileccp.db.entity.Inventory
-import com.ts.mobileccp.db.entity.InventoryDao
-import com.ts.mobileccp.db.entity.JSONCCP
-import com.ts.mobileccp.db.entity.JSONCCPDet
 import com.ts.mobileccp.db.entity.PriceLevel
 import com.ts.mobileccp.db.entity.SalesOrderDao
 import com.ts.mobileccp.db.entity.SalesOrderWithItems
@@ -26,6 +28,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import retrofit2.Call
+import java.io.File
+import java.io.FileOutputStream
 import java.util.UUID
 
 class ApiRepository(ctx: Context) {
@@ -290,28 +299,119 @@ class ApiRepository(ctx: Context) {
         }
     }
 
-    suspend fun fetchAndPostVisit() {
+    suspend fun fetchAndPostVisit(filterID:UUID? = null) {
         val dbvisits = withContext(Dispatchers.IO) {
-            visitDao.getVisitForUpload()
+            if (filterID != null) {
+                visitDao.getVisitForUploadFilterID(filterID)
+            }else{
+                visitDao.getVisitForUpload()
+            }
         }
-        val visits = dbvisits.map { obj ->
-            mapToJSONCCPDet(obj)
+
+        val visits = dbvisits.map { visit ->
+            mapToJSONCCPDet(visit)
         }
 
         try {
             val response = apiService.postVisits(visits)
             if (response.isSuccessful) {
-                visitDao.updateStatusUploadVisit()
+                if (filterID != null) {
+                    visitDao.updateStatusUploadVisitByID(filterID)
+                }else{
+                    visitDao.updateStatusUploadVisit()
+                }
+
             } else {
-                Toast.makeText(context, "Failed to post visits: ${response.errorBody()?.string()}",
+                Toast.makeText(context, "Failed to post visit: ${response.errorBody()?.string()}",
                     Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
-            Toast.makeText(context, "Error posting visits",
+            Toast.makeText(context, "Error posting orders",
                 Toast.LENGTH_SHORT).show()
         }
     }
 
+    suspend fun fetchAndPostVisitImg(filterID:UUID? = null) {
+        val visits = withContext(Dispatchers.IO) {
+            if (filterID != null) {
+                visitDao.getVisitForUploadFilterID(filterID)
+            }else{
+                visitDao.getVisitForUpload()
+            }
+        }
+
+        for (visit in visits){
+            val uri = Uri.parse(visit.img_uri)
+            uploadFileFromUri(uri)
+        }
+
+    }
+
+    private fun getOriginalFileName(context: Context, uri: Uri): String? {
+        var fileName: String? = null
+        val projection = arrayOf(MediaStore.Images.Media.DISPLAY_NAME)
+
+        // Query the MediaStore for the original filename
+        context.contentResolver.query(uri, projection, null, null, null)?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                val nameIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
+                fileName = cursor.getString(nameIndex) // Get the filename
+            }
+        }
+
+        return fileName // Return the original filename
+    }
+
+    private suspend fun uploadFileFromUri(fileUri: Uri) {
+        if (!isUriValid(fileUri)) {
+            return
+        }
+        val fileName = getOriginalFileName(context, fileUri)
+        if (fileName == null)  return
+
+        val baseName = fileName.substringBeforeLast(".")
+        val extension = fileName.substringAfterLast(".", "")
+
+        val inputStream = context.contentResolver.openInputStream(fileUri)
+        val tempFile = withContext(Dispatchers.IO) {
+            File(context.cacheDir, "$baseName.$extension")
+//            File.createTempFile(fileName.substringBeforeLast("."), "", context.cacheDir)
+//            File.createTempFile("tmp", null, context.cacheDir)
+        }
+        inputStream?.use { input ->
+            FileOutputStream(tempFile).use { output ->
+                input.copyTo(output)
+            }
+        }
+
+        val requestFile = tempFile.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+        val body = MultipartBody.Part.createFormData("file", tempFile.name, requestFile)
+
+        val call = apiService.uploadFile(body)
+        call.enqueue(object : retrofit2.Callback<String> {
+            override fun onResponse(call: Call<String>, response: retrofit2.Response<String>) {
+                if (response.isSuccessful) {
+                    Log.d("Upload", "File uploaded successfully: ${response.body()}")
+                } else {
+                    Log.e("Upload", "File upload failed: ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.e("Upload", "Error: ${t.message}")
+            }
+        })
+    }
+
+    private fun isUriValid(fileUri: Uri): Boolean {
+        return try {
+            context.contentResolver.openInputStream(fileUri)?.use {
+                true
+            } ?: false
+        } catch (e: Exception) {
+            false
+        }
+    }
 
     suspend fun fetchAndPostOrdersByID(filterID:UUID) {
         val ordersWithItems = withContext(Dispatchers.IO) {
@@ -337,28 +437,7 @@ class ApiRepository(ctx: Context) {
         }
     }
 
-    suspend fun fetchAndPostVisitByID(filterID:UUID) {
-        val dbvisits = withContext(Dispatchers.IO) {
-            visitDao.getVisitForUploadFilterID(filterID)
-        }
 
-        val visits = dbvisits.map { visit ->
-            mapToJSONCCPDet(visit)
-        }
-
-        try {
-            val response = apiService.postVisits(visits)
-            if (response.isSuccessful) {
-                visitDao.updateStatusUploadVisitByID(filterID)
-            } else {
-                Toast.makeText(context, "Failed to post orders: ${response.errorBody()?.string()}",
-                    Toast.LENGTH_SHORT).show()
-            }
-        } catch (e: Exception) {
-            Toast.makeText(context, "Error posting orders",
-                Toast.LENGTH_SHORT).show()
-        }
-    }
 
 
     suspend fun loginSalesman(username:String, password:String): Boolean {
@@ -410,6 +489,8 @@ class ApiRepository(ctx: Context) {
 
         return login
     }
+
+
 
 }
 

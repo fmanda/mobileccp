@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.ts.mobileccp.databinding.FragmentSyncBinding
 import com.ts.mobileccp.ui.SharedViewModel
@@ -57,7 +56,7 @@ class SyncFragment : Fragment() {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
-        sharedViewModel.isRestProcessing.observe(viewLifecycleOwner) { data ->
+        sharedViewModel.isDownloadProcessing.observe(viewLifecycleOwner) { data ->
             data?.let { setSyncState(it) }
         }
 

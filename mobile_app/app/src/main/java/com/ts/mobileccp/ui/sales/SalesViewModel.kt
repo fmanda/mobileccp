@@ -66,7 +66,7 @@ class SalesViewModel(application: Application) : AndroidViewModel(application) {
 
     private suspend fun doSyncSalesByID(filterID: UUID) {
         repository.fetchAndPostOrdersByID(filterID)
-        repository.fetchAndPostVisitByID(filterID)
+        repository.fetchAndPostVisit(filterID)
 
         isRestProcessing.postValue(false)
         Toast.makeText(_app, "Sinkronisasi Data Berhasil", Toast.LENGTH_LONG).show()

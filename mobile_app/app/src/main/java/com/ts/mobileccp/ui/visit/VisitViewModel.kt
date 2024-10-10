@@ -47,7 +47,8 @@ class VisitViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private suspend fun doSyncVisitByID(filterID: UUID) {
-        repository.fetchAndPostVisitByID(filterID)
+        repository.fetchAndPostVisit(filterID)
+        repository.fetchAndPostVisitImg(filterID)
 
         isRestProcessing.postValue(false)
         Toast.makeText(_app, "Data Visit berhasil di upload", Toast.LENGTH_LONG).show()

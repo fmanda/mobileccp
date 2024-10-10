@@ -23,7 +23,8 @@ data class Visit(
     val ccptype: Int,
     val lat: Double?,
     val lng: Double?,
-    val uploaded: Int
+    val uploaded: Int,
+    val img_uri: String?
 )
 
 @Serializable

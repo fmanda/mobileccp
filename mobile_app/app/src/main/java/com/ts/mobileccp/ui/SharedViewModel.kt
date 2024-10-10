@@ -26,7 +26,10 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     private val loginInfoDao: LoginInfoDao = AppDatabase.getInstance(application).loginInfoDao()
     private val customerDao: CustomerDao = AppDatabase.getInstance(application).customerDao()
     private val inventoryDao: InventoryDao = AppDatabase.getInstance(application).inventoryDao()
-    val isRestProcessing = MutableLiveData<Boolean>().apply { value = false }
+    val isDownloadProcessing = MutableLiveData<Boolean>().apply { value = false }
+    val isUploadProcessing = MutableLiveData<Boolean>().apply { value = false }
+
+
     val last_download = MutableLiveData<String?>().apply { postValue(AppVariable.loginInfo.last_download) }
 
     val customerCount: LiveData<Int?> = customerDao.getRowCount()
@@ -34,8 +37,13 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 
 
     fun syncData()= viewModelScope.launch {
-        isRestProcessing.postValue(true)
+        isDownloadProcessing.postValue(true)
         downloadData()
+    }
+
+    fun syncUploadData()= viewModelScope.launch {
+        isUploadProcessing.postValue(true)
+        uploadData()
     }
 
     private suspend fun downloadData() {
@@ -52,7 +60,16 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
         loginInfoDao.upsert(AppVariable.loginInfo)
         last_download.postValue(AppVariable.loginInfo.last_download)
 
-        isRestProcessing.postValue(false)
+        isDownloadProcessing.postValue(false)
+        Toast.makeText(_app, "Download Data Berhasil", Toast.LENGTH_LONG).show()
+    }
+
+    private suspend fun uploadData() {
+        repository.fetchAndPostVisit()
+        repository.fetchAndPostVisitImg()
+
+
+        isUploadProcessing.postValue(false)
         Toast.makeText(_app, "Download Data Berhasil", Toast.LENGTH_LONG).show()
     }
 }
