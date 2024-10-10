@@ -23,7 +23,10 @@ import java.util.Locale
 class ListVisitAdapter(private var mList: List<LastVisit>, val listener: ListVisitListener, val isDashBoard:Boolean = false) : RecyclerView.Adapter<ListVisitAdapter.ViewHolder>() {
     private val formatter: NumberFormat = DecimalFormat("Rp #,###")
     private val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-    private val outputFormat = SimpleDateFormat("EEEE, dd-MM-yyyy HH:mm:ss", Locale.getDefault())
+    private val outputFormatDay = SimpleDateFormat("EEEE", Locale.getDefault())
+    private val outputFormatDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+    private val outputFormatTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -36,9 +39,16 @@ class ListVisitAdapter(private var mList: List<LastVisit>, val listener: ListVis
         val visit = mList[position]
 
         val date: Date? = inputFormat.parse(visit.visitdate)
-        val formattedDate = date?.let { outputFormat.format(it) }
 
+
+        val formattedDay = date?.let { outputFormatDay.format(it) }
+        val formattedDate = date?.let { outputFormatDate.format(it) }
+        val formattedTime = date?.let { outputFormatTime.format(it) }
+
+        holder.txtDay.text = formattedDay
         holder.txtDate.text = formattedDate
+        holder.txtTime.text = formattedTime
+
         holder.txtCustomer.text = visit.shipname
         holder.txtAddress.text = visit.shipaddress
         holder.txtSCH.text = visit.ccpsch
@@ -88,7 +98,9 @@ class ListVisitAdapter(private var mList: List<LastVisit>, val listener: ListVis
 
 
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
+        val txtDay: TextView = itemView.findViewById(R.id.txtDay)
         val txtDate: TextView = itemView.findViewById(R.id.txtDate)
+        val txtTime: TextView = itemView.findViewById(R.id.txtTime)
         val txtCustomer: TextView = itemView.findViewById(R.id.txtCustomer)
 
         val txtAddress: TextView = itemView.findViewById(R.id.txtAddress)

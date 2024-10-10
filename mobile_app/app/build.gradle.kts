@@ -8,16 +8,15 @@ plugins {
 
 android {
     namespace = "com.ts.mobileccp"
-    compileSdk = 35
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.ts.mobileccp"
         minSdk = 30
-        targetSdk = 35
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
