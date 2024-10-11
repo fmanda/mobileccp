@@ -92,7 +92,7 @@
 				"idno", "shipid", "ccpsch", 
 				"remark", "ccptype", "mark", "createdate", 
 				"soqty", "doqty", "retqty", "coll",
-				"lat","lng", "datetr"
+				"lat","lng", "datetr", "uid"
 			);
 		}
 

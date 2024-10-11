@@ -6,11 +6,11 @@ where a.PSales =  1
 and a.NotActive = 0
 
 alter view v_mobile_employee as
-select empid, empname, entity
+select empid, empname, a.entity, b.EntityName
 from IntacsDataUpgrade.dbo.Employee a
+inner join IntacsDataUpgrade.dbo.Entity b on a.Entity = b.Entity
 where a.PSales = 0
-and NotActive = 0
-
+and a.NotActive = 0
 
 alter view v_mobile_customer as
 select a.shipid, a.[Ship Name] as shipname, a.[Ship Address] as shipaddress, a.[Ship City] as shipcity, 

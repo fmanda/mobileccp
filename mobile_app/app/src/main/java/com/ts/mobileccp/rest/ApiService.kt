@@ -1,10 +1,7 @@
 package com.ts.mobileccp.rest
 
-import com.ts.mobileccp.db.entity.CCPSch
-import com.ts.mobileccp.db.entity.JSONCCP
 import com.ts.mobileccp.db.entity.JSONCCPDet
 import com.ts.mobileccp.db.entity.JSONSalesOrder
-import com.ts.mobileccp.db.entity.JSONVisit
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Response

@@ -17,7 +17,7 @@
       style = "margin-bottom: 10px"
     >
       <!-- <el-menu-item index="1"><i class="el-icon-user"></i>Akan Berlangsung</el-menu-item> -->
-      <el-menu-item index="1"><i class="el-icon-date"></i>Semua Kunjungan</el-menu-item>
+      <el-menu-item index="1"><i class="el-icon-date"></i>Data Kunjungan / Realisasi CCP</el-menu-item>
     </el-menu>
 
     <div v-if= "activeMenu == '1' ">
@@ -55,9 +55,9 @@
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-mobile-phone"></i>
-                No. Telepon
+                Ship Name
               </template>
-              {{props.row.phone}}
+              {{props.row.shipname}}
             </el-descriptions-item>
             
             <el-descriptions-item label-class-name="my-label">
@@ -65,7 +65,7 @@
                 <i class="el-icon-office-building"></i>
                 Alamat
               </template>
-              {{props.row.alamat}}
+              {{props.row.shipaddress}}
             </el-descriptions-item>
         
 
@@ -74,20 +74,33 @@
                 <i class="el-icon-location-information"></i>
                 Map
               </template>
-                <el-link type="primary" :href="buildGMapURL(props.row.latitude, props.row.longitude)" target="_blank">{{ buildGMapURL(props.row.latitude, props.row.longitude) }}</el-link>
+                <el-link type="primary" :href="buildGMapURL(props.row.lat, props.row.lng)" target="_blank">{{ buildGMapURL(props.row.lat, props.row.lng) }}</el-link>
+            </el-descriptions-item>
+
+            <el-descriptions-item label-class-name="my-label">
+              <template slot="label">
+                <i class="el-icon-camera"></i>
+                Photo
+              </template>
+                <img id="" alt="" style="max-width: 100%; height: auto;" />
+                <el-image :src="buildImageURL(props.row.uid)" lazy></el-image>
+                <!-- <el-link type="primary" :href="buildImageURL(props.row.uid)" target="_blank">{{ buildImageURL(props.row.uid) }}</el-link> -->
             </el-descriptions-item>
         
             
-          </el-descriptions>
+          </el-descriptions> 
         </template>
       </el-table-column>
-      <el-table-column label="visitdate" prop="visitdate" sortable/>
+      <el-table-column label="tanggal" prop="datetr" sortable/>
       <el-table-column label="salesman" prop="salesman" sortable/>
-      <el-table-column label="customer" prop="customer" sortable/>
-      <el-table-column label="alamat" prop="alamat" sortable/>
+      <!-- <el-table-column label="shipname" prop="shipname" sortable/> -->
+      <el-table-column label="customer" prop="partnername" sortable/>
+      <!-- <el-table-column label="alamat" prop="shipaddress" sortable/> -->
+      <el-table-column label="sch" prop="ccpschname" sortable/>
+      <el-table-column label="remark" prop="markname" sortable/>
       <el-table-column label="GeoLocation" >
         <template slot-scope="scope">
-          <el-button plain size="small" type="primary" @click="gotoMapLocation(scope.row.latitude, scope.row.longitude)" >
+          <el-button plain size="small" type="primary" @click="gotoMapLocation(scope.row.lat, scope.row.lng)" >
             <i class="el-icon-location-information"></i> Map Location</el-button>
         </template>
       </el-table-column>
@@ -128,6 +141,7 @@
 
 <script>
 import { getVisitPeriod } from '@/api/salesorder'
+import { getVisitImgURL } from '@/api/visit'
 import { formatCurrency } from '@/utils/index.js'
 // import { find, head } from 'lodash';
 
@@ -249,6 +263,9 @@ export default {
     },
     buildGMapURL(lat, long){
       return "https://www.google.com/maps/place/" + lat.toString() + "," + long.toString()
+    },
+    buildImageURL(uid){
+      return getVisitImgURL(uid)
     },
     gotoMapLocation(lat, long){
       window.open(this.buildGMapURL(lat, long))

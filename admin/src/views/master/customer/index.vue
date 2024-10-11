@@ -13,7 +13,7 @@
     >
       <!-- <el-menu-item index="1"><i class="el-icon-user"></i>Akan Berlangsung</el-menu-item> -->
       <el-menu-item index="1"><i class="el-icon-user"></i>Browse Customer</el-menu-item>
-      <el-menu-item index="2"><i class="el-icon-user"></i>Browse New Customer</el-menu-item>
+      <!-- <el-menu-item index="2"><i class="el-icon-user"></i>Browse New Customer</el-menu-item> -->
     </el-menu>
 
     <el-input
@@ -38,14 +38,13 @@
       :data="data.filter(data => !search || data.nama.toLowerCase().includes(search.toLowerCase()))"
       style="width: 100%"
     >
-      <el-table-column v-if="activeMenu=='2'" label="ID" prop="id" />
-      <el-table-column label="Customer" prop="nama" width="240px"/>
+      <!-- <el-table-column v-if="activeMenu=='2'" label="ID" prop="id" /> -->
+      <el-table-column label="Ship Name" prop="shipname"/>
       <!-- <el-table-column label="NIK" prop="nik" /> -->
-      <el-table-column label="Alamat" prop="alamat" width="400px"/>
-      <el-table-column label="Kelurahan" prop="kelurahan" />
-      <el-table-column label="Kecamatan" prop="kecamatan" />
-      <el-table-column label="Phone" prop="phone" />
-      <el-table-column label="Last Updated" prop="last_updated" />
+      <el-table-column label="PartnerName" prop="partnername" />
+      <el-table-column label="Area" prop="areaname" />
+      <el-table-column label="Jenjang" prop="jenjang" />
+      <el-table-column label="NPSPN" prop="npsn" />      
     </el-table>
     <br>
   </div>
@@ -75,17 +74,17 @@ export default {
     fetchData() {
       this.listLoading = true;
 
-      if (this.activeMenu == '1'){
+      // if (this.activeMenu == '1'){
         getListCustomer(this.filtertxt).then(response => {
           this.data = response.data;
           this.listLoading = false
         })
-      }else{
-        getListNewCustomer(this.filtertxt).then(response => {
-          this.data = response.data;
-          this.listLoading = false
-        })
-      }
+      // }else{
+      //   getListNewCustomer(this.filtertxt).then(response => {
+      //     this.data = response.data;
+      //     this.listLoading = false
+      //   })
+      // }
     },
     handleSelect(key, keyPath) {
       // console.log(key, keyPath);

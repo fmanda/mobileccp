@@ -49,11 +49,9 @@ const actions = {
         // commit('SET_PROJECT_CODE', data.user.project_code)
 
         setToken(data.token)
-        console.log('here')
-        setProjectCode(data.user.project_code)
-        console.log('here2')
-        setProjectName(data.user.project_name)
-        console.log('here3')
+        setProjectCode(data.user.entity)
+        setProjectName(data.user.entityname)
+    
 
         resolve()
       }).catch(error => {

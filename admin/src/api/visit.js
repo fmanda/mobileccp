@@ -79,7 +79,7 @@ export function getVisitImage(id) {
 
 export function getVisitImgURL(id) {
   if (!id) return null;
-  return process.env.VUE_APP_IMG_URL + '/' + id.toString();
+  return process.env.VUE_APP_BASE_URL + '/image/' + id.toString();
 }
 
 export function endVisit(id) {

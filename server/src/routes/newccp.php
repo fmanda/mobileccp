@@ -24,16 +24,17 @@ $app->get('/newccp/{entity}/{dt1}/{dt2}[/{filtertxt}]', function ($request, $res
               . " or lower(d.EmpName) like '%". strtolower($filtertxt) . "%')";
 
     $str = "select TOP 1000 
-            a.idno, a.NoTR, a.DateTR, a.Dabin, a.Description, a.Entity, 
-            d.EmpName as Salesman, c.[Ship Name] as ShipName, c.PartnerName, 
-            b.Remark, e.CCPSchName, b.FlagDikunjungi, g.CCPTypeName, f.MarkName,  b.lat, b.Lng
+            a.idno, a.notr, isnull(b.datetr, a.datetr) as datetr, a.dabin, a.description, a.entity, 
+            d.EmpName as salesman, c.[Ship Name] as shipname, c.partnername, h.[Ship Address] as shipaddress,
+            b.remark, e.ccpschname, b.flagdikunjungi, g.ccptypename, f.markname,  b.lat, b.lng, b.uid
             from NEWCCP a
             inner join NEWCCPDet b on a.IDNo = b.IDNo
             inner join CustPartnerShip c on b.ShipID = c.ShipId
             left join SalesComboView d on a.SalID = d.EmpId
             left join CCPSch e on b.CCPSCH = e.CCPSch
             left join NewCCPMark f on b.Mark = f.Mark
-            left join NewCCPType g on b.CCPType = g.CCPType"
+            left join NewCCPType g on b.CCPType = g.CCPType
+            inner join IntacsDataUpgrade.dbo.CustomerDelivery h on b.ShipID = h.ShipId"
             . $filter .
             "order by a.DateTR desc ";            
     $data = DB::openQuery($str);
@@ -294,11 +295,11 @@ $app->get('/image/{filename}', function (Request $request, Response $response, $
   $directory =  $config["upload_directory"];
   $directory = $directory . DIRECTORY_SEPARATOR;
 
-  $imagePath = $directory . $filename; // Adjust the path as needed
+  $imagePath = $directory . $filename . ".jpg"; // Adjust the path as needed
 
   // Check if the file exists
   if (!file_exists($imagePath)) {
-    $response->getBody()->write('Image not found');
+    $response->getBody()->write('Image not found' . $imagePath);
     return $response->withStatus(500)->withHeader('Content-Type', 'text/html');
   }
 

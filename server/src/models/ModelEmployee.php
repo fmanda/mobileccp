@@ -5,7 +5,7 @@
 
 		public static function getFields(){
 			return array(
-				"empid","empname","entity"
+				"empid","empname","entity", "entityname"
 			);
 		}
 

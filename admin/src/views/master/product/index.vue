@@ -27,7 +27,7 @@
     <el-table
 
       :v-loading="listLoading"
-      :data="data.filter(data => !search || data.nama.toLowerCase().includes(search.toLowerCase()))"
+      :data="data"
       style="width: 100%"
     >
       <!-- <el-table-column type="expand">
@@ -44,14 +44,14 @@
           </el-descriptions>
         </template>
       </el-table-column>   -->
-      <el-table-column label="SKU" prop="sku" width="120px" />
-      <el-table-column label="Nama Barang" prop="nama" width="400px"/>
-      <el-table-column label="Principal" prop="principal" />
-      <el-table-column label="Merk" prop="merk" />
-      <el-table-column label="Uom" prop="uom_1" />
-      <el-table-column label="Last Update" prop="last_updated" />
-      <el-table-column align="right"  label="Harga" prop="sellprice_1" />
-      <el-table-column align="right" width="100px">
+      <el-table-column label="Partno" prop="partno" width="120px" />
+      <el-table-column label="Inv Name" prop="invname"/>
+      <el-table-column label="Desc" prop="description" />
+      <el-table-column label="InvGrp" prop="invgrp" />
+      <el-table-column label="PClass8" prop="pclass8name" />
+      <!-- <el-table-column label="Last Update" prop="last_updated" /> -->
+      <!-- <el-table-column align="right"  label="Harga" prop="sellprice_1" />
+      <el-table-column align="right" width="100px"> -->
         <!-- <template slot="header" slot-scope="scope">
           <el-input
             v-model="search"
@@ -62,13 +62,13 @@
         </template> -->
       
           
-        <template slot-scope="scope">
+        <!-- <template slot-scope="scope">
           <el-button
             size="mini"
             @click="handleEdit(scope.$index, scope.row)"
           >View</el-button>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
     <br>
     <!-- <el-button type="success" icon="el-icon-plus" @click.native.prevent="handleNew()">Add Product</el-button> -->
@@ -135,14 +135,14 @@ export default {
         this.data = response.data;
         this.listLoading = false
 
-        this.data = this.data.map(item => {
-          return {
-            ...item, // Keep all other properties intact
-            sellprice_1	: formatCurrency(item.sellprice_1),
-            sellprice_2	: formatCurrency(item.sellprice_2),
-            sellprice_3	: formatCurrency(item.sellprice_3)
-          };
-        });
+        // this.data = this.data.map(item => {
+        //   return {
+        //     ...item, // Keep all other properties intact
+        //     sellprice_1	: formatCurrency(item.sellprice_1),
+        //     sellprice_2	: formatCurrency(item.sellprice_2),
+        //     sellprice_3	: formatCurrency(item.sellprice_3)
+        //   };
+        // });
 
       })
     },

@@ -49,10 +49,10 @@ interface VisitDao {
 
 
     @Query("SELECT * FROM visitplan order by plandate desc limit 1000")
-    fun getVisitPlan(): List<Visit>
+    fun getVisitPlan(): List<VisitPlan>
 
     @Query("SELECT * FROM visitplan where plandate=:plandate")
-    fun getVisitPlanByDate(plandate: String): List<Visit>
+    fun getVisitPlanByDate(plandate: String): List<VisitPlan>
 
     @Query("UPDATE visit SET uploaded = 1 WHERE uploaded = 0")
     suspend fun updateStatusUploadVisit()
@@ -164,4 +164,5 @@ data class JSONCCPDet(
     val lng: Double?,
     val datetr: String?,
     val salid: String?, //additional
+    val uid: String
 )

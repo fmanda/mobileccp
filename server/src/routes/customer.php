@@ -39,6 +39,23 @@ try{
 	}
 });
 
+$app->get('/customerentity/{entity}[/{filtertxt}]', function ($request, $response) {
+	try{
+		$filtertxt = $request->getAttribute('filtertxt');
+		$entity = $request->getAttribute('entity');
+		$data = ModelCustomer::retrieveByEntity($entity, $filtertxt);
+		$json = json_encode($data);
+		$response->getBody()->write($json);
+	
+			return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
+		}catch(Exception $e){
+		$msg = $e->getMessage();
+		$response->getBody()->write($msg);
+			return $response->withStatus(500)
+				->withHeader('Content-Type', 'text/html');
+		}
+	});
+
 
 //   $app->get('/searchnewcustomer/{areano}[/{filtertxt}]', function ($request, $response) {
 // 	try{

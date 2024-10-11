@@ -16,7 +16,7 @@ export function getSalesOrderPeriod(dt1, dt2, filtertxt) {
 
 
 export function getVisitPeriod(dt1, dt2, filtertxt) {
-  let _url = 'visitbyperiod/' + getProjectCode()  + '/'
+  let _url = 'newccp/' + getProjectCode()  + '/'
             + formatDate(dt1) + '/' + formatDate(dt2);
   if (filtertxt && filtertxt != '') _url = _url  + '/' + filtertxt;
 

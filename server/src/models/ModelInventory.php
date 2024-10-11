@@ -21,6 +21,20 @@
 		public static function retrieveByArea($area){
 			$sql = "select * from fn_mobile_inventory('". $area . "')";			
 			$objs = DB::openQuery($sql);			
+			return 
+			$objs;
+		}
+		
+		//temporary limit result, next dibuatke paging
+		public static function retrieveAll($filter){
+			$sql = "select top 2000 a.invid, a.partno, a.invname, a.[desc] as description,
+					a.invgrp, P8.pclass8name
+					from IntacsDataUpgrade.dbo.Inventory a
+					left join IntacsDataUpgrade.dbo.PClass8 P8 on a.pclass8 = P8.Pclass8
+					where a.Active = 1 and a.partno not like 'x%'
+					and a.[desc] like '%" . $filter . "%'";
+
+			$objs = DB::openQuery($sql);			
 			return $objs;
 		}
 	}

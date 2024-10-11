@@ -299,7 +299,8 @@ class ApiRepository(ctx: Context) {
             visit.lat,
             visit.lng,
             visit.visitdate,
-            AppVariable.loginInfo.salid
+            AppVariable.loginInfo.salid,
+            visit.id.toString()
         )
     }
 
