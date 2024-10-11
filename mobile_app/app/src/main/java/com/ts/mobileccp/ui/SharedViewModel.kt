@@ -65,11 +65,12 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     private suspend fun uploadData() {
+        repository.fetchAndPostOrders()
         repository.fetchAndPostVisit()
         repository.fetchAndPostVisitImg()
 
 
         isUploadProcessing.postValue(false)
-        Toast.makeText(_app, "Download Data Berhasil", Toast.LENGTH_LONG).show()
+        Toast.makeText(_app, "Upload Data Berhasil", Toast.LENGTH_LONG).show()
     }
 }

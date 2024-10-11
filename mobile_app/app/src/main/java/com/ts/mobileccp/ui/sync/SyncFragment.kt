@@ -34,6 +34,10 @@ class SyncFragment : Fragment() {
             syncData()
         }
 
+        binding.lnUpload.setOnClickListener(){
+            uploadData()
+        }
+
         sharedViewModel.last_download.observe(viewLifecycleOwner) { data ->
             data?.let {
                 binding.txtLastDownload.text = data.toString()
@@ -57,7 +61,11 @@ class SyncFragment : Fragment() {
         }
 
         sharedViewModel.isDownloadProcessing.observe(viewLifecycleOwner) { data ->
-            data?.let { setSyncState(it) }
+            data?.let { setSyncStateDownload(it) }
+        }
+
+        sharedViewModel.isUploadProcessing.observe(viewLifecycleOwner) { data ->
+            data?.let { setSyncStateUpload(it) }
         }
 
         //set toolbar
@@ -66,16 +74,32 @@ class SyncFragment : Fragment() {
     }
 
     private fun syncData(){
-        setSyncState(true)
+        setSyncStateDownload(true)
         sharedViewModel.syncData()
     }
-    fun setSyncState(downloading: Boolean){
-        if (downloading){
-            binding.imgSync.visibility = View.GONE
+
+    private fun uploadData(){
+        setSyncStateUpload(false)
+        sharedViewModel.syncUploadData()
+    }
+
+    private fun setSyncStateDownload(processing: Boolean){
+        if (processing){
+            binding.imgSyncDownload.visibility = View.GONE
             binding.pgDownload.visibility = View.VISIBLE
         }else{
-            binding.imgSync.visibility = View.VISIBLE
+            binding.imgSyncDownload.visibility = View.VISIBLE
             binding.pgDownload.visibility = View.GONE
+        }
+    }
+
+    private fun setSyncStateUpload(processing: Boolean){
+        if (processing){
+            binding.imgSyncUpload.visibility = View.GONE
+            binding.pgUpload.visibility = View.VISIBLE
+        }else{
+            binding.imgSyncUpload.visibility = View.VISIBLE
+            binding.pgUpload.visibility = View.GONE
         }
     }
 

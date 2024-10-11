@@ -15,9 +15,9 @@ export function getSalesOrderMonth() {
   })
 }
 
-export function getSalesOrderKecamatan() {
+export function getSalesOrderSalesman() {
   return request({
-    url: 'salesdashboardkecamatan',
+    url: 'salesdashboardsalesman',
     method: 'get'
   })
 }
