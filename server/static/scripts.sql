@@ -146,3 +146,34 @@ begin
 
 	select idno, notr, datetr, dabin, description, entity, salid, status, operator from NEWCCP where idno = @IDNO
 end
+
+
+
+
+create table mobile_salesorder(
+	id uniqueidentifier,
+	orderno varchar(30),
+	orderdate date,
+	entity varchar(30),
+	shipid int,
+	salid int,
+	dpp float, 
+	ppn float,
+	amt float,
+	latitude float,
+	longitude float
+)
+
+
+create table mobile_salesorderitem(
+	id int identity(1,1),
+	salesorder_id uniqueidentifier,
+	partno varchar(30),
+	uom varchar(30),
+	qty int, 
+	price float,
+	discount float,
+	dpp float,
+	ppn float,
+	amt float
+)

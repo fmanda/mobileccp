@@ -8,10 +8,11 @@ require_once '../src/classes/DB.php';
 
 $app->get('/salesdashboardweek', function ($request, $response) {
   try{
-    $str = "select cast(orderdate as date) as orderdate, count(id) as jml, round(sum(amt)) as amount
-            from salesorder
-            where cast(orderdate as date) between DATE_SUB(now(), INTERVAL 7 DAY) and DATE_ADD(now(), INTERVAL 1 DAY)
-            group by cast(orderdate as date)";
+    $str = "select cast(a.dodate as date) as orderdate, count(a.idno) as jml, floor(sum(a.amount)) as amount
+            from IntacsDataUpgrade.dbo.Saldel a
+            where a.Entity = '110101'
+            and cast(a.DODate as date) between '2023-9-22' and '2023-9-30'
+            group by cast(a.dodate as date) ";
 
     $data = DB::openQuery($str);
     $json = json_encode($data);
@@ -28,10 +29,11 @@ $app->get('/salesdashboardweek', function ($request, $response) {
 
 $app->get('/salesdashboardmonth', function ($request, $response) {
   try{
-    $str = "select cast(orderdate as date) as orderdate, count(id) as jml, round(sum(amt)) as amount
-            from salesorder
-            where cast(orderdate as date) between DATE_SUB(now(), INTERVAL 30 DAY) and DATE_ADD(now(), INTERVAL 1 DAY)
-            group by cast(orderdate as date)";
+    $str = "select cast(a.dodate as date) as orderdate, count(a.idno) as jml, floor(sum(a.amount)) as amount
+            from IntacsDataUpgrade.dbo.Saldel a
+            where a.Entity = '110101'
+            and cast(a.DODate as date) between '2023-9-1' and '2023-9-30'
+            group by cast(a.dodate as date) ";
 
     $data = DB::openQuery($str);
     $json = json_encode($data);
@@ -46,13 +48,14 @@ $app->get('/salesdashboardmonth', function ($request, $response) {
 	}
 });
 
-$app->get('/salesdashboardkecamatan', function ($request, $response) {
+$app->get('/salesdashboardsalesman', function ($request, $response) {
   try{
-    $str = "select b.kecamatan, round(sum(amt)) as amount
-            from salesorder a
-            inner join customer b on a.customer_id = b.id
-            where cast(orderdate as date) between DATE_SUB(now(), INTERVAL 30 DAY) and DATE_ADD(now(), INTERVAL 1 DAY)
-            group by kecamatan";
+    $str = "select b.EmpName as salname, floor(sum(a.amount)) as amount
+            from IntacsDataUpgrade.dbo.Saldel a
+            inner join IntacsDataUpgrade.dbo.Employee b on a.SalId = b.EmpId
+            where a.Entity = '110101'
+            and cast(a.DODate as date) between '2023-9-22' and '2023-9-30'
+            group by b.EmpName ";
 
     $data = DB::openQuery($str);
     $json = json_encode($data);

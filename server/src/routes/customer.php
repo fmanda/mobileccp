@@ -39,6 +39,7 @@ try{
 	}
 });
 
+
 $app->get('/customerentity/{entity}[/{filtertxt}]', function ($request, $response) {
 	try{
 		$filtertxt = $request->getAttribute('filtertxt');

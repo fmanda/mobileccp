@@ -7,24 +7,24 @@ require '../vendor/autoload.php';
 require_once '../src/classes/DB.php';
 require_once '../src/models/ModelSalesOrder.php';
 
-$app->get('/salesorderbyperiod/{projectcode}/{dt1}/{dt2}[/{filtertxt}]', function ($request, $response) {
+$app->get('/salesorderbyperiod/{entity}/{dt1}/{dt2}[/{filtertxt}]', function ($request, $response) {
   try{
-    $projectcode = $request->getAttribute('projectcode');
+    $entity = $request->getAttribute('entity');
     $dt1 = $request->getAttribute('dt1');
     $dt2 = $request->getAttribute('dt2');
     $filtertxt = $request->getAttribute('filtertxt');
 
-    $filter = " where a.project_code = '" . $projectcode . "'" 
+    $filter = " where a.entity = '" . $entity . "'" 
               . " and cast(orderdate as date) between '".  $dt1 . "'" 
               . " and '". $dt2 . "'" 
-              . " and (lower(b.nama) like '%". strtolower($filtertxt) . "%'"
-              . " or lower(c.nama) like '%". strtolower($filtertxt) . "%'"
+              . " and (lower(b.[Ship Name]) like '%". strtolower($filtertxt) . "%'"
+              . " or lower(c.empname) like '%". strtolower($filtertxt) . "%'"
               . " or lower(a.orderno) like '%". strtolower($filtertxt) . "%')";
 
-    $str = "select a.*, c.nama as salesman, b.nama as customer, b.alamat, b.phone
-            from salesorder a
-            left join customer b on a.customer_id = b.id
-            left join salesman c on a.salesman_id = c.id"
+    $str = "select a.*, c.empname as salesman, b.[Ship Name] as customer, b.[Ship Address] as alamat, b.[Ship Phone] as phone
+            from mobile_salesorder a
+            left join IntacsDataUpgrade.dbo.CustomerDelivery b on a.shipid = b.ShipId
+            left join IntacsDataUpgrade.dbo.Employee c on a.salid = c.empid"
             . $filter;
 
     $data = DB::openQuery($str);
@@ -76,13 +76,13 @@ $app->get('/salesorder/{id}', function ($request, $response, $args) {
 
 
 
-$app->get('/salesorderdownload/{projectcode}/{dt1}/{dt2}', function ($request, $response) {
+$app->get('/salesorderdownload/{entity}/{dt1}/{dt2}', function ($request, $response) {
   try{
-    $projectcode = $request->getAttribute('projectcode');
+    $projectcode = $request->getAttribute('entity');
     $dt1 = $request->getAttribute('dt1');
     $dt2 = $request->getAttribute('dt2');
     
-    $filter = " project_code = '" . $projectcode . "'" 
+    $filter = " entity = '" . $projectcode . "'" 
               . " and cast(orderdate as date) between '".  $dt1 . "'" 
               . " and '". $dt2 . "'" ;
 

@@ -28,7 +28,7 @@
 		}
 
 		public static function retrieve($id){  //uuid string
-			$sql = "select * from ".static::getTableName()." where ". static::getPrimaryKey() ." = ".$id;
+			$sql = "select * from ".static::getTableName()." where ". static::getPrimaryKey() ." = '". $id . "'";
 			$obj = DB::openQuery($sql);
 			if (isset($obj[0])) return $obj[0];
 		}

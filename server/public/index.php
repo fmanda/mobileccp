@@ -72,6 +72,8 @@ require '../src/routes/newccp.php';
 require '../src/routes/salesman.php';
 require '../src/routes/customer.php';
 require '../src/routes/inventory.php';
+require '../src/routes/salesorder.php';
+require '../src/routes/dashboard.php';
 
 
 // $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function($req, $res) {
