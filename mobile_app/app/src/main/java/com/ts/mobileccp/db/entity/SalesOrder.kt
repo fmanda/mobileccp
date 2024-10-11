@@ -210,7 +210,7 @@ data class JSONSalesOrder(
     val orderdate: String,
     val shipid: Int,
     val salid: String,
-    val areano: String,
+    val entity: String,
     val dpp: Double,
     val ppn: Double,
     val amt: Double,

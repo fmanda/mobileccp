@@ -13,7 +13,7 @@
       style = "margin-bottom: 10px"
     >
       <!-- <el-menu-item index="1"><i class="el-icon-user"></i>Akan Berlangsung</el-menu-item> -->
-      <el-menu-item index="1"><i class="el-icon-date"></i>Mobility Cabang {{ projectName }}</el-menu-item>
+      <el-menu-item index="1"><i class="el-icon-date"></i>CCP Entity {{ projectName }}</el-menu-item>
       
     </el-menu>
     
@@ -22,12 +22,12 @@
       <el-col :span="12" class="card-container">
         <el-card class="box-card">
           <!-- <el-badge :value="12" class="item"> -->
-            <el-tag type="success">Sales By Area</el-tag>
+            <el-tag type="success">Order By Salesman</el-tag>
           <!-- </el-badge> -->
 
           <DxPieChart
             id="pie"
-            :data-source="dataSalesKecamatan"
+            :data-source="dataSalesBySalesman"
             type="doughnut"
             title=""
             palette="Soft Pastel"
@@ -36,7 +36,7 @@
             <DxSize
               :height="250"
             />
-            <DxSeries argument-field="kecamatan" value-field="amount">
+            <DxSeries argument-field="salname" value-field="amount">
               <DxLabel:visible="true">
                 <DxConnector :visible="true"/>
               </DxLabel>
@@ -167,7 +167,7 @@ import DxPieChart, {
   DxConnector
 } from 'devextreme-vue/pie-chart';
 
-import { getSalesOrderWeek, getSalesOrderMonth, getSalesOrderKecamatan } from '@/api/dashboard'
+import { getSalesOrderWeek, getSalesOrderMonth, getSalesOrderSalesman } from '@/api/dashboard'
 import { getProjectName } from '@/utils/auth'
 
 export default {
@@ -187,7 +187,7 @@ export default {
     return {
       dataSalesWeek: [],
       dataSalesMonth: [],
-      dataSalesKecamatan: [],
+      dataSalesBySalesman: [],
       totalVisit: 0,
       activeMenu: '1',
       projectName: ''
@@ -215,13 +215,13 @@ export default {
         }));
       });
 
-      getSalesOrderKecamatan().then(response => {
+      getSalesOrderSalesman().then(response => {
         var resp = response.data;
         var resp =  resp.map(resp => ({
           ...resp, 
           amount: Number(resp.amount),
         }));
-        this.dataSalesKecamatan = resp;
+        this.dataSalesBySalesman = resp;
       });
     },
     customizeTooltip({ valueText, percent }) {
