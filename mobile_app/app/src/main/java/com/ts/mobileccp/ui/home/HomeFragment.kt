@@ -106,6 +106,10 @@ class HomeFragment : Fragment(), ListVisitListener {
 //            sharedViewModel.selectedNavItem.value = R.id.nav_customer
         }
 
+        binding.lnSales.setOnClickListener{
+            findNavController().navigate(R.id.nav_sales)
+        }
+
         homeViewModel.lastUpdate.observe(viewLifecycleOwner) { data ->
             data?.let {
 //                binding.txtInfoLastUpdate.text = data.toString()

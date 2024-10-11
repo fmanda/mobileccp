@@ -26,6 +26,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginBottom="5dp"
                     android:layout_weight="1"
                     android:orientation="horizontal">
 
@@ -41,7 +42,7 @@
                         android:fontFamily="sans-serif-medium"
                         android:text="Date"
                         android:textAlignment="viewStart"
-                        android:textSize="10sp" />
+                        android:textSize="12sp" />
 
                     <TextView
                         android:id="@+id/txtUpload"
@@ -56,7 +57,7 @@
                         android:text="Belum Uploded"
                         android:textAlignment="textEnd"
                         android:textColor="@color/secondary"
-                        android:textSize="10sp" />
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
@@ -78,18 +79,20 @@
                             android:id="@+id/txtCustomer"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
                             android:layout_weight="1"
-                            android:fontFamily="sans-serif-condensed-medium"
+                            android:fontFamily="sans-serif-medium"
                             android:gravity="top|left"
                             android:paddingStart="10dp"
                             android:text="TextView"
                             android:textAlignment="gravity"
-                            android:textSize="14sp" />
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/txtAddress"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
                             android:layout_weight="1"
                             android:fontFamily="sans-serif-condensed-medium"
                             android:gravity="bottom"
@@ -97,12 +100,13 @@
                             android:text="TextView"
                             android:textAlignment="gravity"
                             android:textColor="@color/darker_grey"
-                            android:textSize="10sp" />
+                            android:textSize="12sp" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginStart="10dp"
+                            android:layout_marginBottom="5dp"
                             android:layout_weight="1"
                             android:orientation="horizontal">
 
@@ -122,7 +126,7 @@
                                 android:layout_weight="0"
                                 android:gravity="end"
                                 android:text="location"
-                                android:textSize="10sp" />
+                                android:textSize="12sp" />
 
                         </LinearLayout>
                     </LinearLayout>
@@ -146,7 +150,7 @@
                             android:text="TextView"
                             android:textAlignment="gravity"
                             android:textColor="@color/teal_700"
-                            android:textSize="14sp" />
+                            android:textSize="16sp" />
 
                         <ImageButton
                             android:id="@+id/btnExpand"
@@ -184,7 +188,7 @@
                     android:text="OrderNo"
                     android:textAlignment="viewStart"
                     android:textColor="@color/accent"
-                    android:textSize="10sp" />
+                    android:textSize="12sp" />
 
                 <Button
                     android:id="@+id/btnEdit"

@@ -37,7 +37,7 @@
             android:layout_weight="1"
             android:fontFamily="sans-serif-condensed-medium"
             android:gravity="center"
-            android:text="Realisasi CCP / New Visit"
+            android:text="Realisasi CCP / Visit"
             android:textColor="@color/neutral"
             android:textSize="18sp" />
 
@@ -65,7 +65,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="Customer :" />
+                    android:text="Ship Name:"
+                    android:textStyle="italic" />
 
                 <TextView
                     android:id="@+id/txtShipName"
@@ -76,8 +77,16 @@
                     android:drawableEnd="@drawable/ic_create_24"
                     android:drawableTint="@color/darker_grey"
                     android:text="Ship Name"
+                    android:textColor="@color/accent2"
                     android:textSize="16sp"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="Customer :"
+                    android:textStyle="italic" />
 
                 <TextView
                     android:id="@+id/txtCustomerName"
@@ -85,7 +94,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginBottom="8dp"
-                    android:text="Customer Name" />
+                    android:text="Customer Name"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtPhone"
@@ -114,8 +124,10 @@
                     android:layout_marginBottom="8dp"
                     android:layout_weight="0"
                     android:drawableLeft="@drawable/ic_location_24_dark"
+                    android:drawableTint="@color/altaccent"
                     android:gravity="center_vertical|end"
                     android:text="lat, lng"
+                    android:textColor="@color/altaccent"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -136,7 +148,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Keperluan" />
+                    android:text="SCH"
+                    android:textStyle="italic" />
 
                 <Spinner
                     android:id="@+id/spSCH"
@@ -147,7 +160,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Keterangan" />
+                    android:text="Keterangan"
+                    android:textStyle="italic" />
 
                 <Spinner
                     android:id="@+id/spMark"
@@ -192,7 +206,7 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/highlight">
+                    android:elevation="2dp">
 
                     <ImageView
                         android:id="@+id/imgView"
@@ -218,11 +232,11 @@
 
         <Button
             android:id="@+id/btnCancel"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:backgroundTint="@color/material_dynamic_neutral50"
+            android:layout_weight="0"
+            android:backgroundTint="@color/light_red"
             android:drawableLeft="@drawable/ic_close_24"
             android:text="Cancel"
             android:textColor="@color/white" />

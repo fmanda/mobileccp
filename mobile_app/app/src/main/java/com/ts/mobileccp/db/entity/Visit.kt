@@ -102,6 +102,8 @@ interface VisitDao {
     fun searchLastVisits(query: String): LiveData<List<LastVisit>>
 
 
+    @Query("SELECT COUNT(*) FROM visit where uploaded='0'")
+    fun getCountToUpload(): LiveData<Int?>
 }
 
 

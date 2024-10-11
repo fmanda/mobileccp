@@ -10,6 +10,8 @@ import com.ts.mobileccp.db.AppDatabase
 import com.ts.mobileccp.db.entity.CustomerDao
 import com.ts.mobileccp.db.entity.InventoryDao
 import com.ts.mobileccp.db.entity.LoginInfoDao
+import com.ts.mobileccp.db.entity.SalesOrderDao
+import com.ts.mobileccp.db.entity.VisitDao
 import com.ts.mobileccp.global.AppVariable
 import com.ts.mobileccp.rest.ApiRepository
 import kotlinx.coroutines.launch
@@ -26,14 +28,22 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     private val loginInfoDao: LoginInfoDao = AppDatabase.getInstance(application).loginInfoDao()
     private val customerDao: CustomerDao = AppDatabase.getInstance(application).customerDao()
     private val inventoryDao: InventoryDao = AppDatabase.getInstance(application).inventoryDao()
+    private val visitDao: VisitDao = AppDatabase.getInstance(application).visitDao()
+    private val salesorderDao: SalesOrderDao = AppDatabase.getInstance(application).salesOrderDao()
+
     val isDownloadProcessing = MutableLiveData<Boolean>().apply { value = false }
     val isUploadProcessing = MutableLiveData<Boolean>().apply { value = false }
 
+    val dateFormat = SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.getDefault())
 
     val last_download = MutableLiveData<String?>().apply { postValue(AppVariable.loginInfo.last_download) }
+    val last_upload = MutableLiveData<String?>().apply { postValue(AppVariable.loginInfo.last_upload) }
 
     val customerCount: LiveData<Int?> = customerDao.getRowCount()
     val inventoryCount: LiveData<Int?> = inventoryDao.getRowCount()
+
+    val visittoupload: LiveData<Int?> = visitDao.getCountToUpload()
+    val salestoupload: LiveData<Int?> = salesorderDao.getCountToUpload()
 
 
     fun syncData()= viewModelScope.launch {
@@ -55,7 +65,6 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
         repository.saveCCHMarkFromRest()
 
         //update last update
-        val dateFormat = SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.getDefault())
         AppVariable.loginInfo.last_download = dateFormat.format(Date())
         loginInfoDao.upsert(AppVariable.loginInfo)
         last_download.postValue(AppVariable.loginInfo.last_download)
@@ -66,9 +75,13 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 
     private suspend fun uploadData() {
         repository.fetchAndPostOrders()
-        repository.fetchAndPostVisit()
-        repository.fetchAndPostVisitImg()
 
+        repository.fetchAndPostVisitImg() //before visit updating status to 1
+        repository.fetchAndPostVisit()
+
+        AppVariable.loginInfo.last_upload = dateFormat.format(Date())
+        loginInfoDao.upsert(AppVariable.loginInfo)
+        last_upload.postValue(AppVariable.loginInfo.last_download)
 
         isUploadProcessing.postValue(false)
         Toast.makeText(_app, "Upload Data Berhasil", Toast.LENGTH_LONG).show()

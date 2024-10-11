@@ -29,7 +29,7 @@ class InventoryAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mList[position]
-        holder.txtProductName.text = item.invname
+        holder.txtProductName.text = item.description
         holder.txtSKU.text = item.partno
         holder.txtCategory.text = item.pclass8name
 

@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.fab.setOnClickListener{
             bottomNavView.menu.getItem(2).isEnabled = true
-            bottomNavView.setSelectedItemId(R.id.nav_sales)
+            bottomNavView.setSelectedItemId(R.id.nav_visit)
             bottomNavView.menu.getItem(2).isEnabled = false
         }
 

@@ -36,7 +36,7 @@
                         android:id="@+id/txtProductName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-condensed-medium"
+                        android:fontFamily="sans-serif-medium"
                         android:gravity="top|left"
                         android:padding="5dp"
                         android:paddingStart="15dp"
@@ -50,7 +50,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="0"
-                        android:fontFamily="sans-serif-condensed-medium"
+                        android:fontFamily="sans-serif"
                         android:gravity="bottom"
                         android:paddingHorizontal="15dp"
                         android:paddingEnd="15dp"
@@ -64,7 +64,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="0"
-                        android:fontFamily="sans-serif-condensed-medium"
+                        android:fontFamily="sans-serif"
                         android:gravity="bottom"
                         android:paddingHorizontal="15dp"
                         android:paddingEnd="15dp"
@@ -96,11 +96,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="5dp"
-                            android:fontFamily="sans-serif-condensed"
+                            android:fontFamily="sans-serif"
                             android:gravity="clip_vertical|center_horizontal|center_vertical"
                             android:text="Rp 000.000"
                             android:textAlignment="center"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
 
                         <LinearLayout
                             android:id="@+id/uom1Operation"
@@ -126,6 +126,7 @@
                                 android:background="@null"
                                 android:ems="10"
                                 android:enabled="false"
+                                android:fontFamily="sans-serif"
                                 android:inputType="number"
                                 android:text="0000"
                                 android:textAlignment="center"

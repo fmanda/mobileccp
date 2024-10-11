@@ -212,10 +212,10 @@ class DialogSalesFragment(
 
     private fun buildData(){
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        val dtFormatOrder = SimpleDateFormat("yyMMdd.HHmmss", Locale.getDefault())
+        val dtFormatOrder = SimpleDateFormat("yyMMddHHmmss", Locale.getDefault())
         val loginInfo = AppVariable.loginInfo
 
-        val orderNO : String = loginInfo.entity + "." + loginInfo.salid + "." + dtFormatOrder.format(Date());
+        val orderNO : String = loginInfo.salid?.trim() + "." + dtFormatOrder.format(Date());
 
         val id = salesOrder.id ?: UUID.randomUUID()
 

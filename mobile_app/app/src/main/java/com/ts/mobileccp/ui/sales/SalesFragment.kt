@@ -132,6 +132,7 @@ class SalesFragment : Fragment(), ProductPickListener,
             salesViewModel.editedSOItems.observe(viewLifecycleOwner){ items ->
                 soItemList.clear()
                 soItemList.addAll(items)
+                searchIt(getPriceLevel());
                 adapter.notifyDataSetChanged()
             }
         }

@@ -171,6 +171,9 @@ interface SalesOrderDao {
 
     @Query("SELECT COUNT(*) FROM salesorder where uploaded = 0")
     fun getCountOrderToUpload(): LiveData<Int?>
+
+    @Query("SELECT COUNT(*) FROM salesorder where uploaded='0'")
+    fun getCountToUpload(): LiveData<Int?>
 }
 
 
