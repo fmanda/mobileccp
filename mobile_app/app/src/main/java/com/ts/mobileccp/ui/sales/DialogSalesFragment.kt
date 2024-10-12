@@ -63,9 +63,7 @@ class DialogSalesFragment(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-
         requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
                 setLastLocation()
@@ -73,9 +71,7 @@ class DialogSalesFragment(
                 Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show()
             }
         }
-
         checkLocationPermissions()
-
     }
 
     override fun onCreateView(
@@ -206,8 +202,6 @@ class DialogSalesFragment(
     private fun saveToDB(){
         buildData()
         salesViewModel.saveOrder(objSO, objSOItems)
-        dialogListener.onSaveSuccess()
-        this.dismiss()
     }
 
 //    private fun saveVisitToDB(){

@@ -9,13 +9,34 @@
         android:id="@+id/nav_home"
         android:name="com.ts.mobileccp.ui.home.HomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_nav_home_to_nav_sync"
+            app:destination="@id/nav_sync" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_inventory"
+            app:destination="@id/nav_inventory" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_visit"
+            app:destination="@id/nav_visit" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_browse_visit"
+            app:destination="@id/nav_browse_visit" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_browse_visit2"
+            app:destination="@id/nav_browse_visit" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_sales"
         android:name="com.ts.mobileccp.ui.sales.SalesFragment"
         android:label="Sales"
         tools:layout="@layout/fragment_sales" >
+        <action
+            android:id="@+id/action_nav_sales_to_nav_browse_sales"
+            app:popUpTo="@id/nav_sales"
+            app:popUpToInclusive="true"
+            app:destination="@id/nav_browse_sales" />
         <action
             android:id="@+id/action_nav_sales_to_nav_home"
             app:destination="@id/nav_home" />
@@ -51,9 +72,6 @@
         <action
             android:id="@+id/action_nav_browse_sales_to_nav_sales"
             app:destination="@id/nav_sales" />
-        <action
-            android:id="@+id/action_nav_browse_sales_to_nav_home"
-            app:destination="@id/nav_home" />
     </fragment>
     <fragment
         android:id="@+id/nav_sync"
@@ -86,6 +104,15 @@
         tools:layout="@layout/fragment_browse_visit" >
         <action
             android:id="@+id/action_nav_browse_visit_to_nav_visit"
+            app:destination="@id/nav_visit" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_visitplan"
+        android:name="com.ts.mobileccp.ui.visitplan.VisitPlanFragment"
+        android:label="fragment_visit_plan"
+        tools:layout="@layout/fragment_visit_plan" >
+        <action
+            android:id="@+id/action_nav_visitplan_to_nav_visit"
             app:destination="@id/nav_visit" />
     </fragment>
 </navigation>

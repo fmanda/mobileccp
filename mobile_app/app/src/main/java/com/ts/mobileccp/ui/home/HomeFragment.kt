@@ -42,8 +42,8 @@ class HomeFragment : Fragment(), ListVisitListener {
         homeViewModel = ViewModelProvider(this, factory).get(HomeViewModel::class.java)
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
 
-        format.maximumFractionDigits = 0
-        format.minimumFractionDigits = 0
+        format.maximumFractionDigits = 2
+        format.minimumFractionDigits = 2
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
@@ -57,9 +57,6 @@ class HomeFragment : Fragment(), ListVisitListener {
             data?.let { setSyncState(it) }
         })
 
-        homeViewModel.listLatestVisit.observe(viewLifecycleOwner, Observer { data ->
-            data?.let { adapter.updateData(it) }
-        })
 
 //        homeViewModel.todaySales.observe(viewLifecycleOwner, Observer { data ->
 //            data?.let {
@@ -75,12 +72,18 @@ class HomeFragment : Fragment(), ListVisitListener {
 //            }
 //        })
 //
-//        homeViewModel.monthlySales.observe(viewLifecycleOwner, Observer { data ->
-//            data?.let {
-//                binding.txtMonthlySales.text = format.format(data.sumSO)
-//                binding.txtMonthlyCount.text = format.format(data.countSO) + " Orders"
-//            }
-//        })
+        homeViewModel.monthlySales.observe(viewLifecycleOwner, Observer { data ->
+            data?.let {
+                binding.txtSales.text = format.format(data.sumSO/1000000) + "jt"
+            }
+        })
+
+        homeViewModel.todayVisit.observe(viewLifecycleOwner, Observer { data ->
+            data?.let {
+                val _visitcaption = data.countvisit.toString() + " / " + data.countplan.toString()
+                binding.txtVisit.text = _visitcaption
+            }
+        })
 
         homeViewModel.ordersToUpload.observe(viewLifecycleOwner){ data ->
             data?.let {
@@ -104,6 +107,10 @@ class HomeFragment : Fragment(), ListVisitListener {
             //bottom menu navigation using this
             findNavController().navigate(R.id.nav_customer)
 //            sharedViewModel.selectedNavItem.value = R.id.nav_customer
+        }
+
+        binding.lnCCP.setOnClickListener{
+            findNavController().navigate(R.id.nav_visitplan)
         }
 
         binding.lnSales.setOnClickListener{

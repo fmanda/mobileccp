@@ -48,11 +48,12 @@ interface VisitDao {
     fun getVisitForUploadFilterID(id: UUID): List<Visit>
 
 
-    @Query("SELECT * FROM visitplan order by plandate desc limit 1000")
-    fun getVisitPlan(): List<VisitPlan>
+    @Query("SELECT a.idno, a.plandate, b.shipid, b.shipname, b.partnername, b.shipaddress FROM visitplan a " +
+            "inner join customer b on a.shipid = b.shipid " +
+            "where a.plandate>=:plandate " +
+            "and (b.shipname like :filter or b.partnername like :filter ) COLLATE NOCASE")
+    fun getVisitPlanByDate(plandate: String, filter:String): LiveData<List<LastVisitPlan>>
 
-    @Query("SELECT * FROM visitplan where plandate=:plandate")
-    fun getVisitPlanByDate(plandate: String): List<VisitPlan>
 
     @Query("UPDATE visit SET uploaded = 1 WHERE uploaded = 0")
     suspend fun updateStatusUploadVisit()
@@ -62,6 +63,9 @@ interface VisitDao {
 
     @Query("DELETE FROM visit")
     suspend fun clearVisit()
+
+    @Query("DELETE FROM visitplan")
+    suspend fun clearVisitPlan()
 
     @Query("SELECT COUNT(*) FROM visit where uploaded = 0")
     fun getCountVisitToUpload(): LiveData<Int?>
@@ -104,6 +108,11 @@ interface VisitDao {
 
     @Query("SELECT COUNT(*) FROM visit where uploaded='0'")
     fun getCountToUpload(): LiveData<Int?>
+
+    @Query("select\n" +
+            "(select count(*) from visitplan where strftime('%Y-%m-%d', plandate)=:filterDate) as countplan, \n" +
+            "(select count(*) from visit where strftime('%Y-%m-%d', visitdate)=:filterDate) as countvisit")
+    fun getDashboardCount(filterDate: String): LiveData<VisitDashboard?>
 }
 
 
@@ -168,4 +177,18 @@ data class JSONCCPDet(
     val datetr: String?,
     val salid: String?, //additional
     val uid: String
+)
+
+data class LastVisitPlan(
+    val idno: Int,
+    val plandate: String,
+    val shipid: Int,
+    val shipname: String?,
+    val shipaddress: String?,
+    val partnername: String
+)
+
+data class VisitDashboard(
+    val countvisit: Int,
+    val countplan: Int
 )

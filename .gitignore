@@ -8,3 +8,5 @@
 /server/*.log
 
 uploads
+/mobile_app/app/release/*.apk
+/mobile_app/app/release/baselineProfiles/0/app-release.dm

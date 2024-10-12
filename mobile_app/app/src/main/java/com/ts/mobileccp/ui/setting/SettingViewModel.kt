@@ -16,6 +16,7 @@ import com.ts.mobileccp.db.entity.LoginInfo
 import com.ts.mobileccp.db.entity.LoginInfoDao
 import com.ts.mobileccp.db.entity.InventoryDao
 import com.ts.mobileccp.db.entity.SalesOrderDao
+import com.ts.mobileccp.db.entity.VisitDao
 import com.ts.mobileccp.global.AppVariable
 import com.ts.mobileccp.rest.ApiRepository
 import com.ts.mobileccp.rest.CustomerResponse
@@ -26,9 +27,6 @@ import kotlinx.coroutines.launch
 class SettingViewModel(application: Application) : AndroidViewModel(application) {
 
 //    private val context: Context = getApplication<Application>().applicationContext
-
-    private val repository = ApiRepository(application)
-
     private val _data = MutableLiveData<List<CustomerResponse>?>()
     val data: LiveData<List<CustomerResponse>?> get() = _data
 
@@ -36,6 +34,7 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
     private val inventoryDao: InventoryDao = AppDatabase.getInstance(application).inventoryDao()
     private val customerDao: CustomerDao = AppDatabase.getInstance(application).customerDao()
     private val salesOrderDao: SalesOrderDao = AppDatabase.getInstance(application).salesOrderDao()
+    private val visitDao: VisitDao = AppDatabase.getInstance(application).visitDao()
     private val ccpMarkDAO: CCPMarkDao = AppDatabase.getInstance(application).ccpMarkDAO()
 
     fun logOut(context: Context){
@@ -58,6 +57,8 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
                 inventoryDao.clearProduct()
                 customerDao.clearCustomer()
                 salesOrderDao.clearSalesOrder()
+                visitDao.clearVisit()
+                visitDao.clearVisitPlan()
                 ccpMarkDAO.clearCCPMark()
                 ccpMarkDAO.clearCCPSCH()
 
@@ -71,25 +72,9 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
     }
 
     private fun navigateToLoginScreen(context: Context) {
-        // Assuming you're using the Navigation Component
         val intent = Intent(context, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         context.startActivity(intent)
-    }
-
-
-//    private val customerDao: CustomerDao = AppDatabase.getInstance(application).customerDao()
-//    private val productDao: ProductDao = AppDatabase.getInstance(application).productDao()
-
-    fun getListCustomerRest() {
-        viewModelScope.launch {
-            try {
-                val result = repository.fetchCustomer()
-                _data.postValue(result)
-            } catch (e: Exception) {
-                _data.postValue(null) // Handle error
-            }
-        }
     }
 
 }

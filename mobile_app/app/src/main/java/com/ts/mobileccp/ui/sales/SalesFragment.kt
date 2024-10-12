@@ -166,9 +166,9 @@ class SalesFragment : Fragment(), ProductPickListener,
         binding.txtTotal.text = totalTxt
     }
 
-    override fun onUpdateQty(prod: InventoryLookup, position: Int, qtyIndex: Int, increment:Int) {
+    override fun onUpdateQty(prod: InventoryLookup, position: Int, increment:Int) {
 
-        val soItem = getOrAdd(prod, qtyIndex) ?: return
+        val soItem = getOrAdd(prod) ?: return
 
         soItem.qty += increment
 
@@ -178,7 +178,16 @@ class SalesFragment : Fragment(), ProductPickListener,
         adapter.notifyItemChanged(position)
     }
 
-    private fun getOrAdd(prod: InventoryLookup, uomIdx:Int):TmpSalesOrderItem?{
+    override fun onQuantityChanged(prod: InventoryLookup, position: Int, newQuantity: Int) {
+        val soItem = getOrAdd(prod) ?: return
+
+        soItem.qty = newQuantity
+        calculateData()
+        adapter.notifyItemChanged(position)
+    }
+
+
+    private fun getOrAdd(prod: InventoryLookup):TmpSalesOrderItem?{
 
         val price: Double? = prod.price
 

@@ -56,6 +56,7 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
     private lateinit var markAdapter: ArrayAdapter<String>
     private lateinit var schAdapter: ArrayAdapter<String>
     private var isEdit: Boolean = false
+    private var isCustomerByID: Boolean = false
     private var latitude : Double?=null
     private var longitude  : Double?=null
 
@@ -95,6 +96,14 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
             val visitID =  UUID.fromString(strID)
             editData(visitID)
         }
+
+        val custID =  arguments?.getInt("customerID")
+
+        if ((custID ?: 0) > 0) {
+            isCustomerByID = true
+            visitByCustomerID(custID!!)
+        }
+
     }
 
     override fun onCreateView(
@@ -112,6 +121,10 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
 
     private fun editData(aID:UUID){
         visitViewModel.loadVisit(aID)
+    }
+
+    private fun visitByCustomerID(customerID:Int){
+        visitViewModel.visitByCustomer(customerID)
     }
 
     private fun initData(){
@@ -152,22 +165,28 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
-        if (!isEdit) {
-            if (selectedCust == null) {
-                showCustomerDialog()
-            }
-        }else{
+
+
+        if (isEdit){
             visitViewModel.visit.observe(viewLifecycleOwner) { obj ->
                 if (obj == null) return@observe
                 setVisit(obj)
             }
-
             visitViewModel.customer.observe(viewLifecycleOwner) { cust ->
                 if (cust == null) return@observe
                 this.selectedCust = cust
                 setCustomer()
             }
-
+        }else if (isCustomerByID) {
+            visitViewModel.customer.observe(viewLifecycleOwner) { cust ->
+                if (cust == null) return@observe
+                this.selectedCust = cust
+                setCustomer()
+            }
+        }else{
+            if (selectedCust == null) {
+                showCustomerDialog()
+            }
         }
 
         binding.txtShipName.setOnClickListener(){

@@ -74,8 +74,8 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     private suspend fun uploadData() {
+        repository.saveVisitPlanFromRest()
         repository.fetchAndPostOrders()
-
         repository.fetchAndPostVisitImg() //before visit updating status to 1
         repository.fetchAndPostVisit()
 

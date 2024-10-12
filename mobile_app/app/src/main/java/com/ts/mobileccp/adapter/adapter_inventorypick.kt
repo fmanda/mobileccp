@@ -2,6 +2,8 @@ package com.ts.mobileccp.adapter
 
 
 import android.annotation.SuppressLint
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,6 +41,8 @@ class InventoryPickAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.txtEdQty.removeTextChangedListener(holder.txtEdQty.tag as? TextWatcher)
+
         val item = mList[position]
         holder.txtProductName.text = item.description
         holder.txtSKU.text = item.partno
@@ -50,13 +54,36 @@ class InventoryPickAdapter(
         updateDataHolder(soItemList, holder, item)
 
         holder.btnAdd.setOnClickListener{
-            listener.onUpdateQty(item, position, 1, 1)
+            listener.onUpdateQty(item, position,1)
         }
 
         holder.btnMin.setOnClickListener{
-            listener.onUpdateQty(item, position, 1, -1)
+            listener.onUpdateQty(item, position, -1)
         }
 
+
+        val textWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val input = s.toString()
+                val number: Int? = input.toIntOrNull()
+
+
+                listener.onQuantityChanged(item, holder.adapterPosition, number?:0)
+
+                if (holder.txtEdQty.text.toString() != input){
+                    holder.txtEdQty.setText(input)
+                    holder.txtEdQty.setSelection(holder.txtEdQty.text.length)
+                }
+
+            }
+        }
+
+        holder.txtEdQty.addTextChangedListener(textWatcher)
+
+        // Save the TextWatcher reference in the tag
+        holder.txtEdQty.tag = textWatcher
 
     }
 
@@ -117,7 +144,12 @@ class InventoryPickAdapter(
                 ContextCompat.getColor(holder.itemView.context, R.color.white)
             )
         }
-        holder.txtEdQty.setText( qty.toString() )
+
+        if (holder.txtEdQty.text.toString() != qty.toString()){
+            holder.txtEdQty.setText( qty.toString() )
+            holder.txtEdQty.setSelection(holder.txtEdQty.text.length)
+        }
+
 
     }
 
@@ -126,5 +158,6 @@ class InventoryPickAdapter(
 }
 
 interface ProductPickListener {
-    fun onUpdateQty(prod: InventoryLookup, position: Int, qtyIndex: Int, increment:Int)
+    fun onUpdateQty(prod: InventoryLookup, position: Int, increment:Int)
+    fun onQuantityChanged(prod: InventoryLookup,  position: Int, newQuantity: Int)
 }

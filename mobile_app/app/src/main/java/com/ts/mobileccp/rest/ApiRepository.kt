@@ -371,8 +371,12 @@ class ApiRepository(ctx: Context) {
         }
 
         for (visit in visits){
-            val uri = Uri.parse(visit.img_uri)
-            uploadFileFromUri(uri)
+            visit.img_uri?.let {
+                val uri = Uri.parse(visit.img_uri)
+
+                uploadFileFromUri(uri)
+            }
+
         }
 
     }

@@ -70,6 +70,13 @@ class VisitViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
+    fun visitByCustomer(customerID:Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            val cust = customerDao.getById(customerID)
+            customer.postValue(cust)
+        }
+    }
 }
 
 class VisitViewModelFactory(private val application: Application): ViewModelProvider.Factory{

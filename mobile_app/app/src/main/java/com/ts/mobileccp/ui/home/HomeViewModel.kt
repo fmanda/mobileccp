@@ -15,6 +15,7 @@ import com.ts.mobileccp.db.entity.LoginInfoDao
 import com.ts.mobileccp.db.entity.SalesOrderDao
 import com.ts.mobileccp.db.entity.SalesOrderSumCount
 import com.ts.mobileccp.db.entity.VisitDao
+import com.ts.mobileccp.db.entity.VisitDashboard
 import com.ts.mobileccp.global.AppVariable
 import com.ts.mobileccp.rest.ApiRepository
 import kotlinx.coroutines.launch
@@ -29,17 +30,20 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val visitDao: VisitDao = AppDatabase.getInstance(application).visitDao()
     val isRestProcessing = MutableLiveData<Boolean>().apply { value = false }
     val lastUpdate = MutableLiveData<String?>().apply { postValue(AppVariable.loginInfo.last_download) }
+    val dtFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val dateToday = dtFormat.format(Date())
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is home Fragment"
     }
     val text: LiveData<String> = _text
 
-    val listLatestVisit: LiveData<List<LastVisit>> = visitDao.getLatestVisitDashboard()
 
-    val todaySales: LiveData<SalesOrderSumCount?> = salesOrderDao.getTodaySales()
-    val weeklySales: LiveData<SalesOrderSumCount?> = salesOrderDao.getWeeklySales()
+    val todayVisit: LiveData<VisitDashboard?> = visitDao.getDashboardCount(dateToday)
     val monthlySales: LiveData<SalesOrderSumCount?> = salesOrderDao.getMonthlySales()
+
+//    val arBalance: LiveData<SalesOrderSumCount?> = salesOrderDao.getMonthlySales()
+
     val ordersToUpload: LiveData<Int?> = salesOrderDao.getCountOrderToUpload()
 
     private val repository = ApiRepository(application)
