@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.ts.mobileccp.databinding.ActivityMainBinding
 import com.ts.mobileccp.ui.SharedViewModel
@@ -31,8 +32,8 @@ class MainActivity : AppCompatActivity() {
         bottomNavView.menu.getItem(2).isEnabled = false
 
 
-
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
+
         bottomNavView.setupWithNavController(navController)
 
 

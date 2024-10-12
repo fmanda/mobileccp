@@ -28,17 +28,18 @@ class VisitViewModel(application: Application) : AndroidViewModel(application) {
     var listCCPSch = ccpMarkDao.getListCCPSCH()
 
     private val repository = ApiRepository(application)
+    val dialogSaveState = MutableLiveData<Boolean>().apply { value = false }
 
     val visitDao: VisitDao = AppDatabase.getInstance(application).visitDao()
     val isRestProcessing = MutableLiveData<Boolean>().apply { value = false }
     val visit = MutableLiveData<Visit>().apply { value = null }
     val customer = MutableLiveData<Customer>().apply { value = null }
 
-    fun saveVisit(visit: Visit):Boolean{
+    fun saveVisit(visit: Visit){
         viewModelScope.launch(Dispatchers.IO) {
             visitDao.upsertVisit(visit)
+            dialogSaveState.postValue(true)
         }
-        return true
     }
 
     fun syncData(filterID: UUID)= viewModelScope.launch {

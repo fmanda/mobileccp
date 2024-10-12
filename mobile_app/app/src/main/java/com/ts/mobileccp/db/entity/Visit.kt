@@ -133,20 +133,21 @@ data class JSONCCP(
     val status: Int?,
     val operator: String?,
     val items: List<JSONCCPDet>?
-){
-    constructor(salid: String, datetr: String): this(
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-    )
-}
+)
+//{
+//    constructor(salid: String, datetr: String): this(
+//        null,
+//        null,
+//        null,
+//        null,
+//        null,
+//        null,
+//        null,
+//        null,
+//        null,
+//        null
+//    )
+//}
 
 
 @Serializable

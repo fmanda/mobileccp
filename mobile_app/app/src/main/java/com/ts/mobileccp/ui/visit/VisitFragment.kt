@@ -27,6 +27,7 @@ import com.ts.mobileccp.db.entity.Customer
 import com.ts.mobileccp.ui.customer.DialogCustomerFragment
 import android.R as R1
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
@@ -69,11 +70,15 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
     private var img_uri : String? = null
 
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val factory = VisitViewModelFactory(requireActivity().application)
 
         visitViewModel = ViewModelProvider(this, factory).get(VisitViewModel::class.java)
+
+        visitViewModel.dialogSaveState.value = false
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
@@ -176,6 +181,13 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
         binding.btnSave.setOnClickListener(){
             saveData()
         }
+
+        visitViewModel.dialogSaveState.observe(viewLifecycleOwner){ result ->
+            if (result == true) {
+                Toast.makeText(requireContext(), "Data berhasil disimpan", Toast.LENGTH_LONG).show()
+                findNavController().navigate(R.id.action_nav_visit_to_nav_home)
+            }
+        }
     }
 
     private fun showCustomerDialog() {
@@ -184,7 +196,7 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
         dialog.show(parentFragmentManager, "DialogCustomerFragment")
     }
 
-    fun setCustomer(){
+    private fun setCustomer(){
         binding.txtShipName.text = selectedCust?.shipname
         binding.txtCustomerName.text = selectedCust?.partnername
         binding.txtShipAddress.text = selectedCust?.shipaddress
@@ -309,16 +321,6 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
         }
     }
 
-    private fun _createImageUri(): Uri? {
-        val contentValues = ContentValues().apply {
-//            put(MediaStore.Images.Media.DISPLAY_NAME, "${System.currentTimeMillis()}.jpg")
-            put(MediaStore.Images.Media.DISPLAY_NAME, "${getUUID().toString()}.jpg")
-            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-            put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/WatermarkedPhotos")
-        }
-
-        return requireContext().contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-    }
 
     private fun createImageUri(): Uri? {
         val fileName = "${getUUID().toString()}.jpg"// Change this if needed
@@ -344,7 +346,7 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
             val contentValues = ContentValues().apply {
                 put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
                 put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/WatermarkedPhotos") // Ensure the folder exists
+                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CCPPhotos") // Ensure the folder exists
             }
             requireContext().contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
         }.also {
@@ -450,12 +452,6 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
 
     private fun saveData(){
         val visit = buildVisitObj()
-
-        if (visitViewModel.saveVisit(visit)){
-            Toast.makeText(requireContext(), "Data berhasil disimpan", Toast.LENGTH_LONG).show()
-            findNavController().navigate(R.id.action_nav_visit_to_nav_home)
-        }
-
-
+        visitViewModel.saveVisit(visit)
     }
 }

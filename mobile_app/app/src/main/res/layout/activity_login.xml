@@ -18,16 +18,31 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-15dp"
+        android:layout_marginTop="-10dp"
         android:layout_marginBottom="40dp"
         android:layout_weight="0"
-        android:fontFamily="sans-serif-condensed-medium"
+        android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:text="  L O G I N    M 0 B I L E   C C P"
-        android:textColor="@color/teal_700"
+        android:textColor="@color/accent2"
         android:textSize="20sp"
         android:textStyle="bold"
         android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/txtAppVer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-10dp"
+        android:layout_marginBottom="50dp"
+        android:layout_weight="0"
+        android:fontFamily="@font/manrope_extrabold"
+        android:gravity="bottom|center"
+        android:text="APP VERSION 1.XX.XXXX."
+        android:textColor="@color/darker_grey"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
 
     <TextView
         android:layout_width="match_parent"
@@ -95,6 +110,8 @@
         android:drawableLeft="@drawable/ic_login_24"
         android:text="Login"
         android:textColor="@color/neutral"
+        android:textSize="16sp"
+        android:textStyle="bold"
         android:visibility="visible"
         app:backgroundTint="@null" />
 

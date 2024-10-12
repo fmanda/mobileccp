@@ -85,6 +85,14 @@ class DialogSalesFragment(
 
         val factory = SalesViewModelFactory(requireActivity().application)
         salesViewModel = ViewModelProvider(this, factory).get(SalesViewModel::class.java)
+        salesViewModel.dialogSaveState.value = false
+
+        salesViewModel.dialogSaveState.observe(viewLifecycleOwner){ result->
+            if (result == true){
+                dialogListener.onSaveSuccess()
+                this.dismiss()
+            }
+        }
 
         _binding = FragmentDialogSalesorderSaveBinding.inflate(inflater, container, false)
         binding.rvDetailOrder.layoutManager = LinearLayoutManager(requireContext())

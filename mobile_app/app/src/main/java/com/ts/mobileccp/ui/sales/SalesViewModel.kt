@@ -33,6 +33,7 @@ class SalesViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = ApiRepository(application)
     val isRestProcessing = MutableLiveData<Boolean>().apply { value = false }
+    val dialogSaveState = MutableLiveData<Boolean>().apply { value = false }
 
     val editedSO = MutableLiveData<TmpSalesOrder>().apply {  value = TmpSalesOrder() }
     val editedSOItems = MutableLiveData<List<TmpSalesOrderItem>>().apply {  value = emptyList() }
@@ -47,15 +48,14 @@ class SalesViewModel(application: Application) : AndroidViewModel(application) {
         return inventoryDao.getListMerk()
     }
 
-    fun saveOrder(salesOrder: SalesOrder, soItems: List<SalesOrderItem>):Boolean{
+    fun saveOrder(salesOrder: SalesOrder, soItems: List<SalesOrderItem>){
         viewModelScope.launch(Dispatchers.IO) {
             salesOrderDao.upsert(salesOrder)
             salesOrderDao.deleteItems(salesOrder.id)
             salesOrderDao.insertItems(soItems)
+            dialogSaveState.postValue(true)
         }
-        return true
     }
-
 
 
     val listLatestActivities: LiveData<List<LastActivityQuery>> = salesOrderDao.getLast300Sales()
