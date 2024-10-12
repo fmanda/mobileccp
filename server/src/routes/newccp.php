@@ -36,7 +36,7 @@ $app->get('/newccp/{entity}/{dt1}/{dt2}[/{filtertxt}]', function ($request, $res
             left join NewCCPType g on b.CCPType = g.CCPType
             inner join IntacsDataUpgrade.dbo.CustomerDelivery h on b.ShipID = h.ShipId"
             . $filter .
-            "order by a.DateTR desc ";            
+            "order by isnull(b.datetr, a.datetr) desc ";            
     $data = DB::openQuery($str);
     
     $json = json_encode($data);
@@ -109,6 +109,35 @@ $app->get('/newccpdownload/{salid}/{dt1}/{dt2}', function ($request, $response) 
 			->withHeader('Content-Type', 'text/html');
 	}
 });
+
+
+$app->get('/visitplan/{salid}', function ($request, $response) {
+  try{
+    $salid = $request->getAttribute('salid');
+
+    
+    $filter = " where a.salid = '" . $salid . "'" 
+            . " and cast(a.datetr as date) between cast(getdate() as date) and cast(getdate()+30 as date)";
+
+    $str = "select cast(a.datetr as date) as plandate, b.idno, b.shipid
+            from newccp a
+            inner join NEWCCPDet b on a.idno = b.IDNo " .$filter;
+
+
+    $data = DB::openQuery($str);
+    
+    $json = json_encode($data);
+    $response->getBody()->write($json);
+    
+		return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
+	}catch(Exception $e){
+    $msg = $e->getMessage();
+    $response->getBody()->write($msg);
+		return $response->withStatus(500)
+			->withHeader('Content-Type', 'text/html');
+	}
+});
+
 
 
 
