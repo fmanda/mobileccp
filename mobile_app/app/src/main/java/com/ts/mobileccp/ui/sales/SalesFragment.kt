@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -22,6 +23,7 @@ import com.ts.mobileccp.db.entity.Customer
 import com.ts.mobileccp.db.entity.InventoryLookup
 import com.ts.mobileccp.db.entity.TmpSalesOrder
 import com.ts.mobileccp.db.entity.TmpSalesOrderItem
+import com.ts.mobileccp.ui.SharedViewModel
 import com.ts.mobileccp.ui.customer.DialogCustomerFragment
 import java.text.NumberFormat
 import java.util.UUID
@@ -37,6 +39,7 @@ class SalesFragment : Fragment(), ProductPickListener,
 
     private val binding get() = _binding!!
     private lateinit var salesViewModel: SalesViewModel;
+    private lateinit var sharedViewModel: SharedViewModel;
 
     private var soItemList: MutableList<TmpSalesOrderItem> = mutableListOf()
     private var salesOrder = TmpSalesOrder()
@@ -55,6 +58,7 @@ class SalesFragment : Fragment(), ProductPickListener,
 
         val factory = SalesViewModelFactory(requireActivity().application)
         salesViewModel = ViewModelProvider(this, factory).get(SalesViewModel::class.java)
+        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
 
         val strID =  arguments?.getString("salesOrderID")
         if (!strID.isNullOrEmpty()){  //edit
@@ -132,6 +136,7 @@ class SalesFragment : Fragment(), ProductPickListener,
             salesViewModel.editedSOItems.observe(viewLifecycleOwner){ items ->
                 soItemList.clear()
                 soItemList.addAll(items)
+                searchIt(getPriceLevel());
                 adapter.notifyDataSetChanged()
             }
         }
@@ -264,12 +269,9 @@ class SalesFragment : Fragment(), ProductPickListener,
     }
 
     override fun onSaveSuccess() {
-//        findNavController().popBackStack(R.id.nav_sales, false)
-        if (isVisit()){
-            findNavController().navigate(R.id.action_nav_sales_to_nav_home)
-        }else {
-            findNavController().navigate(R.id.action_nav_sales_to_nav_browse_sales)
-        }
+        Toast.makeText(requireContext(), "Data berhasil disimpan", Toast.LENGTH_LONG).show()
+        findNavController().navigate(R.id.action_nav_sales_to_nav_home)
+
     }
 
     override fun onSelectedMerk(position: Int, merk: String){

@@ -1,21 +1,36 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# ProGuard rules for your Android project
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Keep all classes and methods from your application package
+-keep class com.ts.mobileccp.** { *; }
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Keep Retrofit and OkHttp classes
+-keep class retrofit2.** { *; }
+-keep class okhttp3.** { *; }
+-keepattributes Signature
+-keepattributes *Annotation
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Keep the annotations for Room
+-keep @androidx.room.* class * { *; }
+-keep class androidx.room.** { *; }
+
+# Keep Kotlin metadata
+-keep class kotlin.Metadata { *; }
+
+# Keep ViewModel and LiveData
+-keep class androidx.lifecycle.ViewModel { *; }
+-keep class androidx.lifecycle.LiveData { *; }
+-keep class androidx.lifecycle.MutableLiveData { *; }
+
+# Keep serialization classes
+-keep class kotlinx.serialization.** { *; }
+
+# Keep CircleImageView
+-keep class de.hdodenhof.circleimageview.** { *; }
+
+# Suppress warnings for missing classes
+-dontwarn com.oracle.svm.core.annotate.Delete
+-dontwarn com.oracle.svm.core.annotate.Substitute
+-dontwarn com.oracle.svm.core.annotate.TargetClass
+
+# Keep any other classes you want to retain
+# Add your additional rules below as needed

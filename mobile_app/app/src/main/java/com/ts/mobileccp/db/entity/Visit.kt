@@ -102,6 +102,8 @@ interface VisitDao {
     fun searchLastVisits(query: String): LiveData<List<LastVisit>>
 
 
+    @Query("SELECT COUNT(*) FROM visit where uploaded='0'")
+    fun getCountToUpload(): LiveData<Int?>
 }
 
 
@@ -131,20 +133,21 @@ data class JSONCCP(
     val status: Int?,
     val operator: String?,
     val items: List<JSONCCPDet>?
-){
-    constructor(salid: String, datetr: String): this(
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-    )
-}
+)
+//{
+//    constructor(salid: String, datetr: String): this(
+//        null,
+//        null,
+//        null,
+//        null,
+//        null,
+//        null,
+//        null,
+//        null,
+//        null,
+//        null
+//    )
+//}
 
 
 @Serializable

@@ -66,7 +66,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
-                    android:text="Customer :"
+                    android:text="Ship Name :"
                     android:textColor="@color/accent"
                     android:textSize="12sp" />
 
@@ -146,7 +146,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:fontFamily="sans-serif-condensed-medium"
+                    android:fontFamily="sans-serif-medium"
                     android:text="Sub Total"
                     android:textAlignment="viewEnd"
                     android:textColor="@color/white"
@@ -154,9 +154,9 @@
 
                 <TextView
                     android:id="@+id/txtDPP"
-                    android:layout_width="120dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-condensed-medium"
+                    android:fontFamily="sans-serif-medium"
                     android:text="Rp 0"
                     android:textAlignment="viewEnd"
                     android:textColor="@color/white"
@@ -173,7 +173,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:fontFamily="sans-serif-condensed-medium"
+                    android:fontFamily="sans-serif-medium"
                     android:text="PPN 11%"
                     android:textAlignment="viewEnd"
                     android:textColor="@color/white"
@@ -181,9 +181,9 @@
 
                 <TextView
                     android:id="@+id/txtPPN"
-                    android:layout_width="120dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-condensed-medium"
+                    android:fontFamily="sans-serif-medium"
                     android:text="Rp 0"
                     android:textAlignment="viewEnd"
                     android:textColor="@color/white"
@@ -200,7 +200,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:fontFamily="sans-serif-condensed-medium"
+                    android:fontFamily="sans-serif-medium"
                     android:text="TOTAL"
                     android:textAlignment="viewEnd"
                     android:textColor="@color/white"
@@ -208,9 +208,9 @@
 
                 <TextView
                     android:id="@+id/txtTotal"
-                    android:layout_width="120dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-condensed-medium"
+                    android:fontFamily="sans-serif-medium"
                     android:text="Rp 0"
                     android:textAlignment="viewEnd"
                     android:textColor="@color/white"
@@ -223,6 +223,7 @@
 
     <LinearLayout
         android:id="@+id/lnAction"
+        style="?android:attr/buttonBarButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -234,9 +235,9 @@
             android:id="@+id/btnCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_marginEnd="10dp"
             android:layout_weight="0"
-            android:backgroundTint="@color/material_dynamic_neutral50"
+            android:backgroundTint="@color/material_dynamic_neutral40"
             android:drawableLeft="@drawable/ic_close_24"
             android:text="Cancel"
             android:textColor="@color/white" />
@@ -245,7 +246,6 @@
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:layout_weight="1"
             android:backgroundTint="@color/teal_700"
             android:drawableLeft="@drawable/ic_check_24"

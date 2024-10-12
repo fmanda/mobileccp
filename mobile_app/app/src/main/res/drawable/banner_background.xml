@@ -1,8 +1,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape
-            android:shape="rectangle"   >
-
+            android:shape="rectangle">
 <!--            <gradient-->
 <!--                android:startColor="@color/accent"-->
 <!--                android:endColor="@color/accent"-->
@@ -15,12 +14,10 @@
                 android:left="0dp"
                 android:top="0dp"
                 android:right="0dp"
-                android:bottom="20dp" >
+                android:bottom="20dp">
             </padding>
-
             <corners android:topLeftRadius="0.1dp" android:topRightRadius="0.1dp"
                 android:bottomLeftRadius="40dp" android:bottomRightRadius="40dp"/>
-
         </shape>
 
     </item>

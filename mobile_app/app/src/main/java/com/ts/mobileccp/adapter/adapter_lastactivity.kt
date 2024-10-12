@@ -1,5 +1,6 @@
 package com.ts.mobileccp.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,6 +48,7 @@ class LastActivityAdapter(private var mList: List<LastActivityQuery>) : Recycler
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newList: List<LastActivityQuery>) {
         mList = newList
         notifyDataSetChanged()

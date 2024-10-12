@@ -8,6 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.ts.mobileccp.databinding.FragmentSettingBinding
+import com.ts.mobileccp.global.AppVariable
 
 /**
  * A simple [Fragment] subclass.
@@ -33,6 +34,13 @@ class SettingFragment : Fragment() {
         binding.btnLogOut.setOnClickListener(){
             logOut()
         }
+
+        binding.txtSalID.text = AppVariable.loginInfo.salid
+        binding.txtSalName.text = AppVariable.loginInfo.salname
+        binding.txtAreaNo.text = AppVariable.loginInfo.areaname
+        binding.txtEntity.text = AppVariable.loginInfo.entity
+        binding.txtAPIUrl.text = AppVariable.apiurl
+
 
         //set toolbar
         val root: View = binding.root

@@ -1,5 +1,6 @@
 package com.ts.mobileccp.rest
 
+import com.ts.mobileccp.global.AppVariable
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -9,7 +10,7 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
 
-    private const val BASE_URL = "http://192.168.195.186:8000/public/"
+    private val BASE_URL = AppVariable.apiurl
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY // Log request and response body

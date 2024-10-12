@@ -1,6 +1,7 @@
 package com.ts.mobileccp.adapter
 
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -75,6 +76,7 @@ class ListCustomerRestAdapter(
         val lnCustomerIcon: FrameLayout = itemView.findViewById(R.id.lnCustomerIcon)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newList: List<CustomerResponse>) {
         mList = newList
         notifyDataSetChanged()

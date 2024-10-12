@@ -44,6 +44,12 @@ class SyncFragment : Fragment() {
             }
         }
 
+        sharedViewModel.last_upload.observe(viewLifecycleOwner) { data ->
+            data?.let {
+                binding.txtLastUpload.text = data.toString()
+            }
+        }
+
         sharedViewModel.customerCount.observe(viewLifecycleOwner){ data ->
             data?.let {
                 binding.txtCustRecords.text = "$data Records"
@@ -53,6 +59,18 @@ class SyncFragment : Fragment() {
         sharedViewModel.inventoryCount.observe(viewLifecycleOwner){ data ->
             data?.let {
                 binding.txtInventoryRecrods.text = "$data Records"
+            }
+        }
+
+        sharedViewModel.visittoupload.observe(viewLifecycleOwner){ data ->
+            data?.let {
+                binding.txtVisitToUpload.text = "$data Records"
+            }
+        }
+
+        sharedViewModel.salestoupload.observe(viewLifecycleOwner){ data ->
+            data?.let {
+                binding.txtSalesToUpload.text = "$data Records"
             }
         }
 

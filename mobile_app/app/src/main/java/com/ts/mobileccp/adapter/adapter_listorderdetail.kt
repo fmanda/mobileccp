@@ -1,6 +1,7 @@
 package com.ts.mobileccp.adapter
 
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +46,7 @@ class ListOrderDetailAdapter(private var mList: List<SalesOrder>) : RecyclerView
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newList: List<SalesOrder>) {
         mList = newList
         notifyDataSetChanged()

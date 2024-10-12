@@ -16,4 +16,5 @@ object AppVariable {
         "",
         ""
     )
+    var apiurl = "http://192.168.195.186:8000/public/"
 }

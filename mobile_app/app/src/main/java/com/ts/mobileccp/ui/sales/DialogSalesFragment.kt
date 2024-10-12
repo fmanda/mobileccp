@@ -85,6 +85,14 @@ class DialogSalesFragment(
 
         val factory = SalesViewModelFactory(requireActivity().application)
         salesViewModel = ViewModelProvider(this, factory).get(SalesViewModel::class.java)
+        salesViewModel.dialogSaveState.value = false
+
+        salesViewModel.dialogSaveState.observe(viewLifecycleOwner){ result->
+            if (result == true){
+                dialogListener.onSaveSuccess()
+                this.dismiss()
+            }
+        }
 
         _binding = FragmentDialogSalesorderSaveBinding.inflate(inflater, container, false)
         binding.rvDetailOrder.layoutManager = LinearLayoutManager(requireContext())
@@ -212,10 +220,10 @@ class DialogSalesFragment(
 
     private fun buildData(){
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        val dtFormatOrder = SimpleDateFormat("yyMMdd.HHmmss", Locale.getDefault())
+        val dtFormatOrder = SimpleDateFormat("yyMMddHHmmss", Locale.getDefault())
         val loginInfo = AppVariable.loginInfo
 
-        val orderNO : String = loginInfo.entity + "." + loginInfo.salid + "." + dtFormatOrder.format(Date());
+        val orderNO : String = loginInfo.salid?.trim() + "." + dtFormatOrder.format(Date());
 
         val id = salesOrder.id ?: UUID.randomUUID()
 
