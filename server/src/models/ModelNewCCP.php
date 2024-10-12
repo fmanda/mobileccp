@@ -33,6 +33,18 @@
 			return $objs;
 		}
 
+		public static function retrievePlanList($filter=''){
+			$sql = "select * from ".static::getTableName()." where 1 = 1 ";
+			if ($filter<>''){
+				$sql = $sql ." and ". $filter;
+			}
+			$objs = DB::openQuery($sql);
+			foreach($objs as $obj){
+				if (isset($obj)) $obj->items = ModelNewCCPDet::retrieveList("IDNo = ". $obj->IDNo . " and (uid is null or datetr is null) " );
+			}
+			return $objs;
+		}
+
 		public static function deleteFromDB($id){
 			try{
 				$obj = parent::retrieve($id);

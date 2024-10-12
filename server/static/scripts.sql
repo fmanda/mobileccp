@@ -177,3 +177,23 @@ create table mobile_salesorderitem(
 	ppn float,
 	amt float
 )
+
+//generate dummy ccp
+insert into NEWCCP(notr,  DateTR, Dabin, Description, Entity, SalID, Status, Operator)
+select top 1 rtrim(a.dabin) + '/' + FORMAT(getdate(), 'yyMMdd') as notr, 
+cast(getdate() as date) as datetr, a.Dabin, a.Description, a.Entity, a.SalID, 0 as status, a.Operator
+from newccp a
+inner join NEWCCPDet b on a.idno = b.IDNo
+where a.salid = '0220222570'
+and a.DateTR ='2023-2-4'
+
+declare @id int = (SELECT SCOPE_IDENTITY())
+
+insert into NEWCCPDet(idno, shipid, PlanQty, ar, car, CCPSCH, CCPType, mark, CreateDate, 
+SOQty, DOQty, RetQty, Coll, Lat, Lng, DateTr, uid)
+select @id as idno, shipid, PlanQty, b.ar, b.car, b.CCPSCH, b.CCPType, b.Mark,
+null as createdate, b.SOQty, b.DOQty, b.RetQty, b.Coll, b.Lat, b.Lng, b.DateTr, b.uid
+from newccp a
+inner join NEWCCPDet b on a.idno = b.IDNo
+where a.salid = '0220222570'
+and a.DateTR ='2023-2-4'
