@@ -197,3 +197,13 @@ from newccp a
 inner join NEWCCPDet b on a.idno = b.IDNo
 where a.salid = '0220222570'
 and a.DateTR ='2023-2-4'
+
+
+alter view v_mobile_ar_remain as 
+select a.invno, cast(a.invdate as date) as invdate, a.amount, a.settle, a.remain, b.[Ship Name] as shipname,
+c.PartnerName as partnername, a.shipid, a.salid
+from IntacsDataUpgrade.dbo.arinv a
+inner join IntacsDataUpgrade.dbo.CustomerDelivery b on a.ShipId = b.shipid
+inner join IntacsDataUpgrade.dbo.[Partner] c on a.PartnerID = c.PartnerId
+where  isnull(a.remain, 0)>0
+

@@ -99,3 +99,24 @@ $app->get('/salesorderdownload/{entity}/{dt1}/{dt2}', function ($request, $respo
 			->withHeader('Content-Type', 'text/html');
 	}
 });
+
+
+
+$app->get('/arremain/{salid}', function ($request, $response) {
+  try{
+    $salid = $request->getAttribute('salid');
+  
+    $str = "select * from v_mobile_ar_remain where salid = '" . $salid . "'"; 
+    $data = DB::openQuery($str);
+    
+    $json = json_encode($data);
+    $response->getBody()->write($json);
+
+		return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
+	}catch(Exception $e){
+    $msg = $e->getMessage();
+    $response->getBody()->write($msg);
+		return $response->withStatus(500)
+			->withHeader('Content-Type', 'text/html');
+	}
+});
