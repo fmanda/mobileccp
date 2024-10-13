@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/neutral"
@@ -14,6 +15,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -25,46 +27,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="5dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/txtDate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="15dp"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="Date"
-                        android:textAlignment="viewStart"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/txtUpload"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="15dp"
-                        android:layout_weight="0"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="Belum Uploded"
-                        android:textAlignment="textEnd"
-                        android:textColor="@color/secondary"
-                        android:textSize="12sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
                     android:orientation="horizontal"
                     android:paddingTop="3dp"
                     android:paddingBottom="3dp">
@@ -92,7 +55,7 @@
                             android:id="@+id/txtAddress"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="5dp"
                             android:layout_weight="1"
                             android:fontFamily="sans-serif-condensed-medium"
                             android:gravity="bottom"
@@ -100,7 +63,7 @@
                             android:text="TextView"
                             android:textAlignment="gravity"
                             android:textColor="@color/darker_grey"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -108,14 +71,16 @@
                             android:layout_marginStart="10dp"
                             android:layout_marginBottom="5dp"
                             android:layout_weight="1"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:visibility="gone">
 
                             <ImageView
                                 android:id="@+id/imageView2"
                                 android:layout_width="15dp"
                                 android:layout_height="15dp"
                                 android:layout_weight="0"
-                                app:srcCompat="@drawable/ic_location_24_dark" />
+                                app:srcCompat="@drawable/ic_location_24_dark"
+                                tools:visibility="gone" />
 
                             <TextView
                                 android:id="@+id/txtLocation"
@@ -126,44 +91,107 @@
                                 android:layout_weight="0"
                                 android:gravity="end"
                                 android:text="location"
-                                android:textSize="12sp" />
+                                android:textSize="12sp"
+                                tools:visibility="gone" />
 
                         </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/txtUpload"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-medium"
+                            android:gravity="center"
+                            android:paddingHorizontal="10dp"
+                            android:text="Belum Uploded"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/secondary"
+                            android:textSize="14sp" />
+
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="0"
-                        android:orientation="vertical"
-                        android:paddingRight="15dp">
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/txtAmount"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="right"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="15dp"
+                            android:layout_marginBottom="5dp"
                             android:layout_weight="1"
                             android:fontFamily="sans-serif-condensed-medium"
-                            android:gravity="center_vertical|end"
-                            android:padding="2dp"
                             android:text="TextView"
                             android:textAlignment="gravity"
                             android:textColor="@color/teal_700"
                             android:textSize="16sp" />
 
-                        <ImageButton
-                            android:id="@+id/btnExpand"
+                        <TextView
+                            android:id="@+id/txtDay"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="15dp"
+                            android:layout_marginBottom="1dp"
                             android:layout_weight="1"
-                            android:background="@null"
-                            android:clickable="false"
-                            app:srcCompat="@drawable/ic_expand_more_dark" />
+                            android:fontFamily="sans-serif"
+                            android:gravity="end"
+                            android:text="Day"
+                            android:textAlignment="textEnd"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/txtDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="15dp"
+                            android:layout_marginBottom="1dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif"
+                            android:gravity="end"
+                            android:text="Date"
+                            android:textAlignment="textEnd"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/txtTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="15dp"
+                            android:layout_marginBottom="1dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif"
+                            android:gravity="end"
+                            android:text="Time"
+                            android:textAlignment="textEnd"
+                            android:textSize="12sp" />
 
                     </LinearLayout>
 
                 </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/btnExpand"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:clickable="false"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_expand_more_dark" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -188,7 +216,8 @@
                     android:text="OrderNo"
                     android:textAlignment="viewStart"
                     android:textColor="@color/accent"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/btnEdit"

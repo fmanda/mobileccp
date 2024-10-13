@@ -22,7 +22,9 @@ import java.util.Locale
 class ListSalesOrderAdapter(private var mList: List<LastActivityQuery>, val listener: ListSalesOrderListener, val isDashBoard:Boolean = false) : RecyclerView.Adapter<ListSalesOrderAdapter.ViewHolder>() {
     private val formatter: NumberFormat = DecimalFormat("Rp #,###")
     private val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-    private val outputFormat = SimpleDateFormat("EEEE, dd-MM-yyyy HH:mm:ss", Locale.getDefault())
+    private val outputFormatDay = SimpleDateFormat("EEEE", Locale.getDefault())
+    private val outputFormatDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+    private val outputFormatTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -33,24 +35,29 @@ class ListSalesOrderAdapter(private var mList: List<LastActivityQuery>, val list
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val soItem = mList[position]
-
         val date: Date? = inputFormat.parse(soItem.orderdate)
-        val formattedDate = date?.let { outputFormat.format(it) }
 
-        holder.txtDate.text = formattedDate
         holder.txtCustomer.text = soItem.customer
         holder.txtAddress.text = soItem.alamat
         holder.txtAmount.text = soItem.amt?.let {formatter.format(it)}
 
-        val location:String = soItem.latitude.toString() + "," + soItem.longitude.toString()
-        holder.txtLocation.text = location
+        val formattedDay = date?.let { outputFormatDay.format(it) }
+        val formattedDate = date?.let { outputFormatDate.format(it) }
+        val formattedTime = date?.let { outputFormatTime.format(it) }
+
+        holder.txtDay.text = formattedDay
+        holder.txtDate.text = formattedDate
+        holder.txtTime.text = formattedTime
+
+//        val location:String = soItem.latitude.toString() + "," + soItem.longitude.toString()
+//        holder.txtLocation.text = location
 
         if (soItem.isexpanded) {
             holder.lnOperation.visibility = View.VISIBLE
-            holder.btnExpand.setImageResource(R.drawable.ic_expand_less_dark)
+//            holder.btnExpand.setImageResource(R.drawable.ic_expand_less_dark)
         }else{
             holder.lnOperation.visibility = View.GONE
-            holder.btnExpand.setImageResource(R.drawable.ic_expand_more_dark)
+//            holder.btnExpand.setImageResource(R.drawable.ic_expand_more_dark)
         }
 
         holder.lnBody.setOnClickListener(){
@@ -80,7 +87,7 @@ class ListSalesOrderAdapter(private var mList: List<LastActivityQuery>, val list
         if (isDashBoard){
             holder.btnExpand.visibility = View.GONE
         }else{
-            holder.btnExpand.visibility = View.VISIBLE
+//            holder.btnExpand.visibility = View.VISIBLE
         }
 
     }
@@ -91,11 +98,14 @@ class ListSalesOrderAdapter(private var mList: List<LastActivityQuery>, val list
 
 
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
+        val txtDay: TextView = itemView.findViewById(R.id.txtDay)
         val txtDate: TextView = itemView.findViewById(R.id.txtDate)
+        val txtTime: TextView = itemView.findViewById(R.id.txtTime)
+
         val txtCustomer: TextView = itemView.findViewById(R.id.txtCustomer)
         val txtAmount: TextView = itemView.findViewById(R.id.txtAmount)
         val txtAddress: TextView = itemView.findViewById(R.id.txtAddress)
-        val txtLocation: TextView = itemView.findViewById(R.id.txtLocation)
+//        val txtLocation: TextView = itemView.findViewById(R.id.txtLocation)
         val lnBody: LinearLayout = itemView.findViewById(R.id.lnBody)
         val lnOperation: LinearLayout = itemView.findViewById(R.id.lnOperation)
         val txtUpload: TextView = itemView.findViewById(R.id.txtUpload)

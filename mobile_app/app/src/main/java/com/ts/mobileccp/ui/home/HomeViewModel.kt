@@ -31,7 +31,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val isRestProcessing = MutableLiveData<Boolean>().apply { value = false }
     val lastUpdate = MutableLiveData<String?>().apply { postValue(AppVariable.loginInfo.last_download) }
     val dtFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    val dateToday = dtFormat.format(Date())
+
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is home Fragment"
@@ -39,7 +39,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val text: LiveData<String> = _text
 
 
-    val todayVisit: LiveData<VisitDashboard?> = visitDao.getDashboardCount(dateToday)
+    val todayVisit: LiveData<VisitDashboard?> = visitDao.getDashboardCount()
     val monthlySales: LiveData<SalesOrderSumCount?> = salesOrderDao.getMonthlySales()
 
 //    val arBalance: LiveData<SalesOrderSumCount?> = salesOrderDao.getMonthlySales()
@@ -50,28 +50,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     val syncStatus = MutableLiveData<Int>()  //0: default, 1:processed
 
+    val listLatestVisit: LiveData<List<LastVisit>> = visitDao.getLatestVisitDashboard()
 
-    fun syncData()= viewModelScope.launch {
-        isRestProcessing.postValue(true)
-        doSyncAllData()
-    }
-
-    private suspend fun doSyncAllData() {
-        repository.fetchAndPostOrders()
-        repository.fetchAndPostVisit()
-        repository.saveCustomerFromRest()
-        repository.saveInventoryFromRest()
-
-        //update last update
-        val dateFormat = SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.getDefault())
-        AppVariable.loginInfo.last_download = dateFormat.format(Date())
-        loginInfoDao.upsert(AppVariable.loginInfo)
-        lastUpdate.postValue(AppVariable.loginInfo.last_download)
-
-
-        isRestProcessing.postValue(false)
-        Toast.makeText(_app, "Sinkronisasi Data Berhasil", Toast.LENGTH_LONG).show()
-    }
 
 }
 class HomeViewModelFactory(private val application: Application) : ViewModelProvider.Factory {

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -57,6 +58,10 @@ class HomeFragment : Fragment(), ListVisitListener {
             data?.let { setSyncState(it) }
         })
 
+
+        homeViewModel.listLatestVisit.observe(viewLifecycleOwner, Observer { data ->
+            data?.let { adapter.updateData(it) }
+        })
 
 //        homeViewModel.todaySales.observe(viewLifecycleOwner, Observer { data ->
 //            data?.let {
@@ -123,6 +128,14 @@ class HomeFragment : Fragment(), ListVisitListener {
             }
         }
 
+        binding.lnAR.setOnClickListener{
+            Toast.makeText(requireContext(), "To Be Added :)", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.lnReport.setOnClickListener{
+            Toast.makeText(requireContext(), "To Be Added :)", Toast.LENGTH_SHORT).show()
+        }
+
         binding.txtSalID.text = AppVariable.loginInfo.salid
         binding.txtSalName.text = AppVariable.loginInfo.salname
         binding.txtDabin.text = AppVariable.loginInfo.areano.trim() + " - " + AppVariable.loginInfo.areaname
@@ -138,11 +151,6 @@ class HomeFragment : Fragment(), ListVisitListener {
         _binding = null
     }
 
-    private fun syncData(){
-        setSyncState(true)
-        homeViewModel.syncData()
-    }
-
 
     fun setSyncState(downloading: Boolean){
         if (downloading){
@@ -154,6 +162,9 @@ class HomeFragment : Fragment(), ListVisitListener {
         }
     }
 
+    override fun onClick(visit: LastVisit, position: Int) {
+
+    }
 
 
     override fun onEdit(visit: LastVisit, position: Int) {

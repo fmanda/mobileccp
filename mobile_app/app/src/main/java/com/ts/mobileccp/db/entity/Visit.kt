@@ -77,7 +77,7 @@ interface VisitDao {
     suspend fun upsertListVisitPlan(visitplans: List<VisitPlan>)
 
     @Query(
-        "SELECT a.id, a.visitdate, b.shipname , b.shipaddress, c.ccpschname as ccpsch, a.lat, a.lng, a.uploaded \n" +
+        "SELECT a.id, a.visitdate, b.shipname , b.shipaddress, c.ccpschname as ccpsch, a.lat, a.lng, a.uploaded, 'false' as isexpanded  \n" +
         "    FROM visit a \n" +
         "    inner join customer b on a.shipid=b.shipid \n" +
         "    left join ccpsch c on a.ccpsch = c.ccpsch \n" +
@@ -86,7 +86,7 @@ interface VisitDao {
     fun getLatestVisit(): LiveData<List<LastVisit>>
 
     @Query(
-        "SELECT a.id, a.visitdate, b.shipname, b.shipaddress, c.ccpschname as ccpsch, a.lat, a.lng, a.uploaded \n" +
+        "SELECT a.id, a.visitdate, b.shipname, b.shipaddress, c.ccpschname as ccpsch, a.lat, a.lng, a.uploaded,  'false' as isexpanded  \n" +
         "    FROM visit a \n" +
         "    inner join customer b on a.shipid=b.shipid \n" +
         "    left join ccpsch c on a.ccpsch = c.ccpsch \n" +
@@ -95,7 +95,7 @@ interface VisitDao {
     fun getLatestVisitDashboard(): LiveData<List<LastVisit>>
 
     @Query(
-        "SELECT a.id, a.visitdate, b.shipname , b.shipaddress, c.ccpschname as ccpsch, a.lat, a.lng, a.uploaded \n" +
+        "SELECT a.id, a.visitdate, b.shipname , b.shipaddress, c.ccpschname as ccpsch, a.lat, a.lng, a.uploaded ,  'false' as isexpanded \n" +
         "    FROM visit a \n" +
         "    inner join customer b on a.shipid=b.shipid \n" +
         "    left join ccpsch c on a.ccpsch = c.ccpsch \n" +
@@ -110,10 +110,16 @@ interface VisitDao {
     fun getCountToUpload(): LiveData<Int?>
 
     @Query("select\n" +
-            "(select count(*) from visitplan where strftime('%Y-%m-%d', plandate)=:filterDate) as countplan, \n" +
-            "(select count(*) from visit where strftime('%Y-%m-%d', visitdate)=:filterDate) as countvisit")
-    fun getDashboardCount(filterDate: String): LiveData<VisitDashboard?>
+            "(select count(*) from visitplan WHERE strftime('%Y-%m-%d', plandate) >= date('now', 'weekday 0', '-7 days', 'localtime')\n" +
+            "        AND strftime('%Y-%m-%d', plandate) <= date('now', 'weekday 0', '-1 day', 'localtime')\n" +
+            "        AND strftime('%Y-%m-%d', plandate) <= date('now', 'localtime')) as countplan, \n" +
+            "(select count(*) from visit WHERE strftime('%Y-%m-%d', visitdate) >= date('now', 'weekday 0', '-7 days', 'localtime')\n" +
+            "        AND strftime('%Y-%m-%d', visitdate) <= date('now', 'weekday 0', '-1 day', 'localtime')\n" +
+            "        AND strftime('%Y-%m-%d', visitdate) <= date('now', 'localtime')) as countvisit")
+    fun getDashboardCount(): LiveData<VisitDashboard?>
 }
+
+
 
 
 @Parcelize
@@ -125,7 +131,8 @@ data class LastVisit(
     var ccpsch: String? = null,
     var lat: Double?,
     var lng: Double?,
-    var uploaded: Int
+    var uploaded: Int,
+    var isexpanded: Boolean
 ) : Parcelable
 
 
