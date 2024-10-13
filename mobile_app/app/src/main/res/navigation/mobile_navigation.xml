@@ -115,4 +115,9 @@
             android:id="@+id/action_nav_visitplan_to_nav_visit"
             app:destination="@id/nav_visit" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_arinv"
+        android:name="com.ts.mobileccp.ui.arinv.ARInvFragment"
+        android:label="fragment_arinv"
+        tools:layout="@layout/fragment_arinv" />
 </navigation>

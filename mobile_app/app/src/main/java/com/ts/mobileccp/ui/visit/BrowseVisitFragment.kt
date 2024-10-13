@@ -15,6 +15,7 @@ import com.ts.mobileccp.R
 import com.ts.mobileccp.adapter.ListVisitAdapter
 import com.ts.mobileccp.adapter.ListVisitListener
 import com.ts.mobileccp.databinding.FragmentBrowseSalesorderBinding
+import com.ts.mobileccp.db.entity.LastActivityQuery
 import com.ts.mobileccp.db.entity.LastVisit
 
 
@@ -79,6 +80,10 @@ class BrowseVisitFragment : Fragment(), ListVisitListener {
 
     }
 
+    override fun onClick(visit: LastVisit, position: Int) {
+        visit.isexpanded = !visit.isexpanded
+        adapter.notifyItemChanged(position)
+    }
 
     override fun onEdit(visit: LastVisit, position: Int) {
         val args = Bundle().apply {

@@ -6,6 +6,8 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import com.ts.mobileccp.db.AppDatabase
+import com.ts.mobileccp.db.entity.ARInv
+import com.ts.mobileccp.db.entity.ARInvDao
 import com.ts.mobileccp.db.entity.CCPMark
 import com.ts.mobileccp.db.entity.CCPMarkDao
 import com.ts.mobileccp.db.entity.CCPSch
@@ -48,6 +50,7 @@ class ApiRepository(ctx: Context) {
     private val visitDao: VisitDao = AppDatabase.getInstance(context).visitDao()
     private val loginInfoDao: LoginInfoDao = AppDatabase.getInstance(context).loginInfoDao()
     private val ccpMarkDao: CCPMarkDao = AppDatabase.getInstance(context).ccpMarkDAO()
+    private val arInvDao: ARInvDao = AppDatabase.getInstance(context).arInvDao()
 
 
     suspend fun fetchCustomerByID(id: String): CustomerResponse? {
@@ -128,6 +131,18 @@ class ApiRepository(ctx: Context) {
                 val response = apiService.getCCPSCH()
                 response
             }catch (e: Exception){
+                null
+            }
+        }
+    }
+
+    suspend fun fetchARRemain(): List<ARInvResponse>? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.getARRemain(AppVariable.loginInfo.salid?: "0")
+                response
+            } catch (e: Exception) {
+                // Handle exceptions
                 null
             }
         }
@@ -221,6 +236,34 @@ class ApiRepository(ctx: Context) {
             Toast.makeText(context, e.message ?: "An error occurred", Toast.LENGTH_LONG).show()
         }
     }
+
+    suspend fun saveARRemainFromRest() {
+        try {
+            val result = this.fetchARRemain()
+            val arremains = result?.map { apiResponse ->
+                ARInv(
+                    apiResponse.invno,
+                    apiResponse.invdate,
+                    apiResponse.amount,
+                    apiResponse.settle,
+                    apiResponse.remain,
+                    apiResponse.shipname,
+                    apiResponse.partnername,
+                    apiResponse.shipid,
+                    apiResponse.salid
+                )
+            }
+
+            if (arremains != null) {
+                arInvDao.updateAll(arremains)
+            }
+
+        } catch (e: Exception) {
+            Toast.makeText(context, e.message ?: "An error occurred", Toast.LENGTH_LONG).show()
+        }
+    }
+
+
     suspend fun saveCustomerFromRest() {
         try {
             val result = this.fetchCustomer()

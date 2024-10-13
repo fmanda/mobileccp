@@ -84,11 +84,20 @@ class ListVisitAdapter(private var mList: List<LastVisit>, val listener: ListVis
             holder.btnUpload.text = "Upload"
         }
 
-//        if (isDashBoard){
-//            holder.btnExpand.visibility = View.GONE
-//        }else{
-//            holder.btnExpand.visibility = View.VISIBLE
-//        }
+
+        if (!isDashBoard){
+            holder.lnBody.setOnClickListener(){
+                listener.onClick(visit, position)
+            }
+        }
+
+        if (visit.isexpanded) {
+            holder.lnOperation.visibility = View.VISIBLE
+//            holder.btnExpand.setImageResource(R.drawable.ic_expand_less_dark)
+        }else{
+            holder.lnOperation.visibility = View.GONE
+//            holder.btnExpand.setImageResource(R.drawable.ic_expand_more_dark)
+        }
 
     }
 
@@ -124,6 +133,7 @@ class ListVisitAdapter(private var mList: List<LastVisit>, val listener: ListVis
 
 
 interface ListVisitListener {
+    fun onClick(visit: LastVisit, position: Int)
     fun onEdit(visit: LastVisit, position: Int)
     fun onUpload(visit: LastVisit, position: Int)
 

@@ -107,7 +107,7 @@ interface SalesOrderDao {
 
     @Query(
         "select * from (\n" +
-                "    SELECT a.id, a.orderno, a.orderdate, b.shipname as customer, b.shipaddress, a.amt, a.longitude, a.latitude, a.uploaded, 'false' as isexpanded \n" +
+                "    SELECT a.id, a.orderno, a.orderdate, b.shipname as customer, b.shipaddress as alamat, a.amt, a.longitude, a.latitude, a.uploaded, 'false' as isexpanded \n" +
                 "    FROM salesorder a \n" +
                 "    inner join customer b on a.shipid=b.shipid\n" +
 //                "    union all\n" +
@@ -138,14 +138,14 @@ interface SalesOrderDao {
     fun getMonthlySales(): LiveData<SalesOrderSumCount?>
 
     @Query(
-        "SELECT a.id, a.orderno, a.orderdate, b.shipname as customer, b.shipaddress, a.amt, a.longitude, a.latitude, a.uploaded, 'false' as isexpanded " +
+        "SELECT a.id, a.orderno, a.orderdate, b.shipname as customer, b.shipaddress as alamat, a.amt, a.longitude, a.latitude, a.uploaded, 'false' as isexpanded " +
                 "FROM salesorder a " +
                 "inner join customer b on a.shipid=b.shipid order by a.orderdate desc limit 300"
     )
     fun getLast300Sales(): LiveData<List<LastActivityQuery>>
 
     @Query(
-        "SELECT a.id, a.orderno, a.orderdate, b.shipname as customer, b.shipaddress, a.amt, a.longitude, a.latitude,  a.uploaded, 'false' as isexpanded " +
+        "SELECT a.id, a.orderno, a.orderdate, b.shipname as customer, b.shipaddress as alamat, a.amt, a.longitude, a.latitude,  a.uploaded, 'false' as isexpanded " +
                 "FROM salesorder a " +
                 "inner join customer b on a.shipid=b.shipid " +
                 "WHERE b.shipname LIKE :query " +

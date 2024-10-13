@@ -58,9 +58,16 @@ class SyncFragment : Fragment() {
 
         sharedViewModel.inventoryCount.observe(viewLifecycleOwner){ data ->
             data?.let {
-                binding.txtInventoryRecrods.text = "$data Records"
+                binding.txtInventoryRecords.text = "$data Records"
             }
         }
+
+        sharedViewModel.arInvCount.observe(viewLifecycleOwner){ data ->
+            data?.let {
+                binding.txtARRecords.text = "$data Records"
+            }
+        }
+
 
         sharedViewModel.visittoupload.observe(viewLifecycleOwner){ data ->
             data?.let {

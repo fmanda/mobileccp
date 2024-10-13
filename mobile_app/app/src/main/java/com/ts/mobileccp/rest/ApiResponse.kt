@@ -61,3 +61,15 @@ data class VisitPlanResponse(
     val plandate: String,
     val shipid: Int
 )
+
+data class ARInvResponse(
+    val invno: String,
+    val invdate: String,
+    val amount: Double?,
+    val settle: Double?,
+    val remain: Double?,
+    val shipname: String?,
+    val partnername: String?,
+    val shipid: Int?,
+    val salid: String?
+)
