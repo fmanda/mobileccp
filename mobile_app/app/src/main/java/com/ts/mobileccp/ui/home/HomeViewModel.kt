@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ts.mobileccp.db.AppDatabase
+import com.ts.mobileccp.db.entity.ARInvDao
 import com.ts.mobileccp.db.entity.LastActivityQuery
 import com.ts.mobileccp.db.entity.LastVisit
 import com.ts.mobileccp.db.entity.LoginInfoDao
@@ -24,13 +25,16 @@ import java.util.Date
 import java.util.Locale
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
-    private val _app : Application = application
+    private val _app : Application = getApplication()
     private val loginInfoDao: LoginInfoDao = AppDatabase.getInstance(application).loginInfoDao()
     private val salesOrderDao: SalesOrderDao = AppDatabase.getInstance(application).salesOrderDao()
+    private val arInvDao: ARInvDao = AppDatabase.getInstance(application).arInvDao()
+
     private val visitDao: VisitDao = AppDatabase.getInstance(application).visitDao()
     val isRestProcessing = MutableLiveData<Boolean>().apply { value = false }
     val lastUpdate = MutableLiveData<String?>().apply { postValue(AppVariable.loginInfo.last_download) }
-    val dtFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+
 
 
     private val _text = MutableLiveData<String>().apply {
@@ -41,8 +45,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     val todayVisit: LiveData<VisitDashboard?> = visitDao.getDashboardCount()
     val monthlySales: LiveData<SalesOrderSumCount?> = salesOrderDao.getMonthlySales()
+    val arbalance: LiveData<Double?> = arInvDao.getRemain()
 
-//    val arBalance: LiveData<SalesOrderSumCount?> = salesOrderDao.getMonthlySales()
 
     val ordersToUpload: LiveData<Int?> = salesOrderDao.getCountOrderToUpload()
 

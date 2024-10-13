@@ -30,7 +30,7 @@ class HomeFragment : Fragment(), ListVisitListener {
     //    val adapter = LastActivityAdapter(emptyList())
     val adapter = ListVisitAdapter(emptyList(), this, true)
     private val binding get() = _binding!!
-    val format = NumberFormat.getNumberInstance()
+    val format : NumberFormat = NumberFormat.getNumberInstance()
 
 
     @SuppressLint("SetTextI18n")
@@ -63,20 +63,7 @@ class HomeFragment : Fragment(), ListVisitListener {
             data?.let { adapter.updateData(it) }
         })
 
-//        homeViewModel.todaySales.observe(viewLifecycleOwner, Observer { data ->
-//            data?.let {
-//                binding.txtTodaySales.text = format.format(data.sumSO)
-//                binding.txtTodayCount.text = format.format(data.countSO) + " Orders"
-//            }
-//        })
-//
-//        homeViewModel.weeklySales.observe(viewLifecycleOwner, Observer { data ->
-//            data?.let {
-//                binding.txtWeeklySales.text = format.format(data.sumSO)
-//                binding.txtWeeklyCount.text = format.format(data.countSO) + " Orders"
-//            }
-//        })
-//
+
         homeViewModel.monthlySales.observe(viewLifecycleOwner, Observer { data ->
             data?.let {
                 binding.txtSales.text = format.format(data.sumSO/1000000) + "jt"
@@ -89,6 +76,14 @@ class HomeFragment : Fragment(), ListVisitListener {
                 binding.txtVisit.text = _visitcaption
             }
         })
+
+        homeViewModel.arbalance.observe(viewLifecycleOwner){ data ->
+            data?.let{
+                binding.txtAR.text = format.format(data/1000000) + "jt"
+            }
+        }
+
+
 
         homeViewModel.ordersToUpload.observe(viewLifecycleOwner){ data ->
             data?.let {
@@ -122,15 +117,16 @@ class HomeFragment : Fragment(), ListVisitListener {
             findNavController().navigate(R.id.nav_sales)
         }
 
+        binding.lnAR.setOnClickListener{
+            findNavController().navigate(R.id.nav_arinv)
+        }
+
         homeViewModel.lastUpdate.observe(viewLifecycleOwner) { data ->
             data?.let {
 //                binding.txtInfoLastUpdate.text = data.toString()
             }
         }
 
-        binding.lnAR.setOnClickListener{
-            Toast.makeText(requireContext(), "To Be Added :)", Toast.LENGTH_SHORT).show()
-        }
 
         binding.lnReport.setOnClickListener{
             Toast.makeText(requireContext(), "To Be Added :)", Toast.LENGTH_SHORT).show()

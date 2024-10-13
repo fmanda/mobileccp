@@ -26,7 +26,6 @@ import java.util.UUID
 
 
 class SalesViewModel(application: Application) : AndroidViewModel(application) {
-    private val _app : Application = application
     private val inventoryDao: InventoryDao = AppDatabase.getInstance(application).inventoryDao()
     val salesOrderDao: SalesOrderDao = AppDatabase.getInstance(application).salesOrderDao()
     val customerDao: CustomerDao = AppDatabase.getInstance(application).customerDao()
@@ -69,7 +68,7 @@ class SalesViewModel(application: Application) : AndroidViewModel(application) {
         repository.fetchAndPostVisit(filterID)
 
         isRestProcessing.postValue(false)
-        Toast.makeText(_app, "Sinkronisasi Data Berhasil", Toast.LENGTH_LONG).show()
+        Toast.makeText(getApplication(), "Sinkronisasi Data Berhasil", Toast.LENGTH_LONG).show()
     }
 
     fun syncData(filterID: UUID)= viewModelScope.launch {

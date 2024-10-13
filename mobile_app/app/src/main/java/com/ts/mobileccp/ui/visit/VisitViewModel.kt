@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ts.mobileccp.db.AppDatabase
+import com.ts.mobileccp.db.entity.ARInv
+import com.ts.mobileccp.db.entity.ARInvDao
 import com.ts.mobileccp.db.entity.Customer
 import com.ts.mobileccp.db.entity.CustomerDao
 import com.ts.mobileccp.db.entity.LastVisit
@@ -20,9 +22,9 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 class VisitViewModel(application: Application) : AndroidViewModel(application) {
-    private val _app : Application = application
     private val ccpMarkDao = AppDatabase.getInstance(application).ccpMarkDAO()
-    val customerDao: CustomerDao = AppDatabase.getInstance(application).customerDao();
+    val customerDao: CustomerDao = AppDatabase.getInstance(application).customerDao()
+    val arinvDao = AppDatabase.getInstance(application).arInvDao()
 
     val listCCPMark = ccpMarkDao.getListCCPMark()
     var listCCPSch = ccpMarkDao.getListCCPSCH()
@@ -52,7 +54,7 @@ class VisitViewModel(application: Application) : AndroidViewModel(application) {
         repository.fetchAndPostVisit(filterID)
 
         isRestProcessing.postValue(false)
-        Toast.makeText(_app, "Data Visit berhasil di upload", Toast.LENGTH_LONG).show()
+        Toast.makeText(getApplication(), "Data Visit berhasil di upload", Toast.LENGTH_LONG).show()
     }
 
     val listLatestVisits: LiveData<List<LastVisit>> = visitDao.getLatestVisit()
@@ -76,6 +78,10 @@ class VisitViewModel(application: Application) : AndroidViewModel(application) {
             val cust = customerDao.getById(customerID)
             customer.postValue(cust)
         }
+    }
+
+    fun getARInvByCustomer(shipID:Int): LiveData<List<ARInv>?>{
+        return arinvDao.getARInvByCust(shipID)
     }
 }
 

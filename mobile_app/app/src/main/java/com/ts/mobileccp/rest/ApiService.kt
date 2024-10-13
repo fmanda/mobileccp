@@ -52,5 +52,8 @@ interface ApiService {
     @GET("visitplan/{salid}")
     suspend fun getVisitPlan(@Path("salid") salid: String) : List<VisitPlanResponse>
 
+    @GET("arremain/{salid}")
+    suspend fun getARRemain(@Path("salid") salid: String) : List<ARInvResponse>
+
 
 }

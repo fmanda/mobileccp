@@ -31,9 +31,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.ts.mobileccp.R
+import com.ts.mobileccp.adapter.ListARInvAdapter
 import com.ts.mobileccp.db.entity.SalesOrder
 import com.ts.mobileccp.db.entity.SalesOrderItem
 import com.ts.mobileccp.db.entity.Visit
@@ -70,8 +72,7 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
     private var uuid : UUID? = null
     private var img_uri : String? = null
 
-
-
+    private val adapter = ListARInvAdapter(emptyList())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,12 +129,12 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
     }
 
     private fun initData(){
-        markAdapter = ArrayAdapter(requireContext(), R1.layout.simple_spinner_item, mutableListOf())
-        markAdapter.setDropDownViewResource(R1.layout.simple_spinner_item)
+        markAdapter = ArrayAdapter(requireContext(), R.layout.spinner_selected_item, mutableListOf())
+        markAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
         binding.spMark.adapter = markAdapter
 
-        schAdapter = ArrayAdapter(requireContext(), R1.layout.simple_spinner_item, mutableListOf())
-        schAdapter.setDropDownViewResource(R1.layout.simple_spinner_item)
+        schAdapter = ArrayAdapter(requireContext(), R.layout.spinner_selected_item, mutableListOf())
+        schAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
         binding.spSCH.adapter = schAdapter
 
 
@@ -207,6 +208,9 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
                 findNavController().navigate(R.id.action_nav_visit_to_nav_home)
             }
         }
+
+        binding.rvARInv.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvARInv.adapter = adapter
     }
 
     private fun showCustomerDialog() {
@@ -221,6 +225,11 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
         binding.txtShipAddress.text = selectedCust?.shipaddress
         binding.txtPhone.text = selectedCust?.shipphone
 
+        visitViewModel.getARInvByCustomer(selectedCust?.partnerid?:0).observe(viewLifecycleOwner){ data ->
+            data?.let{
+                adapter.updateData(data)
+            }
+        }
     }
 
     fun setVisit(visit: Visit){

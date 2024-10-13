@@ -137,13 +137,15 @@
                 android:id="@+id/txtVisit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-condensed-medium"
                 android:text="9/9"
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textColor="@color/teal_700"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -205,13 +207,15 @@
                 android:id="@+id/txtSales"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-condensed-medium"
                 android:text="10/10"
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textColor="@color/teal_700"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -272,13 +276,15 @@
                 android:id="@+id/txtAR"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-condensed-medium"
                 android:text="000"
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textColor="@color/teal_700"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView

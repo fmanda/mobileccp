@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.ts.mobileccp.db.entity.ARInv
+import com.ts.mobileccp.db.entity.ARInvDao
 import com.ts.mobileccp.db.entity.CCPMark
 import com.ts.mobileccp.db.entity.CCPMarkDao
 import com.ts.mobileccp.db.entity.CCPSch
@@ -34,7 +36,8 @@ import com.ts.mobileccp.db.entity.VisitPlan
         Visit::class,
         CCPMark::class,
         CCPSch::class,
-        VisitPlan::class
+        VisitPlan::class,
+        ARInv::class
     ], version = 1
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -44,6 +47,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun salesOrderDao(): SalesOrderDao
     abstract fun loginInfoDao(): LoginInfoDao
     abstract fun ccpMarkDAO(): CCPMarkDao
+    abstract fun arInvDao(): ARInvDao
 
     companion object {
         @Volatile
