@@ -71,7 +71,6 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
 
-
     //others
     implementation(libs.circleimageview)
 
