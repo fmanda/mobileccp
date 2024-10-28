@@ -19,6 +19,7 @@ $app->get('/newccp/{entity}/{dt1}/{dt2}[/{filtertxt}]', function ($request, $res
     $filter = " where a.entity = '" . $entity . "'" 
               . " and cast(a.datetr as date) between '".  $dt1 . "'" 
               . " and '". $dt2 . "'" 
+              . " and b.datetr is not null"
               . " and (lower(c.[Ship Name]) like '%". strtolower($filtertxt) . "%'"
               . " or lower(c.PartnerName) like '%". strtolower($filtertxt) . "%'"
               . " or lower(d.EmpName) like '%". strtolower($filtertxt) . "%')";
@@ -26,7 +27,7 @@ $app->get('/newccp/{entity}/{dt1}/{dt2}[/{filtertxt}]', function ($request, $res
     $str = "select TOP 1000 
             a.idno, a.notr, isnull(b.datetr, a.datetr) as datetr, a.dabin, a.description, a.entity, 
             d.EmpName as salesman, c.[Ship Name] as shipname, c.partnername, h.[Ship Address] as shipaddress,
-            b.remark, e.ccpschname, b.flagdikunjungi, g.ccptypename, f.markname,  b.lat, b.lng, b.uid
+            b.remark, e.ccpschname, b.flagdikunjungi, g.ccptypename, f.markname, isnull(b.lat,0) as lat, isnull(b.lng, 0) as lng, b.uid
             from NEWCCP a
             inner join NEWCCPDet b on a.IDNo = b.IDNo
             inner join CustPartnerShip c on b.ShipID = c.ShipId
