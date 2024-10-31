@@ -22,7 +22,6 @@ import com.ts.mobileccp.db.entity.SalesOrder
 import com.ts.mobileccp.db.entity.SalesOrderItem
 import com.ts.mobileccp.db.entity.TmpSalesOrder
 import com.ts.mobileccp.db.entity.TmpSalesOrderItem
-import com.ts.mobileccp.db.entity.Visit
 import com.ts.mobileccp.global.AppVariable
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -131,9 +130,9 @@ class DialogSalesFragment(
     }
 
     fun initData(){
-        if (salesOrder.customer != null){
-            binding.txtCustName.text = salesOrder.customer?.shipname
-            binding.txtAddress1.text = salesOrder.customer?.shipaddress
+        if (salesOrder.customerDelivery != null){
+            binding.txtCustName.text = salesOrder.customerDelivery?.shipname
+            binding.txtAddress1.text = salesOrder.customerDelivery?.shipaddress
         }
 
         if (isVisit){
@@ -225,7 +224,7 @@ class DialogSalesFragment(
             id,
             orderNO,
             dateFormat.format(Date()),
-            this.salesOrder.customer?.shipid?:0,
+            this.salesOrder.customerDelivery?.shipid?:0,
             loginInfo.salid?:"",
             loginInfo.areano,
             dpp,

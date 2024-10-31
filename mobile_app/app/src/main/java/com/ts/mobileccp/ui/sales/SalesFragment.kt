@@ -19,7 +19,7 @@ import com.ts.mobileccp.adapter.InventoryPickAdapter
 import com.ts.mobileccp.adapter.ProductPickListener
 import com.ts.mobileccp.adapter.SelectMerkListener
 import com.ts.mobileccp.databinding.FragmentSalesBinding
-import com.ts.mobileccp.db.entity.Customer
+import com.ts.mobileccp.db.entity.CustomerDelivery
 import com.ts.mobileccp.db.entity.InventoryLookup
 import com.ts.mobileccp.db.entity.TmpSalesOrder
 import com.ts.mobileccp.db.entity.TmpSalesOrderItem
@@ -124,7 +124,7 @@ class SalesFragment : Fragment(), ProductPickListener,
         val root: View = binding.root
 
         if (!isEdit) {
-            if (salesOrder.customer == null) {
+            if (salesOrder.customerDelivery == null) {
                 showCustomerDialog()
             }
         }else{
@@ -232,7 +232,7 @@ class SalesFragment : Fragment(), ProductPickListener,
     }
 
     private fun showSalesOrderDialog() {
-        if (salesOrder.customer==null){
+        if (salesOrder.customerDelivery==null){
             showWarning("Customer Belum dipilih, Silahkan Pilih Customer terlebih dahulu")
             return
         }
@@ -255,21 +255,21 @@ class SalesFragment : Fragment(), ProductPickListener,
     }
 
 
-    override fun onSelectDialogCustomer(cust: Customer) {
-        salesOrder.customer = cust
+    override fun onSelectDialogCustomer(cust: CustomerDelivery) {
+        salesOrder.customerDelivery = cust
         setCustomer()
         searchIt(getPriceLevel());
     }
 
     fun setCustomer(){
 //        salesOrder.customer = cust
-        binding.txtCustName.text = salesOrder.customer?.shipname
-        binding.txtAddress1.text = salesOrder.customer?.shipaddress
+        binding.txtCustName.text = salesOrder.customerDelivery?.shipname
+        binding.txtAddress1.text = salesOrder.customerDelivery?.shipaddress
 
     }
 
     fun getPriceLevel():Int{
-        return salesOrder.customer?.pricelevel?:0
+        return salesOrder.customerDelivery?.pricelevel?:0
     }
 
     @SuppressLint("NotifyDataSetChanged")

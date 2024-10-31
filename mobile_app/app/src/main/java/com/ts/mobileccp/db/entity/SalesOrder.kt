@@ -57,7 +57,7 @@ data class SalesOrderItem(
 
 data class TmpSalesOrder(
     var id: UUID?,
-    var customer: Customer?
+    var customerDelivery: CustomerDelivery?
 ){
     constructor(): this(
         null,
@@ -109,7 +109,7 @@ interface SalesOrderDao {
         "select * from (\n" +
                 "    SELECT a.id, a.orderno, a.orderdate, b.shipname as customer, b.shipaddress as alamat, a.amt, a.longitude, a.latitude, a.uploaded, 'false' as isexpanded \n" +
                 "    FROM salesorder a \n" +
-                "    inner join customer b on a.shipid=b.shipid\n" +
+                "    inner join customerdelivery b on a.shipid=b.shipid\n" +
 //                "    union all\n" +
 //                "    SELECT a.id, a.visitno, a.visitdate, b.shipname as customer, b.shipaddress, 0, a.longitude, a.latitude, a.uploaded, 'false' as isexpanded \n" +
 //                "    FROM visit a \n" +
@@ -140,14 +140,14 @@ interface SalesOrderDao {
     @Query(
         "SELECT a.id, a.orderno, a.orderdate, b.shipname as customer, b.shipaddress as alamat, a.amt, a.longitude, a.latitude, a.uploaded, 'false' as isexpanded " +
                 "FROM salesorder a " +
-                "inner join customer b on a.shipid=b.shipid order by a.orderdate desc limit 300"
+                "inner join customerdelivery b on a.shipid=b.shipid order by a.orderdate desc limit 300"
     )
     fun getLast300Sales(): LiveData<List<LastActivityQuery>>
 
     @Query(
         "SELECT a.id, a.orderno, a.orderdate, b.shipname as customer, b.shipaddress as alamat, a.amt, a.longitude, a.latitude,  a.uploaded, 'false' as isexpanded " +
                 "FROM salesorder a " +
-                "inner join customer b on a.shipid=b.shipid " +
+                "inner join customerdelivery b on a.shipid=b.shipid " +
                 "WHERE b.shipname LIKE :query " +
                 "order by a.orderdate desc limit 300"
     )
@@ -168,6 +168,9 @@ interface SalesOrderDao {
 
     @Query("DELETE FROM salesorder")
     suspend fun clearSalesOrder()
+
+    @Query("DELETE FROM arinv")
+    suspend fun clearAR()
 
     @Query("SELECT COUNT(*) FROM salesorder where uploaded = 0")
     fun getCountOrderToUpload(): LiveData<Int?>

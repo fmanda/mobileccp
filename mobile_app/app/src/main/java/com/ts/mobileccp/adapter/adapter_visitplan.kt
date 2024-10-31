@@ -1,3 +1,4 @@
+package com.ts.mobileccp.adapter
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
@@ -6,7 +7,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ts.mobileccp.R
-import com.ts.mobileccp.db.entity.LastVisit
 import com.ts.mobileccp.db.entity.LastVisitPlan
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -22,7 +22,6 @@ class VisitPlanAdapter(var mList: List<LastVisitPlan>, var mlistener: VisitPlanL
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txtCustomer: TextView = itemView.findViewById(R.id.txtCustomer)
-        val txtPartnerName: TextView = itemView.findViewById(R.id.txtPartnerName)
         val txtAddress: TextView = itemView.findViewById(R.id.txtAddress)
         val txtDate: TextView = itemView.findViewById(R.id.txtDate)
         val txtDay: TextView = itemView.findViewById(R.id.txtDay)
@@ -43,13 +42,12 @@ class VisitPlanAdapter(var mList: List<LastVisitPlan>, var mlistener: VisitPlanL
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mList[position]
-        holder.txtCustomer.text = item.shipname
-        holder.txtPartnerName.text = item.shipname
-        holder.txtAddress.text = item.shipname
-        holder.txtCustomer.text = item.shipname
+        holder.txtCustomer.text = item.partnername
+        holder.txtAddress.text = item.partneraddress
 
-        val date: Date? = inputFormat.parse(item.plandate)
-        1
+
+        val date: Date? = inputFormat.parse(item.datetr)
+
         date?.let {
             holder.txtDay.text = dayFormat.format(it)
             holder.txtDate.text = dateFormat.format(it)

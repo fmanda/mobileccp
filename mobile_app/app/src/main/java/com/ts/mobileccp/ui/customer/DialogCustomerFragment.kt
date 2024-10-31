@@ -14,7 +14,7 @@ import com.ts.mobileccp.adapter.ListCustomerAdapter
 import com.ts.mobileccp.adapter.ListJenjangAdapter
 import com.ts.mobileccp.adapter.SelectKelurahanListener
 import com.ts.mobileccp.databinding.FragmentDialogCustomerBinding
-import com.ts.mobileccp.db.entity.Customer
+import com.ts.mobileccp.db.entity.CustomerDelivery
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -33,7 +33,7 @@ class DialogCustomerFragment : BottomSheetDialogFragment(), CustomerSelectListen
     private var filterKelurahan: String = ""
 
     interface DialogCustomerListener {
-        fun onSelectDialogCustomer(cust: Customer)
+        fun onSelectDialogCustomer(cust: CustomerDelivery)
     }
 
     // Use this interface to communicate with the host
@@ -93,7 +93,7 @@ class DialogCustomerFragment : BottomSheetDialogFragment(), CustomerSelectListen
         }
     }
 
-    override fun onSelect(cust: Customer, position: Int) {
+    override fun onSelect(cust: CustomerDelivery, position: Int) {
         listener?.onSelectDialogCustomer(cust)
         dismiss()
     }

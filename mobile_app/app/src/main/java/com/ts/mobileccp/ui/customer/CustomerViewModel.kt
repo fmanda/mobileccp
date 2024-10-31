@@ -4,12 +4,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.ts.mobileccp.db.AppDatabase
 import com.ts.mobileccp.db.entity.CustomerDao
-import com.ts.mobileccp.db.entity.Customer
-import kotlinx.coroutines.Dispatchers
+import com.ts.mobileccp.db.entity.CustomerDelivery
 import kotlinx.coroutines.launch
 
 
@@ -18,21 +16,16 @@ class CustomerViewModel(application: Application) : AndroidViewModel(application
     private val customerDao: CustomerDao = AppDatabase.getInstance(application).customerDao()
 
     //prefer
-    val listcustomer: LiveData<List<Customer>> = customerDao.getListCustomer()
+    val listcustomer: LiveData<List<CustomerDelivery>> = customerDao.getListCustomerDelivery()
 
 
-    //Dispatcher.IO avoid run at main thread, if not using livedata
-    fun getCustomers()  = liveData(Dispatchers.IO) {
-        val cust: List<Customer> = customerDao.getCustomers()
-        emit(cust)
-    }
 
-    fun searchCustomer(query: String, kelurahan: String): LiveData<List<Customer>> {
-        return customerDao.searchCustomer("%$query%", "%$kelurahan%")
+    fun searchCustomer(query: String, kelurahan: String): LiveData<List<CustomerDelivery>> {
+        return customerDao.searchCustomerDelivery("%$query%", "%$kelurahan%")
     }
 
 
-    fun insert(example: Customer) = viewModelScope.launch {
+    fun insert(example: CustomerDelivery) = viewModelScope.launch {
         customerDao.insert(example)
     }
 

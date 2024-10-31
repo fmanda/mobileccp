@@ -15,7 +15,7 @@ and a.NotActive = 0
 
 alter view v_customerdelivery as
 select a.shipid, a.[Ship Name] as shipname, a.[Ship Address] as shipaddress, a.[Ship City] as shipcity, 
-a.[Ship Phone] as shipphone, a.[Ship HP] as shiphp, b.partnerid, b.partnername,
+a.[Ship Phone] as shipphone, a.[Ship HP] as shiphp, b.partnerid, b.partnername, b.Address as partneraddress,
 a.pricelevel, a.isactive, c.areano, c.areaname, c.Entity, b.npsn, e.CClass2Name as jenjang
 from MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.CustomerDelivery a
 inner join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.[Partner] b on a.CustomerId = b.PartnerId

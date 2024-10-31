@@ -18,7 +18,7 @@ import com.ts.mobileccp.adapter.ListJenjangAdapter
 import com.ts.mobileccp.adapter.SelectKelurahanListener
 //import com.fma.mobility.adapter.ListCustomerAdapter
 import com.ts.mobileccp.databinding.FragmentCustomerBinding
-import com.ts.mobileccp.db.entity.Customer
+import com.ts.mobileccp.db.entity.CustomerDelivery
 
 
 class CustomerFragment : Fragment(), CustomerSelectListener, SelectKelurahanListener {
@@ -99,7 +99,7 @@ class CustomerFragment : Fragment(), CustomerSelectListener, SelectKelurahanList
         }
     }
 
-    override fun onSelect(cust: Customer, position: Int) {
+    override fun onSelect(cust: CustomerDelivery, position: Int) {
         //do nothing
     }
 

@@ -10,8 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ts.mobileccp.db.AppDatabase
 import com.ts.mobileccp.db.entity.ARInv
-import com.ts.mobileccp.db.entity.ARInvDao
-import com.ts.mobileccp.db.entity.Customer
+import com.ts.mobileccp.db.entity.CustomerDelivery
 import com.ts.mobileccp.db.entity.CustomerDao
 import com.ts.mobileccp.db.entity.LastVisit
 import com.ts.mobileccp.db.entity.Visit
@@ -22,12 +21,12 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 class VisitViewModel(application: Application) : AndroidViewModel(application) {
-    private val ccpMarkDao = AppDatabase.getInstance(application).ccpMarkDAO()
+    private val ccpMarkDao = AppDatabase.getInstance(application).visitMarkDao()
     val customerDao: CustomerDao = AppDatabase.getInstance(application).customerDao()
     val arinvDao = AppDatabase.getInstance(application).arInvDao()
 
-    val listCCPMark = ccpMarkDao.getListCCPMark()
-    var listCCPSch = ccpMarkDao.getListCCPSCH()
+    val listVisitMark = ccpMarkDao.getListVisitMark()
+    var listPlanMark = ccpMarkDao.getListPlanMark()
 
     private val repository = ApiRepository(application)
     val dialogSaveState = MutableLiveData<Boolean>().apply { value = false }
@@ -35,7 +34,7 @@ class VisitViewModel(application: Application) : AndroidViewModel(application) {
     val visitDao: VisitDao = AppDatabase.getInstance(application).visitDao()
     val isRestProcessing = MutableLiveData<Boolean>().apply { value = false }
     val visit = MutableLiveData<Visit>().apply { value = null }
-    val customer = MutableLiveData<Customer>().apply { value = null }
+    val customerDelivery = MutableLiveData<CustomerDelivery>().apply { value = null }
 
     fun saveVisit(visit: Visit){
         viewModelScope.launch(Dispatchers.IO) {
@@ -68,7 +67,7 @@ class VisitViewModel(application: Application) : AndroidViewModel(application) {
             tmp?.let{
                 val cust = customerDao.getById(it.shipid)
                 visit.postValue(tmp)
-                customer.postValue(cust)
+                customerDelivery.postValue(cust)
             }
         }
     }
@@ -76,7 +75,7 @@ class VisitViewModel(application: Application) : AndroidViewModel(application) {
     fun visitByCustomer(customerID:Int){
         viewModelScope.launch(Dispatchers.IO) {
             val cust = customerDao.getById(customerID)
-            customer.postValue(cust)
+            customerDelivery.postValue(cust)
         }
     }
 

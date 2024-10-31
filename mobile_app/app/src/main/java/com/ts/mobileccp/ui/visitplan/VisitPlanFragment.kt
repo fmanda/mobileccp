@@ -1,7 +1,5 @@
 package com.ts.mobileccp.ui.visitplan
 
-import VisitPlanAdapter
-import VisitPlanListener
 import android.annotation.SuppressLint
 import androidx.fragment.app.viewModels
 import android.os.Bundle
@@ -14,6 +12,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ts.mobileccp.R
+import com.ts.mobileccp.adapter.VisitPlanAdapter
+import com.ts.mobileccp.adapter.VisitPlanListener
 import com.ts.mobileccp.databinding.FragmentVisitBinding
 import com.ts.mobileccp.databinding.FragmentVisitPlanBinding
 import com.ts.mobileccp.db.entity.LastVisitPlan
@@ -69,7 +69,7 @@ class VisitPlanFragment : Fragment(), VisitPlanListener {
 
     override fun onClickListener(visitplan: LastVisitPlan, position: Int) {
         val args = Bundle().apply {
-            putInt("customerID", visitplan.shipid)
+            putInt("customerID", visitplan.partnerid)
         }
         findNavController().navigate(R.id.action_nav_visitplan_to_nav_visit, args)
     }

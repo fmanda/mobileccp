@@ -40,7 +40,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     val last_download = MutableLiveData<String?>().apply { postValue(AppVariable.loginInfo.last_download) }
     val last_upload = MutableLiveData<String?>().apply { postValue(AppVariable.loginInfo.last_upload) }
 
-    val customerCount: LiveData<Int?> = customerDao.getRowCount()
+    val customerCount: LiveData<Int?> = customerDao.getCustomerDeliveryCount()
     val inventoryCount: LiveData<Int?> = inventoryDao.getRowCount()
 
     val visittoupload: LiveData<Int?> = visitDao.getCountToUpload()
@@ -64,7 +64,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
         repository.saveCustomerFromRest()
         repository.saveInventoryFromRest()
         repository.savePriceLevelFromRest()
-        repository.saveCCHMarkFromRest()
+        repository.saveVisitMarkFromRest()
 
         //update last update
         AppVariable.loginInfo.last_download = dateFormat.format(Date())
@@ -76,11 +76,15 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     private suspend fun uploadData() {
-        repository.saveVisitPlanFromRest()
+        repository.fetchAndPostVisitRoute()
+        repository.fetchAndPostVisitPlan()
         repository.fetchAndPostOrders()
         repository.fetchAndPostVisitImg() //before visit updating status to 1
         repository.fetchAndPostVisit()
+
         repository.saveARRemainFromRest()
+        repository.saveVisitRouteFromRest()
+        repository.saveVisitPlanFromRest()
 
         AppVariable.loginInfo.last_upload = dateFormat.format(Date())
         loginInfoDao.upsert(AppVariable.loginInfo)

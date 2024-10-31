@@ -41,7 +41,7 @@ interface ARInvDao {
     @Query("SELECT sum(remain) FROM arinv")
     fun getRemain(): LiveData<Double?>
 
-    @Query("SELECT a.* FROM arinv a inner join customer b on a.shipid = b.shipid where b.partnerid = :customerid")
+    @Query("SELECT a.* FROM arinv a inner join customerdelivery b on a.shipid = b.shipid where b.partnerid = :customerid")
     fun getARInvByCust(customerid: Int): LiveData<List<ARInv>?>
 
     @Query("SELECT * FROM arinv")

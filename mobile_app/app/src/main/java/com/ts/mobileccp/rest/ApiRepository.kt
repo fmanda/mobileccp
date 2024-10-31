@@ -1,24 +1,28 @@
 package com.ts.mobileccp.rest
 
+
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
-import assertk.catch
 import com.ts.mobileccp.db.AppDatabase
 import com.ts.mobileccp.db.entity.ARInv
 import com.ts.mobileccp.db.entity.ARInvDao
-import com.ts.mobileccp.db.entity.CCPMark
-import com.ts.mobileccp.db.entity.CCPMarkDao
-import com.ts.mobileccp.db.entity.CCPSch
-import com.ts.mobileccp.db.entity.Customer
+import com.ts.mobileccp.db.entity.VisitMark
+import com.ts.mobileccp.db.entity.VisitMarkDao
+import com.ts.mobileccp.db.entity.PlanMark
+import com.ts.mobileccp.db.entity.CustomerDelivery
 import com.ts.mobileccp.db.entity.CustomerDao
 import com.ts.mobileccp.db.entity.Inventory
 import com.ts.mobileccp.db.entity.InventoryDao
-import com.ts.mobileccp.db.entity.JSONCCPDet
+import com.ts.mobileccp.db.entity.JSONVisit
 import com.ts.mobileccp.db.entity.JSONSalesOrder
 import com.ts.mobileccp.db.entity.JSONSalesOrderItem
+import com.ts.mobileccp.db.entity.JSONVisitPlan
+import com.ts.mobileccp.db.entity.JSONVisitPlanItem
+import com.ts.mobileccp.db.entity.JSONVisitRoute
+import com.ts.mobileccp.db.entity.JSONVisitRouteItem
 import com.ts.mobileccp.db.entity.LoginInfo
 import com.ts.mobileccp.db.entity.LoginInfoDao
 import com.ts.mobileccp.db.entity.PriceLevel
@@ -27,6 +31,13 @@ import com.ts.mobileccp.db.entity.SalesOrderWithItems
 import com.ts.mobileccp.db.entity.Visit
 import com.ts.mobileccp.db.entity.VisitDao
 import com.ts.mobileccp.db.entity.VisitPlan
+import com.ts.mobileccp.db.entity.VisitPlanDao
+import com.ts.mobileccp.db.entity.VisitPlanItem
+import com.ts.mobileccp.db.entity.VisitPlanWithItem
+import com.ts.mobileccp.db.entity.VisitRoute
+import com.ts.mobileccp.db.entity.VisitRouteDao
+import com.ts.mobileccp.db.entity.VisitRouteItem
+import com.ts.mobileccp.db.entity.VisitRouteWithItem
 import com.ts.mobileccp.global.AppVariable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -55,23 +66,16 @@ class ApiRepository(ctx: Context) {
     private val salesOrder: SalesOrderDao = AppDatabase.getInstance(context).salesOrderDao()
     private val visitDao: VisitDao = AppDatabase.getInstance(context).visitDao()
     private val loginInfoDao: LoginInfoDao = AppDatabase.getInstance(context).loginInfoDao()
-    private val ccpMarkDao: CCPMarkDao = AppDatabase.getInstance(context).ccpMarkDAO()
+    private val visitMarkDao: VisitMarkDao = AppDatabase.getInstance(context).visitMarkDao()
     private val arInvDao: ARInvDao = AppDatabase.getInstance(context).arInvDao()
     private val settingDao = AppDatabase.getInstance(context).settingDao()
 
-    suspend fun fetchCustomerByID(id: String): CustomerResponse? {
-        return withContext(Dispatchers.IO) {
-            try {
-                val response = apiService.getCustomerByID(id)
-                response
-            } catch (e: Exception) {
-                // Handle exceptions
-                null
-            }
-        }
-    }
+    private val visitRouteDao: VisitRouteDao = AppDatabase.getInstance(context).visitRouteDao()
+    private val visitPlanDao: VisitPlanDao = AppDatabase.getInstance(context).visitPlanDao()
 
-    suspend fun fetchCustomer(): List<CustomerResponse>? {
+
+
+    suspend fun fetchCustomer(): List<CustomerDeliveryResponse>? {
         return withContext(Dispatchers.IO) {
             try {
                 val response = apiService.getCustomer(AppVariable.loginInfo.areano)
@@ -119,11 +123,22 @@ class ApiRepository(ctx: Context) {
         }
     }
 
+    suspend fun fetchVisitRoute(): List<VisitRouteResponse>? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.getVisitRoute(AppVariable.loginInfo.areano?: "")
+                response
+            } catch (e: Exception) {
+                // Handle exceptions
+                null
+            }
+        }
+    }
 
-    suspend fun fetchCCPMark(): List<CCPMarkResponse>?{
+    suspend fun fetchVisitMark(): List<VisitMarkResponse>?{
         return withContext(Dispatchers.IO){
             try {
-                val response = apiService.getCCPMark()
+                val response = apiService.getVisitmark()
                 response
             } catch (e: Exception){
                 null
@@ -131,10 +146,10 @@ class ApiRepository(ctx: Context) {
         }
     }
 
-    suspend fun fetchCCPSCH(): List<CCPSCHResponse>?{
+    suspend fun fetchPlanMark(): List<PlanMarkResponse>?{
         return withContext(Dispatchers.IO){
             try{
-                val response = apiService.getCCPSCH()
+                val response = apiService.getPlanMark()
                 response
             }catch (e: Exception){
                 null
@@ -154,27 +169,27 @@ class ApiRepository(ctx: Context) {
         }
     }
 
-    suspend fun saveCCHMarkFromRest() {
+    suspend fun saveVisitMarkFromRest() {
         try {
-            val ccpmarksResp = this.fetchCCPMark()
-            val ccpschResp = this.fetchCCPSCH()
+            val visitmarkResponses = this.fetchVisitMark()
+            val planMarkResponses = this.fetchPlanMark()
 
-            val ccpmark = ccpmarksResp?.map{ obj ->
-                CCPMark(
-                    obj.mark,
+            val visitMarks = visitmarkResponses?.map{ obj ->
+                VisitMark(
+                    obj.id,
                     obj.markname
                 )
             }
 
-            val ccpsch = ccpschResp?.map{ obj ->
-                CCPSch(
-                    obj.ccpsch,
-                    obj.ccpschname
+            val planMarks = planMarkResponses?.map{ obj ->
+                PlanMark(
+                    obj.id,
+                    obj.markname
                 )
             }
 
-            if (ccpmark != null) ccpMarkDao.insertListCCPMark(ccpmark)
-            if (ccpsch != null) ccpMarkDao.insertListCCPSCH(ccpsch)
+            if (visitMarks != null) visitMarkDao.insertListVisitMark(visitMarks)
+            if (planMarks != null) visitMarkDao.insertListPlanMark(planMarks)
 
         } catch (e: Exception) {
             Toast.makeText(context, e.message ?: "An error occurred", Toast.LENGTH_LONG).show()
@@ -224,20 +239,72 @@ class ApiRepository(ctx: Context) {
         }
     }
 
+    suspend fun saveVisitRouteFromRest() {
+        try {
+            val result = this.fetchVisitRoute()
+
+            result?.let{
+                for (visitRouteResponse in it){
+                    val visitRoute = VisitRoute(
+                        UUID.fromString(visitRouteResponse.id),
+                        visitRouteResponse.dabin,
+                        visitRouteResponse.routename,
+                        1
+                    )
+                    visitRouteDao.upsert(visitRoute);
+                    visitRouteDao.deleteItems(visitRoute.id)
+
+                    val itemResponse = visitRouteResponse.items
+                    itemResponse?.let{
+                        val visitrouteitems = itemResponse.map { itemResponse ->
+                            VisitRouteItem(
+                                0,
+                                visitRoute.id,
+                                itemResponse.partnerid
+                            )
+                        }
+                        visitRouteDao.insertItems(visitrouteitems)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Toast.makeText(context, e.message ?: "An error occurred", Toast.LENGTH_LONG).show()
+        }
+    }
+
     suspend fun saveVisitPlanFromRest() {
         try {
             val result = this.fetchVisitPlan()
-            val visitplans = result?.map { apiResponse ->
-                VisitPlan(
-                    apiResponse.idno,
-                    apiResponse.plandate,
-                    apiResponse.shipid
-                )
-            }
-            if (visitplans != null) {
-                visitDao.upsertListVisitPlan(visitplans)
-            }
 
+            result?.let{
+                for (visitPlanResponse in it){
+                    val visitPlan = VisitPlan(
+                        UUID.fromString(visitPlanResponse.id),
+                        visitPlanResponse.notr,
+                        visitPlanResponse.datetr,
+                        visitPlanResponse.salid,
+                        visitPlanResponse.dabin,
+                        visitPlanResponse.entity,
+                        visitPlanResponse.status,
+                        1
+                    )
+                    visitPlanDao.upsert(visitPlan);
+                    visitPlanDao.deleteItems(visitPlan.id)
+
+                    val itemResponse = visitPlanResponse.items
+                    itemResponse?.let{
+                        val visitplanitems = itemResponse.map { itemResponse ->
+                            VisitPlanItem(
+                                0,
+                                visitPlan.id,
+                                itemResponse.partnerid,
+                                itemResponse.planmark_id
+                            )
+                        }
+                        visitPlanDao.insertItems(visitplanitems)
+                    }
+                }
+            }
         } catch (e: Exception) {
             Toast.makeText(context, e.message ?: "An error occurred", Toast.LENGTH_LONG).show()
         }
@@ -274,8 +341,8 @@ class ApiRepository(ctx: Context) {
         try {
             val result = this.fetchCustomer()
 
-            val customers = result?.map { apiResponse ->
-                Customer(
+            val customerDeliveries = result?.map { apiResponse ->
+                CustomerDelivery(
                     apiResponse.shipid,
                     apiResponse.shipname,
                     apiResponse.shipaddress,
@@ -284,6 +351,7 @@ class ApiRepository(ctx: Context) {
                     apiResponse.shiphp,
                     apiResponse.partnerid,
                     apiResponse.partnername,
+                    apiResponse.partneraddress,
                     apiResponse.pricelevel,
                     apiResponse.areano,
                     apiResponse.areaname,
@@ -292,8 +360,8 @@ class ApiRepository(ctx: Context) {
                 )
             }
 
-            if (customers != null) {
-                customerDao.insertList(customers)
+            if (customerDeliveries != null) {
+                customerDao.insertList(customerDeliveries)
 //                callback?.onSuccess("")
 //                Toast.makeText(context, "Customer Updated from Server", Toast.LENGTH_SHORT).show()
             }
@@ -311,7 +379,6 @@ class ApiRepository(ctx: Context) {
             orderdate = soWithItems.order.orderdate,
             shipid = soWithItems.order.shipid,
             salid = soWithItems.order.salid,
-//            areano = soWithItems.order.areano,
             entity = AppVariable.loginInfo.entity?:"",
             dpp = soWithItems.order.dpp,
             ppn = soWithItems.order.ppn,
@@ -333,25 +400,96 @@ class ApiRepository(ctx: Context) {
         )
     }
 
-    private fun mapToJSONCCPDet(visit: Visit): JSONCCPDet {
-        return JSONCCPDet(
-          0,
+
+    private fun mapToJSONVisitRoute(routeWithItems: VisitRouteWithItem): JSONVisitRoute {
+        return JSONVisitRoute(
+            id = routeWithItems.visitroute.id.toString(),
+            dabin = routeWithItems.visitroute.dabin,
+            routename = routeWithItems.visitroute.routename,
+            items = routeWithItems.items.map { item ->
+                JSONVisitRouteItem(
+                    visitroute_id = item.visitroute_id.toString(),
+                    partnerid = item.partnerid
+                )
+            }
+        )
+    }
+
+    private fun mapToJSONVisitPlan(planWithItems: VisitPlanWithItem): JSONVisitPlan {
+        return JSONVisitPlan(
+            id = planWithItems.visitplan.id.toString(),
+            notr = planWithItems.visitplan.notr,
+            datetr = planWithItems.visitplan.datetr,
+            salid = planWithItems.visitplan.salid,
+            dabin = planWithItems.visitplan.dabin,
+            entity = planWithItems.visitplan.entity,
+            status = planWithItems.visitplan.status,
+            items = planWithItems.items.map { item ->
+                JSONVisitPlanItem(
+                    visitplan_id = item.visitplan_id.toString(),
+                    partnerid = item.partnerid,
+                    planmark_id = item.planmark_id
+                )
+            }
+        )
+    }
+
+
+    private fun mapToJSONVisit(visit: Visit): JSONVisit {
+        return JSONVisit(
+            visit.id.toString(),
             visit.shipid,
-            visit.ccpsch,
-            "",
-            0,
-            visit.mark,
+            visit.visitno,
             visit.visitdate,
-            0,
-            0,
-            0,
-            0.0,
+            visit.visitmark_id,
+            visit.visitplan,
+            visit.notes,
             visit.lat,
             visit.lng,
-            visit.visitdate,
-            AppVariable.loginInfo.salid,
-            visit.id.toString()
+            AppVariable.loginInfo.salid
         )
+    }
+
+    suspend fun fetchAndPostVisitRoute() {
+        val routesWithItems = withContext(Dispatchers.IO) {
+            visitRouteDao.getVisitRouteForUpload()
+        }
+        val routes = routesWithItems.map { routeWithItems ->
+            mapToJSONVisitRoute(routeWithItems)
+        }
+        try {
+            val response = apiService.postVisitRoutes(routes)
+            if (response.isSuccessful) {
+                salesOrder.updateStatusUploadSO()
+            } else {
+                Toast.makeText(context, "Failed to post Routes: ${response.errorBody()?.string()}",
+                    Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(context, "Error posting Routes",
+                Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    suspend fun fetchAndPostVisitPlan() {
+        val plansWithItems = withContext(Dispatchers.IO) {
+            visitPlanDao.getVisitPlanForUpload()
+        }
+        val plans = plansWithItems.map { planWithItem ->
+            mapToJSONVisitPlan(planWithItem)
+        }
+        try {
+            val response = apiService.postVisitPlans(plans)
+            if (response.isSuccessful) {
+                salesOrder.updateStatusUploadSO()
+            } else {
+                Toast.makeText(context, "Failed to post Plans: ${response.errorBody()?.string()}",
+                    Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(context, "Error posting Plans",
+                Toast.LENGTH_SHORT).show()
+        }
     }
 
     suspend fun fetchAndPostOrders() {
@@ -361,9 +499,6 @@ class ApiRepository(ctx: Context) {
         val orders = ordersWithItems.map { orderWithItems ->
             mapToJSONSalesOrder(orderWithItems)
         }
-//        val jsonOrders = Json.encodeToString(orders)
-//        println("Serialized JSON: $jsonOrders")
-
         try {
             val response = apiService.postOrders(orders)
             if (response.isSuccessful) {
@@ -388,7 +523,7 @@ class ApiRepository(ctx: Context) {
         }
 
         val visits = dbvisits.map { visit ->
-            mapToJSONCCPDet(visit)
+            mapToJSONVisit(visit)
         }
 
         try {

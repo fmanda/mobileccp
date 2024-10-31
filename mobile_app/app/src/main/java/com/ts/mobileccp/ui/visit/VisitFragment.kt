@@ -12,7 +12,6 @@ import android.graphics.Paint
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -23,24 +22,16 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import com.ts.mobileccp.databinding.FragmentVisitBinding
-import com.ts.mobileccp.db.entity.Customer
+import com.ts.mobileccp.db.entity.CustomerDelivery
 import com.ts.mobileccp.ui.customer.DialogCustomerFragment
-import android.R as R1
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.ts.mobileccp.R
 import com.ts.mobileccp.adapter.ListARInvAdapter
-import com.ts.mobileccp.db.entity.SalesOrder
-import com.ts.mobileccp.db.entity.SalesOrderItem
 import com.ts.mobileccp.db.entity.Visit
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -62,9 +53,9 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
     private var latitude : Double?=null
     private var longitude  : Double?=null
 
-    private var selectedCust : Customer? = null
-    private var selectedMark: Int = 0
-    private var selectedSCH: Int = 0
+    private var selectedCust : CustomerDelivery? = null
+    private var selectedVisitMark: Int = 0
+    private var selectedPlanMark: Int = 0
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
@@ -138,7 +129,7 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
         binding.spSCH.adapter = schAdapter
 
 
-        visitViewModel.listCCPMark.observe(viewLifecycleOwner){ objs->
+        visitViewModel.listVisitMark.observe(viewLifecycleOwner){ objs->
             markAdapter.clear()
             markAdapter.addAll(objs.map{ obj->
                 obj.markname
@@ -148,10 +139,10 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
             updateComboBox()
         }
 
-        visitViewModel.listCCPSch.observe(viewLifecycleOwner){ objs ->
+        visitViewModel.listPlanMark.observe(viewLifecycleOwner){ objs ->
             schAdapter.clear()
             schAdapter.addAll(objs.map { obj->
-                obj.ccpschname
+                obj.markname
             })
             schAdapter.notifyDataSetChanged()
 
@@ -173,13 +164,13 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
                 if (obj == null) return@observe
                 setVisit(obj)
             }
-            visitViewModel.customer.observe(viewLifecycleOwner) { cust ->
+            visitViewModel.customerDelivery.observe(viewLifecycleOwner) { cust ->
                 if (cust == null) return@observe
                 this.selectedCust = cust
                 setCustomer()
             }
         }else if (isCustomerByID) {
-            visitViewModel.customer.observe(viewLifecycleOwner) { cust ->
+            visitViewModel.customerDelivery.observe(viewLifecycleOwner) { cust ->
                 if (cust == null) return@observe
                 this.selectedCust = cust
                 setCustomer()
@@ -234,8 +225,8 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
 
     fun setVisit(visit: Visit){
         uuid = visit.id
-        selectedSCH = visit.ccpsch
-        selectedMark = visit.mark
+        selectedPlanMark = 0; //visit.planmark_id get from plan
+        selectedVisitMark = visit.visitmark_id
         img_uri = visit.img_uri
 
 
@@ -246,14 +237,14 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
     }
 
     fun updateComboBox(){
-        val idxSCH = visitViewModel.listCCPSch.value?.indexOfFirst { it.ccpsch == selectedSCH }
+        val idxSCH = visitViewModel.listPlanMark.value?.indexOfFirst { it.id == selectedPlanMark }
         binding.spSCH.setSelection(idxSCH?:0)
 
-        val idxMark = visitViewModel.listCCPMark.value?.indexOfFirst { it.mark == selectedMark }
+        val idxMark = visitViewModel.listVisitMark.value?.indexOfFirst { it.id == selectedVisitMark }
         binding.spMark.setSelection(idxMark?:0)
     }
 
-    override fun onSelectDialogCustomer(cust: Customer) {
+    override fun onSelectDialogCustomer(cust: CustomerDelivery) {
         this.selectedCust = cust
         setCustomer()
     }
@@ -458,19 +449,23 @@ class VisitFragment : Fragment(), DialogCustomerFragment.DialogCustomerListener 
     private fun buildVisitObj():Visit{
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val markidx = binding.spMark.selectedItemPosition?:0
-        val mark = visitViewModel.listCCPMark.value?.get(markidx)?.mark?:0
+        val visitMarkID = visitViewModel.listVisitMark.value?.get(markidx)?.id?:0
 
-        val schidx = binding.spSCH.selectedItemPosition?:0
-        val sch = visitViewModel.listCCPSch.value?.get(schidx)?.ccpsch?:0
+        val planMarkID = binding.spSCH.selectedItemPosition?:0
+        val sch = visitViewModel.listPlanMark.value?.get(planMarkID)?.id?:0
 
+        val visitno = "generate"
+        val visitplan = "tbd_later"
+        val notes = binding.txtNotes.text.toString()
 
         return Visit(
             getUUID(),
             selectedCust?.shipid?:0,
+            visitno,
             dateFormat.format(Date()),
-            mark,
-            sch,
-            0,
+            visitMarkID,
+            visitplan,
+            notes,
             latitude,
             longitude,
             0,

@@ -23,7 +23,7 @@
             <LinearLayout
                 android:id="@+id/lnCustomer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -31,7 +31,6 @@
                     android:id="@+id/txtCustomer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:fontFamily="sans-serif-medium"
                     android:gravity="top|left"
                     android:paddingStart="15dp"
@@ -40,32 +39,15 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/txtPartnerName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="sans-serif-medium"
-                    android:gravity="bottom"
-                    android:paddingHorizontal="15dp"
-                    android:paddingEnd="15dp"
-                    android:text="TextView"
-                    android:textAlignment="gravity"
-                    android:textColor="@color/darker_grey"
-                    android:textSize="12sp" />
-
-                <TextView
                     android:id="@+id/txtAddress"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_height="match_parent"
                     android:fontFamily="sans-serif-medium"
-                    android:gravity="bottom"
-                    android:paddingHorizontal="15dp"
-                    android:paddingEnd="15dp"
+                    android:gravity="center|clip_vertical|left"
+                    android:paddingStart="15dp"
                     android:text="TextView"
                     android:textAlignment="gravity"
-                    android:textColor="@color/darker_grey"
-                    android:textSize="12sp" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 

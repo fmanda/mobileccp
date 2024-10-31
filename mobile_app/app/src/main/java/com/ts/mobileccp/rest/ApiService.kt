@@ -1,7 +1,9 @@
 package com.ts.mobileccp.rest
 
-import com.ts.mobileccp.db.entity.JSONCCPDet
+import com.ts.mobileccp.db.entity.JSONVisit
 import com.ts.mobileccp.db.entity.JSONSalesOrder
+import com.ts.mobileccp.db.entity.JSONVisitPlan
+import com.ts.mobileccp.db.entity.JSONVisitRoute
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Response
@@ -15,7 +17,7 @@ import retrofit2.http.Path
 
 interface ApiService {
     @GET("customerarea/{areano}")
-    suspend fun getCustomer(@Path("areano") areano: String) : List<CustomerResponse>
+    suspend fun getCustomer(@Path("areano") areano: String) : List<CustomerDeliveryResponse>
 
     @GET("inventoryarea/{areano}")
     suspend fun getInventory(@Path("areano") areano: String) : List<InventoryResponse>
@@ -23,25 +25,21 @@ interface ApiService {
     @GET("pricelevelarea/{areano}")
     suspend fun getPriceLevel(@Path("areano") areano: String) : List<PriceLevelResponse>
 
-    @GET("customer/{id}")
-    suspend fun getCustomerByID(@Path("id") id: String): CustomerResponse
-
-
     @POST("batchsalesorder")
     suspend fun postOrders(@Body orders: List<JSONSalesOrder>): Response<Unit>
 
 
-    @POST("batchnewccp")
-    suspend fun postVisits(@Body orders: List<JSONCCPDet>): Response<Unit>
+    @POST("batchvisit")
+    suspend fun postVisits(@Body orders: List<JSONVisit>): Response<Unit>
 
     @GET("login_salesman/{username}/{password}")
     suspend fun loginSalesman(@Path("username") username: String, @Path("password") password: String): Response<LoginInfoResponse>
 
-    @GET("ccpmark")
-    suspend fun getCCPMark(): List<CCPMarkResponse>
+    @GET("visitmark")
+    suspend fun getVisitmark(): List<VisitMarkResponse>
 
-    @GET("ccpsch")
-    suspend fun getCCPSCH(): List<CCPSCHResponse>
+    @GET("planmark")
+    suspend fun getPlanMark(): List<PlanMarkResponse>
 
     @Multipart
     @POST("uploadimg")
@@ -49,8 +47,11 @@ interface ApiService {
         @Part file: MultipartBody.Part
     ): Call<String>
 
-    @GET("visitplan/{salid}")
+    @GET("visitbysal/{salid}")
     suspend fun getVisitPlan(@Path("salid") salid: String) : List<VisitPlanResponse>
+
+    @GET("visitroutebydabin/{dabin}")
+    suspend fun getVisitRoute(@Path("dabin") dabin: String) : List<VisitRouteResponse>
 
     @GET("arremain/{salid}")
     suspend fun getARRemain(@Path("salid") salid: String) : List<ARInvResponse>
@@ -58,5 +59,10 @@ interface ApiService {
     @GET("check")
     suspend fun check(): Response<CheckServerResponse>
 
+    @POST("batchvisitroute")
+    suspend fun postVisitRoutes(@Body plans: List<JSONVisitRoute>): Response<Unit>
+
+    @POST("batchvisitplan")
+    suspend fun postVisitPlans(@Body plans: List<JSONVisitPlan>): Response<Unit>
 
 }

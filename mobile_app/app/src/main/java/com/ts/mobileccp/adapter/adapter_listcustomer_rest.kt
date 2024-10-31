@@ -16,13 +16,13 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ts.mobileccp.R
-import com.ts.mobileccp.rest.CustomerResponse
+import com.ts.mobileccp.rest.CustomerDeliveryResponse
 import java.text.DecimalFormat
 import java.text.NumberFormat
 
 
 class ListCustomerRestAdapter(
-    private var mList: List<CustomerResponse>
+    private var mList: List<CustomerDeliveryResponse>
 ) : RecyclerView.Adapter<ListCustomerRestAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -77,7 +77,7 @@ class ListCustomerRestAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateData(newList: List<CustomerResponse>) {
+    fun updateData(newList: List<CustomerDeliveryResponse>) {
         mList = newList
         notifyDataSetChanged()
     }

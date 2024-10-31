@@ -16,13 +16,13 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ts.mobileccp.R
-import com.ts.mobileccp.db.entity.Customer
+import com.ts.mobileccp.db.entity.CustomerDelivery
 import java.text.DecimalFormat
 import java.text.NumberFormat
 
 
 class ListCustomerAdapter(
-    private var mList: List<Customer>,
+    private var mList: List<CustomerDelivery>,
     private val listener: CustomerSelectListener,
     private val isLookup: Boolean = false
 ) : RecyclerView.Adapter<ListCustomerAdapter.ViewHolder>() {
@@ -90,7 +90,7 @@ class ListCustomerAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateData(newList: List<Customer>) {
+    fun updateData(newList: List<CustomerDelivery>) {
         mList = newList
         notifyDataSetChanged()
     }
@@ -98,5 +98,5 @@ class ListCustomerAdapter(
 
 
 interface CustomerSelectListener {
-    fun onSelect(cust: Customer, position: Int)
+    fun onSelect(cust: CustomerDelivery, position: Int)
 }

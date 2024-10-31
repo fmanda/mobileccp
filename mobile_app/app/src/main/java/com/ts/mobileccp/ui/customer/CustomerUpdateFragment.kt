@@ -9,8 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 //import com.fma.mobility.adapter.ListCustomerAdapter
 import com.ts.mobileccp.databinding.FragmentCustomerUpdateBinding
-import com.ts.mobileccp.db.entity.Customer
-import java.util.UUID
 
 
 class CustomerUpdateFragment : Fragment() {

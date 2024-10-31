@@ -1,5 +1,5 @@
 package com.ts.mobileccp.ui.setting
-import android.annotation.SuppressLint
+
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -10,16 +10,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ts.mobileccp.db.AppDatabase
-import com.ts.mobileccp.db.entity.CCPMarkDao
+import com.ts.mobileccp.db.entity.VisitMarkDao
 import com.ts.mobileccp.db.entity.CustomerDao
 import com.ts.mobileccp.db.entity.LoginInfo
 import com.ts.mobileccp.db.entity.LoginInfoDao
 import com.ts.mobileccp.db.entity.InventoryDao
 import com.ts.mobileccp.db.entity.SalesOrderDao
 import com.ts.mobileccp.db.entity.VisitDao
+import com.ts.mobileccp.db.entity.VisitPlanDao
+import com.ts.mobileccp.db.entity.VisitRouteDao
 import com.ts.mobileccp.global.AppVariable
-import com.ts.mobileccp.rest.ApiRepository
-import com.ts.mobileccp.rest.CustomerResponse
+import com.ts.mobileccp.rest.CustomerDeliveryResponse
 import com.ts.mobileccp.ui.login.LoginActivity
 import kotlinx.coroutines.launch
 
@@ -27,15 +28,18 @@ import kotlinx.coroutines.launch
 class SettingViewModel(application: Application) : AndroidViewModel(application) {
 
 //    private val context: Context = getApplication<Application>().applicationContext
-    private val _data = MutableLiveData<List<CustomerResponse>?>()
-    val data: LiveData<List<CustomerResponse>?> get() = _data
+    private val _data = MutableLiveData<List<CustomerDeliveryResponse>?>()
+    val data: LiveData<List<CustomerDeliveryResponse>?> get() = _data
 
     private val loginInfoDao: LoginInfoDao = AppDatabase.getInstance(application).loginInfoDao()
     private val inventoryDao: InventoryDao = AppDatabase.getInstance(application).inventoryDao()
     private val customerDao: CustomerDao = AppDatabase.getInstance(application).customerDao()
     private val salesOrderDao: SalesOrderDao = AppDatabase.getInstance(application).salesOrderDao()
     private val visitDao: VisitDao = AppDatabase.getInstance(application).visitDao()
-    private val ccpMarkDAO: CCPMarkDao = AppDatabase.getInstance(application).ccpMarkDAO()
+    private val visitMarkDAO: VisitMarkDao = AppDatabase.getInstance(application).visitMarkDao()
+    private val visitRouteDao: VisitRouteDao = AppDatabase.getInstance(application).visitRouteDao()
+    private val visitPlanDao: VisitPlanDao = AppDatabase.getInstance(application).visitPlanDao()
+
 
     fun logOut(context: Context){
         AppVariable.loginInfo = LoginInfo(
@@ -55,12 +59,14 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
             try {
                 loginInfoDao.clearLoginInfo()
                 inventoryDao.clearProduct()
-                customerDao.clearCustomer()
+                customerDao.clearCustomerDelivery()
                 salesOrderDao.clearSalesOrder()
+                salesOrderDao.clearAR()
                 visitDao.clearVisit()
-                visitDao.clearVisitPlan()
-                ccpMarkDAO.clearCCPMark()
-                ccpMarkDAO.clearCCPSCH()
+                visitPlanDao.clearVisitPlan()
+                visitRouteDao.clearVisitRoute()
+                visitMarkDAO.clearVisitMark()
+                visitMarkDAO.clearPlanMark()
 
                 navigateToLoginScreen(context)
 

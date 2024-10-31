@@ -3,7 +3,6 @@ import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Entity
-import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Upsert
@@ -17,21 +16,30 @@ import kotlinx.serialization.Serializable
 data class Visit(
     @PrimaryKey val id: UUID,
     val shipid: Int,
+    val visitno: String,
     val visitdate: String,
-    val mark: Int,
-    val ccpsch: Int,
-    val ccptype: Int,
+    val visitmark_id: Int,
+    val visitplan: String?,
+    val notes: String?,
     val lat: Double?,
     val lng: Double?,
     val uploaded: Int,
     val img_uri: String?
 )
 
-@Entity(tableName = "visitplan", primaryKeys = ["idno", "shipid"])
-data class VisitPlan(
-    val idno: Int,
-    val plandate: String,
-    val shipid: Int
+
+@Serializable
+data class JSONVisit(
+    val id: String,
+    val shipid: Int,
+    val visitno: String,
+    val visitdate: String,
+    val visitmark_id: Int,
+    val visitplan: String?,
+    val notes: String?,
+    val lat: Double?,
+    val lng: Double?,
+    val salid: String?
 )
 
 
@@ -48,11 +56,7 @@ interface VisitDao {
     fun getVisitForUploadFilterID(id: UUID): List<Visit>
 
 
-    @Query("SELECT a.idno, a.plandate, b.shipid, b.shipname, b.partnername, b.shipaddress FROM visitplan a " +
-            "inner join customer b on a.shipid = b.shipid " +
-            "where a.plandate>=:plandate " +
-            "and (b.shipname like :filter or b.partnername like :filter ) COLLATE NOCASE")
-    fun getVisitPlanByDate(plandate: String, filter:String): LiveData<List<LastVisitPlan>>
+
 
 
     @Query("UPDATE visit SET uploaded = 1 WHERE uploaded = 0")
@@ -64,8 +68,6 @@ interface VisitDao {
     @Query("DELETE FROM visit")
     suspend fun clearVisit()
 
-    @Query("DELETE FROM visitplan")
-    suspend fun clearVisitPlan()
 
     @Query("SELECT COUNT(*) FROM visit where uploaded = 0")
     fun getCountVisitToUpload(): LiveData<Int?>
@@ -73,32 +75,30 @@ interface VisitDao {
     @Upsert
     suspend fun upsertVisit(visit: Visit)
 
-    @Upsert
-    suspend fun upsertListVisitPlan(visitplans: List<VisitPlan>)
 
     @Query(
-        "SELECT a.id, a.visitdate, b.shipname , b.shipaddress, c.ccpschname as ccpsch, a.lat, a.lng, a.uploaded, 'false' as isexpanded  \n" +
+        "SELECT a.id, a.visitdate, b.shipname , b.shipaddress, c.markname, a.lat, a.lng, a.uploaded, 'false' as isexpanded  \n" +
         "    FROM visit a \n" +
-        "    inner join customer b on a.shipid=b.shipid \n" +
-        "    left join ccpsch c on a.ccpsch = c.ccpsch \n" +
+        "    inner join customerdelivery b on a.shipid=b.shipid \n" +
+        "    left join visitmark c on a.visitmark_id = c.id \n" +
         " order by visitdate desc limit 300"
     )
     fun getLatestVisit(): LiveData<List<LastVisit>>
 
     @Query(
-        "SELECT a.id, a.visitdate, b.shipname, b.shipaddress, c.ccpschname as ccpsch, a.lat, a.lng, a.uploaded,  'false' as isexpanded  \n" +
+        "SELECT a.id, a.visitdate, b.shipname, b.shipaddress, c.markname, a.lat, a.lng, a.uploaded,  'false' as isexpanded  \n" +
         "    FROM visit a \n" +
-        "    inner join customer b on a.shipid=b.shipid \n" +
-        "    left join ccpsch c on a.ccpsch = c.ccpsch \n" +
+        "    inner join customerdelivery b on a.shipid=b.shipid \n" +
+        "    left join visitmark c on a.visitmark_id = c.id \n" +
         " order by visitdate desc limit 300"
     )
     fun getLatestVisitDashboard(): LiveData<List<LastVisit>>
 
     @Query(
-        "SELECT a.id, a.visitdate, b.shipname , b.shipaddress, c.ccpschname as ccpsch, a.lat, a.lng, a.uploaded ,  'false' as isexpanded \n" +
+        "SELECT a.id, a.visitdate, b.shipname , b.shipaddress, c.markname as ccpsch, a.lat, a.lng, a.uploaded ,  'false' as isexpanded \n" +
         "    FROM visit a \n" +
-        "    inner join customer b on a.shipid=b.shipid \n" +
-        "    left join ccpsch c on a.ccpsch = c.ccpsch \n" +
+        "    inner join customerdelivery b on a.shipid=b.shipid \n" +
+        "    left join visitmark c on a.visitmark_id = c.id \n" +
         "    WHERE b.shipname LIKE :query " +
         "    or b.partnername LIKE :query " +
         " order by visitdate desc limit 300"
@@ -110,9 +110,9 @@ interface VisitDao {
     fun getCountToUpload(): LiveData<Int?>
 
     @Query("select\n" +
-            "(select count(*) from visitplan WHERE strftime('%Y-%m-%d', plandate) >= date('now', 'weekday 0', '-7 days', 'localtime')\n" +
-            "        AND strftime('%Y-%m-%d', plandate) <= date('now', 'weekday 0', '-1 day', 'localtime')\n" +
-            "        AND strftime('%Y-%m-%d', plandate) <= date('now', 'localtime')) as countplan, \n" +
+            "(select count(*) from visitplan WHERE strftime('%Y-%m-%d', datetr) >= date('now', 'weekday 0', '-7 days', 'localtime')\n" +
+            "        AND strftime('%Y-%m-%d', datetr) <= date('now', 'weekday 0', '-1 day', 'localtime')\n" +
+            "        AND strftime('%Y-%m-%d', datetr) <= date('now', 'localtime')) as countplan, \n" +
             "(select count(*) from visit WHERE strftime('%Y-%m-%d', visitdate) >= date('now', 'weekday 0', '-7 days', 'localtime')\n" +
             "        AND strftime('%Y-%m-%d', visitdate) <= date('now', 'weekday 0', '-1 day', 'localtime')\n" +
             "        AND strftime('%Y-%m-%d', visitdate) <= date('now', 'localtime')) as countvisit")
@@ -135,65 +135,6 @@ data class LastVisit(
     var isexpanded: Boolean
 ) : Parcelable
 
-
-
-@Serializable
-data class JSONCCP(
-    val id: Int?,
-    val notr: String?,
-    val datetr: String?,
-    val dabin: String?,
-    val description: String?,
-    val entity: String?,
-    val salid: String?,
-    val status: Int?,
-    val operator: String?,
-    val items: List<JSONCCPDet>?
-)
-//{
-//    constructor(salid: String, datetr: String): this(
-//        null,
-//        null,
-//        null,
-//        null,
-//        null,
-//        null,
-//        null,
-//        null,
-//        null,
-//        null
-//    )
-//}
-
-
-@Serializable
-data class JSONCCPDet(
-    val idno: Int?,
-    val shipid: Int?,
-    val ccpsch: Int?,
-    val remark: String?,
-    val ccptype: Int?,
-    val mark: Int?,
-    val createdate: String?,
-    val soqty: Int?,
-    val doqty: Int?,
-    val retqty: Int?,
-    val coll: Double?,
-    val lat: Double?,
-    val lng: Double?,
-    val datetr: String?,
-    val salid: String?, //additional
-    val uid: String
-)
-
-data class LastVisitPlan(
-    val idno: Int,
-    val plandate: String,
-    val shipid: Int,
-    val shipname: String?,
-    val shipaddress: String?,
-    val partnername: String
-)
 
 data class VisitDashboard(
     val countvisit: Int,

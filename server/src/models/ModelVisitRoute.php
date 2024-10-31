@@ -122,7 +122,7 @@
 
 		public static function getFields(){
 			return array(
-				"visitroute_id","partnerid", "planmark_id"
+				"visitroute_id","partnerid"
 			);
 		}
 	}

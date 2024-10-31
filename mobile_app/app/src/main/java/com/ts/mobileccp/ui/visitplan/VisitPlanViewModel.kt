@@ -15,10 +15,10 @@ import java.util.Locale
 class VisitPlanViewModel(application: Application) : AndroidViewModel(application) {
     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val dt = dateFormat.format(Date())
-    private val visitDao = AppDatabase.getInstance(application).visitDao()
+    private val visitPlanDao = AppDatabase.getInstance(application).visitPlanDao()
 
     fun getVisitPlans(filter:String):LiveData<List<LastVisitPlan>>{
-        return visitDao.getVisitPlanByDate(dt, "%$filter%")
+        return visitPlanDao.getVisitPlanByDate(dt, "%$filter%")
     }
 }
 

@@ -1,7 +1,10 @@
 package com.ts.mobileccp.rest
 
+import androidx.room.PrimaryKey
+import java.util.UUID
 
-data class CustomerResponse(
+
+data class CustomerDeliveryResponse(
     val shipid: Int,
     val shipname: String,
     val shipaddress: String,
@@ -10,6 +13,7 @@ data class CustomerResponse(
     val shiphp: String,
     val partnerid: Int,
     val partnername: String,
+    val partneraddress: String,
     val pricelevel: Int,
     val areano: String,
     val areaname: String,
@@ -46,21 +50,16 @@ data class LoginInfoResponse(
     val token: String
 )
 
-data class CCPMarkResponse(
-    val mark: Int,
+data class VisitMarkResponse(
+    val id: Int,
     val markname: String
 )
 
-data class CCPSCHResponse(
-    val ccpsch: Int,
-    val ccpschname: String
+data class PlanMarkResponse(
+    val id: Int,
+    val markname: String
 )
 
-data class VisitPlanResponse(
-    val idno: Int,
-    val plandate: String,
-    val shipid: Int
-)
 
 data class ARInvResponse(
     val invno: String,
@@ -76,4 +75,36 @@ data class ARInvResponse(
 
 data class CheckServerResponse(
     val msg:String
+)
+
+data class VisitPlanResponse(
+    val id: String,
+    val notr: String,
+    val datetr: String,
+    val salid: String,
+    val dabin: String,
+    val entity: String,
+    val status: Int,
+    val items: List<VisitPlanItemResponse>
+)
+
+
+data class VisitPlanItemResponse(
+    val visitplan_id: String,
+    val partnerid: Int,
+    val planmark_id: Int
+)
+
+
+data class VisitRouteResponse(
+    val id: String,
+    val dabin: String,
+    val routename: String,
+    val items: List<VisitRouteItemsResponse>
+)
+
+
+data class VisitRouteItemsResponse(
+    val visitroute_id: UUID,
+    val partnerid: Int
 )
