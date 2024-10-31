@@ -4,13 +4,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.ts.mobileccp.MainActivity
 import com.ts.mobileccp.databinding.ActivityLoginBinding
+import com.ts.mobileccp.global.AppVariable
+import androidx.fragment.app.DialogFragment
 
 
-class LoginActivity : ComponentActivity() {
+class LoginActivity : AppCompatActivity(), DialogLoginAdvSetting.DialogLoginSettingListener {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var loginViewModel: LoginViewModel
@@ -58,6 +61,19 @@ class LoginActivity : ComponentActivity() {
             }
         })
 
+        binding.txtAPI.setOnClickListener{
+            DialogLoginAdvSetting(AppVariable.setting.api_url, this )
+                .show(supportFragmentManager, "DialogLoginAdvSetting")
+        }
+
+    }
+
+    override fun onTestAPI(api: String) {
+        loginViewModel.testApi(api)
+    }
+
+    override fun onUpdateAPI(api: String) {
+        loginViewModel.updateApi(api)
     }
 
 }

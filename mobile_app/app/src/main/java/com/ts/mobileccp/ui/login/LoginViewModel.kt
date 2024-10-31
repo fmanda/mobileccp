@@ -19,6 +19,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     private val _isLoading = MutableLiveData<Boolean?>()
     val isLoading: LiveData<Boolean?> = _isLoading
 
+    val isdialogloading = MutableLiveData<Boolean>().apply { value = false }
+
 
     init {
         _isLoading.value = false
@@ -28,6 +30,18 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         _isLoading.value = true
         _isLogin.value = repository.loginSalesman(username,password)
         _isLoading.value = false
+    }
+
+    fun testApi(api:String)= viewModelScope.launch {
+        isdialogloading.value = true
+        repository.testAPI(api)
+        isdialogloading.value = false
+    }
+
+    fun updateApi(api:String)= viewModelScope.launch {
+        isdialogloading.value = true
+        repository.updateBaseURL(api)
+        isdialogloading.value = false
     }
 }
 

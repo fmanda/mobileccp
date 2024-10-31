@@ -73,3 +73,7 @@ data class ARInvResponse(
     val shipid: Int?,
     val salid: String?
 )
+
+data class CheckServerResponse(
+    val msg:String
+)

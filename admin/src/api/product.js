@@ -9,7 +9,7 @@ export function getProduct(id) {
 }
 
 export function getListProduct(filtertxt) {
-  let _url = 'inventoryall';
+  let _url = 'inventoryarea/' + getProjectCode() ;
   if (filtertxt && filtertxt != '') _url = _url  + '/' + filtertxt;
 
   return request({

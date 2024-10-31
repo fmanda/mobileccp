@@ -12,3 +12,5 @@ uploads
 /mobile_app/app/release/baselineProfiles/0/app-release.dm
 /mobile_app/app/release/baselineProfiles/1/app-release.dm
 /mobile_app/app/release
+/mobile_app/.kotlin/errors
+/README.md

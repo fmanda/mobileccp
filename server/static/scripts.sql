@@ -1,29 +1,38 @@
-alter view v_mobile_salesman as
+create view v_salesman as
 select a.EmpId as salid, a.EmpName as salname, b.areano, b.areaname, a.entity
-from IntacsDataUpgrade.dbo.Employee a
-inner join IntacsDataUpgrade.dbo.Area b on a.EmpId = b.SalId
+from MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.Employee a
+inner join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.Area b on a.EmpId = b.SalId
 where a.PSales =  1
 and a.NotActive = 0
 
-alter view v_mobile_employee as
+create view v_employee as
 select empid, empname, a.entity, b.EntityName
-from IntacsDataUpgrade.dbo.Employee a
-inner join IntacsDataUpgrade.dbo.Entity b on a.Entity = b.Entity
+from MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.Employee a
+inner join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.Entity b on a.Entity = b.Entity
 where a.PSales = 0
 and a.NotActive = 0
 
-alter view v_mobile_customer as
+
+alter view v_customerdelivery as
 select a.shipid, a.[Ship Name] as shipname, a.[Ship Address] as shipaddress, a.[Ship City] as shipcity, 
 a.[Ship Phone] as shipphone, a.[Ship HP] as shiphp, b.partnerid, b.partnername,
-a.pricelevel, a.isactive, c.areano, c.areaname, b.npsn, e.CClass2Name as jenjang
-from IntacsDataUpgrade.dbo.CustomerDelivery a
-inner join IntacsDataUpgrade.dbo.[Partner] b on a.CustomerId = b.PartnerId
-inner join IntacsDataUpgrade.dbo.Area c on b.areano = c.AreaNo
-left join IntacsDataUpgrade.dbo.PartnerClass d on d.PartnerId = b.PartnerId
-left join IntacsDataUpgrade.dbo.CClass2 e on e.CClass2 = d.cclass2
+a.pricelevel, a.isactive, c.areano, c.areaname, c.Entity, b.npsn, e.CClass2Name as jenjang
+from MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.CustomerDelivery a
+inner join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.[Partner] b on a.CustomerId = b.PartnerId
+inner join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.Area c on b.areano = c.AreaNo
+left join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.PartnerClass d on d.PartnerId = b.PartnerId
+left join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.CClass2 e on e.CClass2 = d.cclass2
 
 
-alter function fn_mobile_pricelevel(
+ALTER view [dbo].[v_customer] as
+select b.partnerid, b.partnername, c.areano, c.areaname, c.Entity, b.npsn, e.CClass2Name as jenjang
+from MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.[Partner] b 
+inner join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.Area c on b.areano = c.AreaNo
+left join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.PartnerClass d on d.PartnerId = b.PartnerId
+left join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.CClass2 e on e.CClass2 = d.cclass2
+
+
+create function [dbo].[fn_pricelevel](
 	@areano varchar(30)
 )returns @mytable table(
 	invid int,
@@ -35,26 +44,27 @@ alter function fn_mobile_pricelevel(
 as
 begin
 	insert into @mytable
-	select distinct a.InvId, a.partno, c.PriceLevel, PriceLevelName, b.Price
-	from IntacsDataUpgrade.dbo.Inventory a
-	inner join IntacsDataUpgrade.dbo.PriceLevelDetail b on a.InvId = b.InvID
-	inner join IntacsDataUpgrade.dbo.PriceLevel c on b.PriceLevel = c.PriceLevel
+	select distinct a.InvId, a.partno, c.PriceLevel, c.PriceLevelName, b.Price
+	from MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.Inventory a
+	inner join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.PriceLevelDetail b on a.InvId = b.InvID
+	inner join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.PriceLevel c on b.PriceLevel = c.PriceLevel
 	inner join (
-		select distinct z.PriceLevel
-		from IntacsDataUpgrade.dbo.[Partner] x 
-		inner join IntacsDataUpgrade.dbo.Area y on x.areano = y.AreaNo
-		inner join IntacsDataUpgrade.dbo.PriceLevel z on x.PriceLevel = z.PriceLevel
-		where y.AreaNo = @areano
+		select distinct CD.PriceLevel
+		from MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.[Partner] x 
+		INNER JOIN MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.CustomerDelivery CD on cd.CustomerId = x.PartnerId 
+		--INNER join IntacsDataUpgrade.dbo.Area y on x.areano = y.AreaNo
+		--inner join IntacsDataUpgrade.dbo.PriceLevel z on x.PriceLevel = CD.PriceLevel
+		where X.AreaNo = @areano
 	) as PL on c.PriceLevel = PL.PriceLevel
-	left join IntacsDataUpgrade.dbo.PClass8 P8 on a.pclass8 = P8.Pclass8
-	where a.Active = 1 and a.partno not like 'x%'
+	left join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.PClass8 P8 on a.pclass8 = P8.Pclass8
+	where a.TOAndroid = 1 and a.partno not like 'x%'
 
 	return;
 end
 
 
 
-alter function fn_mobile_inventory(
+ALTER function [dbo].[fn_inventory](
 	@areano varchar(30)
 )returns @mytable table(
 	invid int,
@@ -69,24 +79,28 @@ begin
 	insert into @mytable
 	select distinct a.InvId, a.partno, a.InvName, a.[desc] as Description,
 	a.InvGrp, P8.PClass8Name
-	from IntacsDataUpgrade.dbo.Inventory a
-	inner join IntacsDataUpgrade.dbo.PriceLevelDetail b on a.InvId = b.InvID
-	inner join IntacsDataUpgrade.dbo.PriceLevel c on b.PriceLevel = c.PriceLevel
+	from MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.Inventory a
+	inner join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.PriceLevelDetail b on a.InvId = b.InvID
+	inner join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.PriceLevel c on b.PriceLevel = c.PriceLevel
 	inner join (
 		select distinct z.PriceLevel
-		from IntacsDataUpgrade.dbo.[Partner] x 
-		inner join IntacsDataUpgrade.dbo.Area y on x.areano = y.AreaNo
-		inner join IntacsDataUpgrade.dbo.PriceLevel z on x.PriceLevel = z.PriceLevel
-		where y.AreaNo = @areano
+		from MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.[Partner] x 
+		inner join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.Area y on x.areano = y.AreaNo
+		inner join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.PriceLevel z on x.PriceLevel = z.PriceLevel
+		where (y.AreaNo = @areano or y.Entity = @areano)
 	) as PL on c.PriceLevel = PL.PriceLevel
-	left join IntacsDataUpgrade.dbo.PClass8 P8 on a.pclass8 = P8.Pclass8
-	where a.Active = 1 and a.partno not like 'x%'
+	left join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.PClass8 P8 on a.pclass8 = P8.Pclass8
+	where a.TOAndroid = 1 and a.partno not like 'x%'
 
 	return;
 end
 
 
-alter function fn_mobile_inventory_bypartno(
+
+
+
+
+create function fn_inventory_bypartno(
 	@partno varchar(30)
 )returns @mytable table(
 	invid int,
@@ -101,82 +115,127 @@ begin
 	insert into @mytable
 	select distinct a.InvId, a.partno, a.InvName, a.[desc] as Description,
 	a.InvGrp, P8.PClass8Name
-	from IntacsDataUpgrade.dbo.Inventory a
-	inner join IntacsDataUpgrade.dbo.PriceLevelDetail b on a.InvId = b.InvID
-	inner join IntacsDataUpgrade.dbo.PriceLevel c on b.PriceLevel = c.PriceLevel
-	left join IntacsDataUpgrade.dbo.PClass8 P8 on a.pclass8 = P8.Pclass8
+	from MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.Inventory a
+	inner join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.PriceLevelDetail b on a.InvId = b.InvID
+	inner join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.PriceLevel c on b.PriceLevel = c.PriceLevel
+	left join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.PClass8 P8 on a.pclass8 = P8.Pclass8
 	where a.partno = @partno
 
 	return;
 end
 
-alter procedure sp_mobile_getccp(
-	@salid varchar(30),
-	@ccpdate date	
-)as 
-begin
-	SET NOCOUNT ON 
-	--declare @ccpdate date = '2024-1-1'
-	declare @trxno varchar(10) = (SELECT FORMAT(@ccpdate, 'yyMMdd'))
-	--declare @salid varchar(30) = '0220222572'
-	declare @entity varchar(10) 
-	declare @areano varchar(10)
-	declare @idno int = 0
+create table planmark(
+	id int,
+	markname varchar(100)
+)
 
-	select @entity = entity, @areano = areano 
-	from v_mobile_salesman where salid = @salid 
-
-	if  (@areano is null)
-	begin
-		THROW 50001, 'Salesman tidak punya mapping Dabin', 1;		
-	end
-
-	select @idno = idno from newccp 
-	where dabin = @areano and salid = @salid and cast(datetr as date) = cast(@ccpdate as date)
-
-	if (@idno = 0)
-	begin
-		print @areano;
-		declare @notr varchar(30) = rtrim(@areano) + '/' + @trxno
-
-		insert into NewCCP(Notr, DateTr, Dabin, Description, Entity, SalID, Status, Operator)
-		values(@notr, @ccpdate, @areano, 'Auto Insert By System', @entity, @salid, 0, @salid)
-		set @idno = (SELECT SCOPE_IDENTITY())
-	end
-
-	select idno, notr, datetr, dabin, description, entity, salid, status, operator from NEWCCP where idno = @IDNO
-end
+create table visitmark(
+	id int,
+	markname varchar(100)
+)
 
 
 
-
-create table mobile_salesorder(
+create table salesorder(
 	id uniqueidentifier,
 	orderno varchar(30),
 	orderdate date,
 	entity varchar(30),
 	shipid int,
 	salid int,
-	dpp float, 
-	ppn float,
-	amt float,
+	dpp float default 0, 
+	ppn float default 0,
+	amt float default 0,
 	latitude float,
-	longitude float
+	longitude float,
+	discount float default 0,
+	refund float default 0
 )
 
 
-create table mobile_salesorderitem(
+create table salesorderitem(
 	id int identity(1,1),
 	salesorder_id uniqueidentifier,
 	partno varchar(30),
 	uom varchar(30),
 	qty int, 
-	price float,
-	discount float,
-	dpp float,
-	ppn float,
-	amt float
+	price float default 0,
+	discount float default 0,
+	dpp float default 0,
+	ppn float default 0,
+	amt float default 0
 )
+
+
+create table visitplan(
+	id uniqueidentifier,
+	salid varchar(30),
+	notr varchar(30),
+	datetr date,
+	dabin varchar(30),
+	entity varchar(10),
+	description varchar(max),
+	operator varchar(30),
+	[status] int,
+	ident int identity(1,1),
+)
+
+
+create table visitplanitem(
+	id int primary key identity(1,1),
+	visitplan_id uniqueidentifier,
+	partnerid int,
+	planmark_id int,
+)
+
+
+create table visit(
+	id uniqueidentifier,
+	salid varchar(30),
+	shipid int,
+	visitno varchar(30),
+	visitdate date,
+	visitmark_id int,
+	notes varchar(max),
+	lat float,
+	lng float,
+	visitplan varchar(30),
+	ident int identity(1,1),
+)
+
+
+
+
+create table visitroute(
+	id uniqueidentifier,
+	dabin varchar(30),
+	routename varchar(max),
+	ident int primary key identity(1,1),
+)
+
+
+
+create table visitrouteitem(
+	id int primary key identity(1,1),
+	visitroute_id uniqueidentifier,
+	partnerid int
+)
+
+
+create view v_mobile_ar_remain as 
+select a.invno, cast(a.invdate as date) as invdate, a.amount, a.settle, a.remain, b.[Ship Name] as shipname,
+c.PartnerName as partnername, a.shipid, a.salid
+from MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.arinv a
+inner join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.CustomerDelivery b on a.ShipId = b.shipid
+inner join MOCCA_TSPM_DIS.IntacsDataUpgrade.dbo.[Partner] c on a.PartnerID = c.PartnerId
+where  isnull(a.remain, 0)>0
+
+
+
+
+
+-------------------------
+
 
 //generate dummy ccp
 insert into NEWCCP(notr,  DateTR, Dabin, Description, Entity, SalID, Status, Operator)
@@ -199,11 +258,32 @@ where a.salid = '0220222570'
 and a.DateTR ='2023-2-4'
 
 
-alter view v_mobile_ar_remain as 
-select a.invno, cast(a.invdate as date) as invdate, a.amount, a.settle, a.remain, b.[Ship Name] as shipname,
-c.PartnerName as partnername, a.shipid, a.salid
-from IntacsDataUpgrade.dbo.arinv a
-inner join IntacsDataUpgrade.dbo.CustomerDelivery b on a.ShipId = b.shipid
-inner join IntacsDataUpgrade.dbo.[Partner] c on a.PartnerID = c.PartnerId
-where  isnull(a.remain, 0)>0
+
+--------- pump data
+
+
+
+insert into visitrouteitem(visitroute_id, partnerid)
+select distinct c.id, d.customerid
+from TS_147.Marketing.dbo.RouteCCP a
+inner join TS_147.Marketing.dbo.RouteCCPDet b on a.RouteID = b.RouteID
+inner join visitroute c on a.RouteName = c.routename and c.dabin = a.Dabin
+inner join TS_147.IntacsDataUpgrade.dbo.customerdelivery d on b.ShipID = d.ShipId
+
+
+
+insert into visitplan(id, salid, notr, datetr, dabin , Entity, Description, Operator, Status)
+select newid(), salid, notr, datetr, dabin , Entity, Description, Operator, Status
+from marketing.dbo.newccp a
+where a.datetr = '2024-10-29'
+
+
+
+
+insert into visitplanitem(visitplan_id, partnerid, planmark_id)
+select c.id, d.partnerid, 0
+from marketing.dbo.newccp a
+inner join marketing.dbo.NEWCCPDet b on a.IDNo = b.IDNo
+inner join visitplan c on a.salid = c.salid and a.datetr = c.datetr
+inner join v_customerdelivery d on b.ShipID = d.shipid
 

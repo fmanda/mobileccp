@@ -39,7 +39,7 @@ class SettingFragment : Fragment() {
         binding.txtSalName.text = AppVariable.loginInfo.salname
         binding.txtAreaNo.text = AppVariable.loginInfo.areaname
         binding.txtEntity.text = AppVariable.loginInfo.entity
-        binding.txtAPIUrl.text = AppVariable.apiurl
+        binding.txtAPIUrl.text = AppVariable.setting.api_url
 
 
         //set toolbar

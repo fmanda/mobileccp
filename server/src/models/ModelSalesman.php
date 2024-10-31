@@ -24,13 +24,15 @@
 			$sql = "select * from v_mobile_salesman";			
 			$objs = DB::openQuery($sql);			
 			return $objs;
+		
 		}
 
 
 		public static function retrieveLogin($username, $password){
-			$obj = DB::openQuery("select * from v_mobile_salesman"
-				." where salid = '" . $username . "'"
-			);
+			$sql = "select * from v_mobile_salesman"
+				." where salid = '" . $username . "'";
+			
+			$obj = DB::openQuery($sql);
 			if (isset($obj[0])) return $obj[0];
 		}
 	}

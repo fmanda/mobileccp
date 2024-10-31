@@ -19,6 +19,8 @@ import com.ts.mobileccp.db.entity.PriceLevel
 import com.ts.mobileccp.db.entity.SalesOrder
 import com.ts.mobileccp.db.entity.SalesOrderDao
 import com.ts.mobileccp.db.entity.SalesOrderItem
+import com.ts.mobileccp.db.entity.Setting
+import com.ts.mobileccp.db.entity.SettingDao
 import com.ts.mobileccp.db.entity.Visit
 import com.ts.mobileccp.db.entity.VisitDao
 import com.ts.mobileccp.db.entity.VisitPlan
@@ -37,7 +39,8 @@ import com.ts.mobileccp.db.entity.VisitPlan
         CCPMark::class,
         CCPSch::class,
         VisitPlan::class,
-        ARInv::class
+        ARInv::class,
+        Setting::class
     ], version = 1
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -48,6 +51,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun loginInfoDao(): LoginInfoDao
     abstract fun ccpMarkDAO(): CCPMarkDao
     abstract fun arInvDao(): ARInvDao
+    abstract fun settingDao(): SettingDao
 
     companion object {
         @Volatile

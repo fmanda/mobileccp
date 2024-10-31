@@ -10,6 +10,7 @@ import com.ts.mobileccp.MainActivity
 import com.ts.mobileccp.databinding.ActivitySplashBinding
 import com.ts.mobileccp.db.AppDatabase
 import com.ts.mobileccp.db.entity.LoginInfoDao
+import com.ts.mobileccp.db.entity.SettingDao
 import com.ts.mobileccp.global.AppVariable
 import com.ts.mobileccp.ui.login.LoginActivity
 import kotlinx.coroutines.Dispatchers
@@ -49,7 +50,14 @@ class SplashActivity : ComponentActivity() {
         return withContext(Dispatchers.IO) {
 
             val loginInfoDao: LoginInfoDao = AppDatabase.getInstance(this@SplashActivity).loginInfoDao()
+            val settingDao: SettingDao = AppDatabase.getInstance(this@SplashActivity).settingDao()
+
             val loginInfo = loginInfoDao.getLoginInfo()
+            val setting = settingDao.getSetting()
+
+            setting?.let{
+                AppVariable.setting = setting
+            }
 
             var isLogin = false
             if (loginInfo != null){

@@ -23,6 +23,8 @@ data class LoginInfo(
     var last_upload: String?
 )
 
+
+
 @Dao
 interface LoginInfoDao {
     @Query("SELECT * FROM logininfo  LIMIT 1")

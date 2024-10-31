@@ -5,6 +5,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
+import assertk.catch
 import com.ts.mobileccp.db.AppDatabase
 import com.ts.mobileccp.db.entity.ARInv
 import com.ts.mobileccp.db.entity.ARInvDao
@@ -41,7 +42,12 @@ import java.util.UUID
 
 class ApiRepository(ctx: Context) {
     private val isDebug : Boolean = true
-    private val apiService = RetrofitClient.apiService
+
+//    private val apiService = RetrofitClient.apiService
+
+    //fma: changed to getter so we can update when base_url updated
+    private val apiService: ApiService get() = RetrofitClient.apiService
+
     private val context = ctx
 
     private val customerDao: CustomerDao = AppDatabase.getInstance(context).customerDao()
@@ -51,7 +57,7 @@ class ApiRepository(ctx: Context) {
     private val loginInfoDao: LoginInfoDao = AppDatabase.getInstance(context).loginInfoDao()
     private val ccpMarkDao: CCPMarkDao = AppDatabase.getInstance(context).ccpMarkDAO()
     private val arInvDao: ARInvDao = AppDatabase.getInstance(context).arInvDao()
-
+    private val settingDao = AppDatabase.getInstance(context).settingDao()
 
     suspend fun fetchCustomerByID(id: String): CustomerResponse? {
         return withContext(Dispatchers.IO) {
@@ -512,7 +518,55 @@ class ApiRepository(ctx: Context) {
     }
 
 
+    suspend fun testAPI(api:String):Boolean{
+        val originapi = AppVariable.setting.api_url
+        try {
+            this.updateBaseURL(api, true)
+            val response = apiService.check()
 
+            val resCheck: CheckServerResponse? = response.body()
+
+
+            if (response.isSuccessful) {
+                Toast.makeText(context, resCheck?.msg,
+                    Toast.LENGTH_SHORT).show()
+                return true
+            }else{
+                Toast.makeText(context, response.errorBody()?.toString(),
+                    Toast.LENGTH_SHORT).show()
+                return false
+            }
+        } catch (e: Exception) {
+            Toast.makeText(context, "Error Testing API : ${e.message?.toString()}",
+                Toast.LENGTH_SHORT).show()
+            return true
+        } finally {
+            this.updateBaseURL(originapi, true)
+        }
+    }
+
+    suspend fun updateBaseURL(api:String, is_test:Boolean=false){
+        try {
+            var updatedApi = api
+            if (!api.endsWith('/')){
+                updatedApi = "$api/"
+            }
+
+            AppVariable.setting.api_url = updatedApi
+            settingDao.upsert(AppVariable.setting)
+            RetrofitClient.updateRetrofitBaseURL(api)
+
+            if (!is_test) {
+                Toast.makeText(
+                    context, "Base API URL Updated",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(context, "Gagal Update API URL : ${e.message?.toString()}",
+                Toast.LENGTH_SHORT).show()
+        }
+    }
 
     suspend fun loginSalesman(username:String, password:String): Boolean {
         var login = false

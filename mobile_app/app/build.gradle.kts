@@ -54,7 +54,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.play.services.location)
-    //    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.legacy.support.v4)
 
     //api
     implementation(libs.retrofit)
@@ -67,7 +67,6 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.paging)
     implementation(libs.androidx.navigation.fragment)
-    implementation(libs.androidx.legacy.support.v4)
     ksp(libs.androidx.room.compiler)
 
 

@@ -55,5 +55,8 @@ interface ApiService {
     @GET("arremain/{salid}")
     suspend fun getARRemain(@Path("salid") salid: String) : List<ARInvResponse>
 
+    @GET("check")
+    suspend fun check(): Response<CheckServerResponse>
+
 
 }

@@ -45,6 +45,16 @@ $app->setBasePath('/public');
 //     ]
 // ]));
 
+$errorMiddleware = $app->addErrorMiddleware(true, true, true);
+$errorMiddleware->setErrorHandler(
+    HttpMethodNotAllowedException::class,
+    function (Request $request, Throwable $exception, bool $displayErrorDetails) use ($app): Response {
+        $response = $app->getResponseFactory()->createResponse();
+        $response->getBody()->write("Method Not Allowed");
+        return $response->withStatus(405);
+    }
+);
+
 
 $app->options('/{routes:.+}', function ($request, $response, $args) {
     return $response;
@@ -63,18 +73,23 @@ $app->add(function ($request, $handler) {
 
 
 $app->get('/check', function (Request $request, Response $response, $args) {
-    $response->getBody()->write("Server Ready !!");    
-    return $response;
+    $ipAddress = $_SERVER['SERVER_ADDR'];
+    $obj = new stdClass();
+    $obj->msg = "Server Ready ". $ipAddress;
+    $json = json_encode($obj);    
+    $response->getBody()->write($json);
+    return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
 });
 
 
-require '../src/routes/newccp.php';
 require '../src/routes/salesman.php';
 require '../src/routes/customer.php';
 require '../src/routes/inventory.php';
 require '../src/routes/salesorder.php';
+require '../src/routes/visitroute.php';
+require '../src/routes/visitplan.php';
+require '../src/routes/visit.php';
 require '../src/routes/dashboard.php';
-
 
 // $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function($req, $res) {
 //     $handler = $this->notFoundHandler; // handle using the default Slim page not found handler
@@ -86,7 +101,3 @@ require '../src/routes/dashboard.php';
 // });
 
 $app->run();
-
-
-//notes upload img error : if dev cors activated and using ip 12.xx ??
-//upload img success when using corsmiddleware and ip 0.xx

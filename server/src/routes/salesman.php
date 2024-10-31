@@ -11,9 +11,9 @@ require_once '../src/models/ModelEmployee.php';
 
 $app->get('/salesman', function ($request, $response) {
   try{    
-    $data = ModelSalesman::retrieveList();
-    $json = json_encode($data);    
-    $response->getBody()->write($json);
+		$data = ModelSalesman::retrieveList();
+		$json = json_encode($data);    
+		$response->getBody()->write($json);
 
 		return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
 	}catch(Exception $e){

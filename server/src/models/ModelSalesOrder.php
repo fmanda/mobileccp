@@ -9,7 +9,7 @@
 		}
 
 		public static function getTableName(){
-			return "mobile_salesorder";
+			return "salesorder";
 		}
 
 		public static function getFields(){
@@ -23,7 +23,7 @@
 		//override
 		public static function retrieve($id){
 			$obj = parent::retrieve($id);
-			if (isset($obj)) $obj->items = ModelSalesOrderItem::retrieveList('salesorder_id = "'. $obj->id .'"');
+			if (isset($obj)) $obj->items = ModelSalesOrderItem::retrieveList("salesorder_id = '{$obj->id}'");
 			//additional property :
 			// foreach($obj->items as $item){
 			// 	if (isset($item->material_id)) $item->material =  ModelMaterial::retrieve($item->material_id);
@@ -39,7 +39,7 @@
 			$objs = DB::openQuery($sql);
 
 			foreach($objs as $obj){
-				if (isset($obj)) $obj->items = ModelSalesOrderItem::retrieveList('salesorder_id = "'. $obj->id .'"');
+				if (isset($obj)) $obj->items = ModelSalesOrderItem::retrieveList("salesorder_id = '{$obj->id}'");
 			}
 
 			return $objs;
@@ -49,7 +49,7 @@
 			try{
 				$obj = parent::retrieve($id);
 				$str = static::generateSQLDelete("id=". $id);
-				$str = $str . ModelSalesOrderItem::generateSQLDelete('header_id = '. $id);
+				$str = $str . ModelSalesOrderItem::generateSQLDelete("salesorder_id = '{$obj->id}'");
 				DB::executeSQL($str);
 			} catch (Exception $e) {
 				$db->rollback();
@@ -64,10 +64,10 @@
 			$db = $db->connect();
 			$db->beginTransaction();
 			try { 
-				static::saveObjToDB($obj, $db);
+				static::saveObjToDB($obj, $db); 
 
-			
-				$sql = ModelSalesOrderItem::generateSQLDelete('salesorder_id = '. $db->quote($obj->id));
+		
+				$sql = ModelSalesOrderItem::generateSQLDelete("salesorder_id = '{$obj->id}'");
 				$db->prepare($sql)->execute();
 			
 				
@@ -85,7 +85,7 @@
 		}
 
 
-		//override
+		//override to always insert using merge
 		public static function saveObjToDB($obj, $db){			
 			try {				
 				$sql = static::generateSQL($obj, $db);
@@ -98,7 +98,7 @@
 
 		//override
 		public static function generateSQL($obj, $db){
-			$sql = "MERGE INTO mobile_salesorder AS target
+			$sql = "MERGE INTO salesorder AS target
 					USING (VALUES (
 						'{$obj->id}', 
 						'{$obj->orderno}', 
@@ -149,7 +149,7 @@
 	class ModelSalesOrderItem extends BaseModel{
 
 		public static function getTableName(){
-			return "mobile_salesorderitem";
+			return "salesorderitem";
 		}
 
 		public static function getFields(){

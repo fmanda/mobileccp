@@ -14,21 +14,21 @@
 		}
 
 		public static function retrieve($id){
-			$sql = "select * from v_mobile_employee
+			$sql = "select * from v_employee
 					where empid = '" . $id . "'";			
 			$obj = DB::openQuery($sql);			
 			if (isset($obj[0])) return $obj[0];		
 		}
 
 		public static function retrieveList($filter=''){
-			$sql = "select * from v_mobile_employee";			
+			$sql = "select * from v_mobv_employeeile_employee";			
 			$objs = DB::openQuery($sql);			
 			return $objs;
 		}
 
 
 		public static function retrieveLogin($username, $password){
-			$obj = DB::openQuery("select * from v_mobile_employee"
+			$obj = DB::openQuery("select * from v_employee"
 				." where empid = '" . $username . "'"
 			);
 			if (isset($obj[0])) return $obj[0];

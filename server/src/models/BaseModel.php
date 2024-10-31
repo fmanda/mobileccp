@@ -16,6 +16,11 @@
 			return array("");
 		}
 
+
+		public static function strFields(){
+			return implode(', ', static::getFields());
+		}
+
 		public static function getPrimaryKey(){
 			return "";
 		}
@@ -35,10 +40,15 @@
 
 
 		public static function retrieveList($filter=''){
-			$sql = "select * from ".static::getTableName()." where 1=1 ";
-			if ($filter<>''){
-				$sql = $sql ." and ". $filter;
-			}
+			$sql = "select * from ".static::getTableName()." where 1=1 ";	
+			if ($filter<>'') $sql = $sql ." and ". $filter;			
+			$obj = DB::openQuery($sql);
+			return $obj;
+		}
+
+		public static function retrieveListDefined($filter=''){			
+			$sql = "select ". static::strFields(). " from ".static::getTableName()." where 1=1 ";	
+			if ($filter<>'') $sql = $sql ." and ". $filter;			
 			$obj = DB::openQuery($sql);
 			return $obj;
 		}

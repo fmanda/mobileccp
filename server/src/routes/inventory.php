@@ -42,17 +42,17 @@ $app->get('/pricelevelarea/{areano}', function ($request, $response) {
 
 
 
-$app->get('/inventoryall[/{filtertxt}]', function ($request, $response) {
-  try{
-    $filtertxt = $request->getAttribute('filtertxt');
-    $data = ModelInventory::retrieveAll($filtertxt);
-	$json = json_encode($data);
-	$response->getBody()->write($json);
-		return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
-	}catch(Exception $e){
-    $msg = $e->getMessage();
-    $response->getBody()->write($msg);
-		return $response->withStatus(500)
-        ->withHeader('Content-Type', 'text/html');
-    }
-});
+// $app->get('/inventoryall[/{filtertxt}]', function ($request, $response) {
+//   try{
+//     $filtertxt = $request->getAttribute('filtertxt');
+//     $data = ModelInventory::retrieveAll($filtertxt);
+// 	$json = json_encode($data);
+// 	$response->getBody()->write($json);
+// 		return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
+// 	}catch(Exception $e){
+//     $msg = $e->getMessage();
+//     $response->getBody()->write($msg);
+// 		return $response->withStatus(500)
+//         ->withHeader('Content-Type', 'text/html');
+//     }
+// });
